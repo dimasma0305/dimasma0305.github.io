@@ -1,0 +1,568 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <!-- Enhanced gradient backgrounds with cyberpunk vibes -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+      <stop offset="15%" style="stop-color:#001122;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#0a0a0a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#001122;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#0a0a0a;stop-opacity:1" />
+      <stop offset="85%" style="stop-color:#001122;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Holographic gradient -->
+    <linearGradient id="holoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:0.15" />
+      <stop offset="30%" style="stop-color:#00d4ff;stop-opacity:0.1" />
+      <stop offset="60%" style="stop-color:#a855f7;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#00ff88;stop-opacity:0.15" />
+    </linearGradient>
+    
+    <!-- Matrix-style background -->
+    <linearGradient id="matrixGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:0.1" />
+      <stop offset="50%" style="stop-color:#003311;stop-opacity:0.05" />
+      <stop offset="100%" style="stop-color:#00ff88;stop-opacity:0.1" />
+    </linearGradient>
+    
+    <!-- Enhanced glass panel with neon edge -->
+    <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:0.08" />
+      <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0.02" />
+      <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0.08" />
+    </linearGradient>
+    
+    <!-- Dynamic logo container -->
+    <radialGradient id="logoContainer" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#001a0a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#000f05;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Enhanced cyberpunk glow effects -->
+    <filter id="logoGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#00ff88" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#00ff88" flood-opacity="0.8"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="16" flood-color="#00d4ff" flood-opacity="0.6"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="24" flood-color="#a855f7" flood-opacity="0.4"/>
+    </filter>
+    
+    <filter id="titleGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#00ff88" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00ff88" flood-opacity="0.8"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="12" flood-color="#000000" flood-opacity="0.8"/>
+    </filter>
+    
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#00ff88" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00d4ff" flood-opacity="0.8"/>
+    </filter>
+    
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000000" flood-opacity="0.8"/>
+    </filter>
+    
+    <filter id="intensiveGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#00ff88" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#00d4ff" flood-opacity="0.9"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="20" flood-color="#a855f7" flood-opacity="0.7"/>
+    </filter>
+    
+    <filter id="holoGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#00ff88" flood-opacity="0.9"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#00d4ff" flood-opacity="0.7"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#a855f7" flood-opacity="0.5"/>
+    </filter>
+    
+    <!-- Advanced cyberpunk grid with hex elements -->
+    <pattern id="cyberGrid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#003322" stroke-width="0.8" opacity="0.4"/>
+      <path d="M 30 0 L 30 60 M 0 30 L 60 30" fill="none" stroke="#001122" stroke-width="0.4" opacity="0.3"/>
+      <circle cx="0" cy="0" r="1.5" fill="#00ff88" opacity="0.6"/>
+      <circle cx="30" cy="30" r="0.8" fill="#00d4ff" opacity="0.4"/>
+      <circle cx="60" cy="60" r="0.5" fill="#a855f7" opacity="0.3"/>
+      <!-- Hex pattern -->
+      <polygon points="45,15 52,22 52,30 45,37 38,30 38,22" fill="none" stroke="#00ff88" stroke-width="0.3" opacity="0.2"/>
+    </pattern>
+    
+    <!-- Matrix rain pattern with more complexity -->
+    <pattern id="matrixPattern" width="20" height="100" patternUnits="userSpaceOnUse">
+      <rect width="20" height="100" fill="url(#matrixGradient)"/>
+      <text x="10" y="15" font-family="monospace" font-size="6" fill="#00ff88" opacity="0.4" text-anchor="middle">ア</text>
+      <text x="10" y="25" font-family="monospace" font-size="8" fill="#00ff88" opacity="0.3" text-anchor="middle">0</text>
+      <text x="10" y="35" font-family="monospace" font-size="6" fill="#00ff88" opacity="0.25" text-anchor="middle">カ</text>
+      <text x="10" y="45" font-family="monospace" font-size="8" fill="#00ff88" opacity="0.2" text-anchor="middle">1</text>
+      <text x="10" y="55" font-family="monospace" font-size="6" fill="#00ff88" opacity="0.15" text-anchor="middle">サ</text>
+      <text x="10" y="65" font-family="monospace" font-size="8" fill="#00ff88" opacity="0.1" text-anchor="middle">0</text>
+      <text x="10" y="75" font-family="monospace" font-size="6" fill="#00ff88" opacity="0.08" text-anchor="middle">タ</text>
+      <text x="10" y="85" font-family="monospace" font-size="8" fill="#00ff88" opacity="0.05" text-anchor="middle">1</text>
+    </pattern>
+    
+    <!-- Code pattern for background -->
+    <pattern id="codePattern" width="300" height="40" patternUnits="userSpaceOnUse">
+      <rect width="300" height="40" fill="rgba(0,0,0,0.3)"/>
+      <text x="5" y="12" font-family="JetBrains Mono, monospace" font-size="6" fill="#00ff88" opacity="0.15">function exploit() { return shell; }</text>
+      <text x="5" y="24" font-family="JetBrains Mono, monospace" font-size="6" fill="#00d4ff" opacity="0.1">if (vuln.exists) { pwn(); }</text>
+      <text x="5" y="36" font-family="JetBrains Mono, monospace" font-size="6" fill="#a855f7" opacity="0.08">console.log("access_granted");</text>
+    </pattern>
+    
+    <!-- Hexagonal pattern -->
+    <pattern id="hexPattern" width="50" height="43.3" patternUnits="userSpaceOnUse">
+      <polygon points="25,0 43.3,12.5 43.3,37.5 25,50 6.7,37.5 6.7,12.5" 
+               fill="none" stroke="#00ff88" stroke-width="0.5" opacity="0.1"/>
+      <polygon points="25,10 35,15 35,25 25,30 15,25 15,15" 
+               fill="none" stroke="#00d4ff" stroke-width="0.3" opacity="0.08"/>
+    </pattern>
+    
+    <!-- Static accent gradients -->
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
+      <stop offset="20%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#00ff88;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ff88;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Scan line gradient -->
+    <linearGradient id="scanLine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ff88;stop-opacity:0"/>
+      <stop offset="45%" style="stop-color:#00ff88;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#00ff88;stop-opacity:0.4"/>
+      <stop offset="55%" style="stop-color:#00ff88;stop-opacity:0"/>
+      <stop offset="100%" style="stop-color:#00ff88;stop-opacity:0"/>
+    </linearGradient>
+    
+    <!-- Particle effect -->
+    <filter id="particleGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#00ff88" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- Enhanced background with multiple layers -->
+  <rect width="1200" height="630" fill="url(#bgGradient)" />
+  <rect width="1200" height="630" fill="url(#cyberGrid)" />
+  <rect width="1200" height="630" fill="url(#hexPattern)" opacity="0.3"/>
+  
+  <!-- Holographic overlay -->
+  <rect x="0" y="0" width="1200" height="630" fill="url(#holoGradient)" opacity="0.4"/>
+  
+  <!-- Code background -->
+  <g opacity="0.1">
+    <rect x="0" y="100" width="1200" height="40" fill="url(#codePattern)"/>
+    <rect x="0" y="200" width="1200" height="40" fill="url(#codePattern)" transform="translate(150, 0)"/>
+    <rect x="0" y="300" width="1200" height="40" fill="url(#codePattern)" transform="translate(75, 0)"/>
+    <rect x="0" y="400" width="1200" height="40" fill="url(#codePattern)" transform="translate(200, 0)"/>
+  </g>
+  
+  <!-- Matrix rain background -->
+  <g opacity="0.15">
+    <rect x="0" y="50" width="1200" height="630" fill="url(#matrixPattern)"/>
+    <rect x="100" y="0" width="1200" height="630" fill="url(#matrixPattern)"/>
+    <rect x="200" y="25" width="1200" height="630" fill="url(#matrixPattern)"/>
+  </g>
+  
+  <!-- Static scan lines -->
+  <g opacity="0.3">
+    <rect x="0" y="200" width="1200" height="630" fill="url(#scanLine)"/>
+    <rect x="0" y="350" width="1200" height="630" fill="url(#scanLine)"/>
+    <rect x="0" y="480" width="1200" height="630" fill="url(#scanLine)"/>
+  </g>
+  
+  <!-- Advanced technical diagram overlay -->
+  <g opacity="0.15" stroke="#00ff88" stroke-width="0.8" fill="none">
+    <!-- Network topology -->
+    <circle cx="120" cy="120" r="8" stroke="#00d4ff"/>
+    <circle cx="200" cy="150" r="6" stroke="#00ff88"/>
+    <circle cx="280" cy="120" r="5" stroke="#a855f7"/>
+    <path d="M128 120 L192 150 M208 150 L272 120" stroke-dasharray="2,3"/>
+    
+    <!-- Data flow visualization -->
+    <path d="M900 100 Q950 150 1000 100" stroke="#00d4ff" stroke-width="1"/>
+    <path d="M920 120 Q970 170 1020 120" stroke="#a855f7" stroke-width="0.8"/>
+    <circle cx="910" cy="110" r="2" fill="#00d4ff"/>
+    <circle cx="990" cy="110" r="2" fill="#00ff88"/>
+    
+    <!-- Security perimeter -->
+    <rect x="80" y="480" width="150" height="80" rx="8" stroke="#00ff88" stroke-dasharray="4,2" opacity="0.3"/>
+    <text x="155" y="525" font-family="JetBrains Mono, monospace" font-size="8" fill="#00ff88" text-anchor="middle" opacity="0.6">SECURE ZONE</text>
+  </g>
+  
+  <!-- Enhanced floating particle effects with variety -->
+  <g opacity="0.8">
+    <!-- Primary particles -->
+    <circle cx="950" cy="145" r="3" fill="#00ff88" filter="url(#particleGlow)"/>
+    <circle cx="205" cy="500" r="2.5" fill="#00d4ff" filter="url(#particleGlow)"/>
+    <circle cx="800" cy="395" r="1.5" fill="#a855f7" filter="url(#particleGlow)"/>
+    <circle cx="110" cy="200" r="2" fill="#00ff88" filter="url(#particleGlow)"/>
+    
+    <!-- Secondary particles -->
+    <circle cx="1050" cy="405" r="1" fill="#00d4ff" filter="url(#particleGlow)"/>
+    <circle cx="355" cy="100" r="1.5" fill="#a855f7" filter="url(#particleGlow)"/>
+    <circle cx="650" cy="545" r="2" fill="#00ff88" filter="url(#particleGlow)"/>
+    
+    <!-- Micro particles -->
+    <circle cx="750" cy="250" r="0.8" fill="#00d4ff" filter="url(#particleGlow)" opacity="0.6"/>
+    <circle cx="300" cy="350" r="1" fill="#a855f7" filter="url(#particleGlow)" opacity="0.5"/>
+    <circle cx="1150" cy="300" r="0.6" fill="#00ff88" filter="url(#particleGlow)" opacity="0.7"/>
+    
+    <!-- Data packet particles -->
+    <rect x="400" y="80" width="4" height="2" fill="#00ff88" filter="url(#particleGlow)" opacity="0.8"/>
+    <rect x="600" y="450" width="3" height="2" fill="#00d4ff" filter="url(#particleGlow)" opacity="0.7"/>
+    <rect x="850" y="300" width="2" height="3" fill="#a855f7" filter="url(#particleGlow)" opacity="0.6"/>
+  </g>
+
+  <!-- Advanced geometric accent elements -->
+  <g opacity="0.4">
+    <!-- Static geometric shapes -->
+    <polygon points="1100,100 1120,80 1140,100 1120,120" fill="none" stroke="#00ff88" stroke-width="1"/>
+    <polygon points="80,500 100,480 120,500 100,520" fill="none" stroke="#00d4ff" stroke-width="1"/>
+    <rect x="1050" y="450" width="20" height="20" fill="none" stroke="#a855f7" stroke-width="1" transform="rotate(45 1060 460)"/>
+    
+    <!-- Additional tech shapes -->
+    <polygon points="200,120 220,100 240,120 220,140" fill="none" stroke="#00ff88" stroke-width="0.8" opacity="0.6"/>
+    <circle cx="900" cy="80" r="8" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+    <rect x="70" y="350" width="15" height="15" fill="none" stroke="#a855f7" stroke-width="1" transform="rotate(30 77.5 357.5)" opacity="0.7"/>
+    
+    <!-- Hexagonal tech elements -->
+    <polygon points="1080,200 1090,205 1090,215 1080,220 1070,215 1070,205" fill="none" stroke="#00ff88" stroke-width="1"/>
+    <polygon points="150,300 165,307 165,323 150,330 135,323 135,307" fill="none" stroke="#00d4ff" stroke-width="0.8"/>
+    <polygon points="750,150 760,155 760,165 750,170 740,165 740,155" fill="none" stroke="#a855f7" stroke-width="0.6"/>
+    
+    <!-- Complex geometric patterns -->
+    <g transform="translate(300, 80)">
+      <circle cx="0" cy="0" r="12" fill="none" stroke="#00ff88" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="0" cy="0" r="8" fill="none" stroke="#00d4ff" stroke-width="0.5" opacity="0.3"/>
+      <circle cx="0" cy="0" r="4" fill="none" stroke="#a855f7" stroke-width="0.5" opacity="0.2"/>
+      <path d="M-8 0 L8 0 M0 -8 L0 8" stroke="#00ff88" stroke-width="0.5" opacity="0.3"/>
+    </g>
+  </g>
+
+  <!-- ASCII Art elements -->
+  <g opacity="0.1" font-family="JetBrains Mono, monospace" font-size="8" fill="#00ff88">
+    <text x="850" y="520">╔═══════════════╗</text>
+    <text x="850" y="532">║ SYSTEM_SECURE ║</text>
+    <text x="850" y="544">╚═══════════════╝</text>
+    
+    <text x="20" y="100">┌─[ root@kali ]─[ /home/dimas ]</text>
+    <text x="20" y="112">└─$ nmap -sS target.io</text>
+  </g>
+
+  <!-- Main container with enhanced neon border -->
+  <rect x="60" y="60" width="1080" height="510" rx="24" 
+        fill="url(#glassGradient)" 
+        stroke="url(#accentGradient)" stroke-width="2" 
+        filter="url(#softShadow)"/>
+  
+  <!-- Content area with subtle inner glow -->
+  <rect x="80" y="80" width="1040" height="470" rx="16" 
+        fill="rgba(17, 17, 17, 0.92)" 
+        stroke="rgba(0, 255, 136, 0.2)" stroke-width="1"/>
+  
+  <!-- Holographic data overlay -->
+  <g opacity="0.08">
+    <rect x="90" y="90" width="400" height="200" fill="url(#holoGradient)" filter="url(#holoGlow)"/>
+    <rect x="800" y="300" width="300" height="150" fill="url(#holoGradient)" filter="url(#holoGlow)"/>
+  </g>
+
+<g transform="translate(110, 0)">
+  <!-- Logo section with enhanced tech frame -->
+  <g transform="translate(120, 200)">
+    <!-- Advanced logo container -->
+    <rect width="240" height="240" rx="20" fill="url(#logoContainer)" 
+          stroke="rgba(0,255,136,0.4)" stroke-width="2" filter="url(#neonGlow)"/>
+    
+    <!-- Tech frame overlay -->
+    <rect x="-5" y="-5" width="250" height="250" rx="25" fill="none" 
+          stroke="url(#accentGradient)" stroke-width="1" opacity="0.3" stroke-dasharray="10,5"/>
+    
+    <!-- Enhanced decorative corner elements -->
+    <g stroke="#00ff88" stroke-width="2" fill="none" opacity="0.9">
+      <path d="M20 40 L20 20 L40 20" stroke-linecap="round"/>
+      <path d="M200 20 L220 20 L220 40" stroke-linecap="round"/>
+      <path d="M40 220 L20 220 L20 200" stroke-linecap="round"/>
+      <path d="M220 200 L220 220 L200 220" stroke-linecap="round"/>
+    </g>
+    
+    <!-- Additional tech elements with hexagons -->
+    <g opacity="0.8">
+      <circle cx="30" cy="30" r="3" fill="#00ff88" filter="url(#neonGlow)"/>
+      <circle cx="210" cy="30" r="3" fill="#00d4ff" filter="url(#neonGlow)"/>
+      <circle cx="30" cy="210" r="3" fill="#a855f7" filter="url(#neonGlow)"/>
+      <circle cx="210" cy="210" r="3" fill="#00ff88" filter="url(#neonGlow)"/>
+      
+      <!-- Hexagonal corner accents -->
+      <polygon points="15,15 22,18 22,24 15,27 8,24 8,18" fill="none" stroke="#00ff88" stroke-width="0.8"/>
+      <polygon points="225,15 232,18 232,24 225,27 218,24 218,18" fill="none" stroke="#00d4ff" stroke-width="0.8"/>
+      <polygon points="15,225 22,228 22,234 15,237 8,234 8,228" fill="none" stroke="#a855f7" stroke-width="0.8"/>
+      <polygon points="225,225 232,228 232,234 225,237 218,234 218,228" fill="none" stroke="#00ff88" stroke-width="0.8"/>
+    </g>
+    
+    <!-- Tech connection lines with data flow -->
+    <g stroke="#00ff88" stroke-width="0.5" opacity="0.3">
+      <path d="M40 30 L200 30" stroke-dasharray="2,3"/>
+      <path d="M30 40 L30 200" stroke-dasharray="2,3"/>
+      <path d="M40 210 L200 210" stroke-dasharray="2,3"/>
+      <path d="M210 40 L210 200" stroke-dasharray="2,3"/>
+      
+      <!-- Data packet indicators -->
+      <circle cx="120" cy="30" r="1" fill="#00ff88" opacity="0.8"/>
+      <circle cx="30" cy="120" r="1" fill="#00d4ff" opacity="0.8"/>
+      <circle cx="120" cy="210" r="1" fill="#a855f7" opacity="0.8"/>
+      <circle cx="210" cy="120" r="1" fill="#00ff88" opacity="0.8"/>
+    </g>
+    
+    <!-- Logo with enhanced effects -->
+    <g transform="translate(24, 24)">
+      <!-- GitHub profile image with glow effect -->
+      <defs>
+        <clipPath id="logoClip">
+          <rect width="192" height="192" rx="32" />
+        </clipPath>
+      </defs>
+      
+      <!-- Background glow for the image -->
+      <rect width="192" height="192" rx="32" fill="#00ff88" opacity="0.1" filter="url(#logoGlow)" />
+      
+      <!-- Holographic backdrop -->
+      <rect width="192" height="192" rx="32" fill="url(#holoGradient)" opacity="0.15" />
+      
+      <!-- GitHub profile image -->
+      <image 
+        href="https://avatars.githubusercontent.com/u/92920739" 
+        width="192" 
+        height="192" 
+        clip-path="url(#logoClip)"
+        filter="url(#logoGlow)"
+      />
+      
+      <rect width="192" height="192" rx="32" fill="none" 
+            stroke="#00ff88" stroke-width="3" 
+            opacity="0.8" filter="url(#neonGlow)" />
+    </g>
+    
+    <!-- Enhanced static logo accent with segments -->
+    <rect x="60" y="200" width="30" height="3" rx="1.5" fill="#00ff88" filter="url(#neonGlow)"/>
+    <rect x="95" y="200" width="30" height="3" rx="1.5" fill="#00d4ff" filter="url(#neonGlow)"/>
+    <rect x="130" y="200" width="30" height="3" rx="1.5" fill="#a855f7" filter="url(#neonGlow)"/>
+    <rect x="165" y="200" width="15" height="3" rx="1.5" fill="#00ff88" filter="url(#neonGlow)"/>
+    
+    <!-- Advanced tech-style data points -->
+    <g transform="translate(120, 260)" opacity="0.8">
+      <text x="0" y="0" font-family="JetBrains Mono, monospace" font-size="8" fill="#00ff88" text-anchor="middle">
+        STATUS: ONLINE
+      </text>
+      <text x="0" y="12" font-family="JetBrains Mono, monospace" font-size="6" fill="#00d4ff" text-anchor="middle">
+        ID: U92920739 | SEC: HIGH
+      </text>
+      <text x="0" y="22" font-family="JetBrains Mono, monospace" font-size="5" fill="#666666" text-anchor="middle">
+        [AUTHENTICATED] [VERIFIED]
+      </text>
+    </g>
+  </g>
+
+  <!-- Content section with enhanced layout -->
+  <g transform="translate(420, 180)">
+    <!-- Title with enhanced glow and background effect -->
+    <rect x="-10" y="10" width="420" height="55" fill="rgba(0,255,136,0.02)" rx="8" opacity="0.5"/>
+    <text x="0" y="48" font-family="Inter, sans-serif" font-size="56" font-weight="800" 
+          fill="#ffffff" filter="url(#titleGlow)" letter-spacing="-0.02em">
+      Dimas Maulana
+    </text>
+    
+    <!-- Professional badge with enhanced design -->
+    <rect x="0" y="70" width="280" height="28" rx="14" fill="rgba(0, 255, 136, 0.15)" 
+          stroke="url(#accentGradient)" stroke-width="1" filter="url(#neonGlow)"/>
+    <rect x="-2" y="68" width="284" height="32" rx="16" fill="none" 
+          stroke="rgba(0, 255, 136, 0.1)" stroke-width="0.5" stroke-dasharray="8,4"/>
+    <text x="140" y="88" font-family="Inter, sans-serif" font-size="13" font-weight="600" 
+          fill="#00ff88" text-anchor="middle">
+      CYBERSECURITY RESEARCHER
+    </text>
+    
+    <!-- Subtitle with enhanced styling and tech accent -->
+    <text x="0" y="130" font-family="Inter, sans-serif" font-size="24" font-weight="600" 
+          fill="#e2e8f0" letter-spacing="-0.01em" filter="url(#neonGlow)">
+      CTF Player &amp; Security Expert
+    </text>
+    <rect x="0" y="135" width="320" height="1" fill="url(#accentGradient)" opacity="0.3"/>
+    
+    <!-- Enhanced skills section with advanced styling -->
+    <g transform="translate(0, 160)">
+      <!-- CTF Player -->
+      <rect x="0" y="0" width="100" height="22" rx="11" fill="rgba(0, 255, 136, 0.25)" 
+            stroke="#00ff88" stroke-width="1" filter="url(#neonGlow)"/>
+      <rect x="-1" y="-1" width="102" height="24" rx="12" fill="none" 
+            stroke="rgba(0, 255, 136, 0.1)" stroke-width="0.5"/>
+      <text x="50" y="15" font-family="Inter, sans-serif" font-size="10" font-weight="700" 
+            fill="#00ff88" text-anchor="middle">
+        CTF PLAYER
+      </text>
+      
+      <!-- Linux -->
+      <rect x="110" y="0" width="70" height="22" rx="11" fill="rgba(0, 212, 255, 0.25)" 
+            stroke="#00d4ff" stroke-width="1" filter="url(#neonGlow)"/>
+      <rect x="109" y="-1" width="72" height="24" rx="12" fill="none" 
+            stroke="rgba(0, 212, 255, 0.1)" stroke-width="0.5"/>
+      <text x="145" y="15" font-family="Inter, sans-serif" font-size="10" font-weight="600" 
+            fill="#00d4ff" text-anchor="middle">
+        LINUX
+      </text>
+      
+      <!-- Pentesting -->
+      <rect x="190" y="0" width="100" height="22" rx="11" fill="rgba(168, 85, 247, 0.25)" 
+            stroke="#a855f7" stroke-width="1" filter="url(#neonGlow)"/>
+      <rect x="189" y="-1" width="102" height="24" rx="12" fill="none" 
+            stroke="rgba(168, 85, 247, 0.1)" stroke-width="0.5"/>
+      <text x="240" y="15" font-family="Inter, sans-serif" font-size="10" font-weight="600" 
+            fill="#a855f7" text-anchor="middle">
+        PENTESTING
+      </text>
+      
+      <!-- Bug Hunting -->
+      <rect x="300" y="0" width="110" height="22" rx="11" fill="rgba(239, 68, 68, 0.25)" 
+            stroke="#ef4444" stroke-width="1" filter="url(#neonGlow)"/>
+      <rect x="299" y="-1" width="112" height="24" rx="12" fill="none" 
+            stroke="rgba(239, 68, 68, 0.1)" stroke-width="0.5"/>
+      <text x="355" y="15" font-family="Inter, sans-serif" font-size="10" font-weight="600" 
+            fill="#ef4444" text-anchor="middle">
+        BUG HUNTING
+      </text>
+      
+      <!-- Skill level indicators -->
+      <g opacity="0.4">
+        <rect x="5" y="25" width="90" height="2" fill="#00ff88" opacity="0.3"/>
+        <rect x="5" y="25" width="85" height="2" fill="#00ff88"/>
+        
+        <rect x="115" y="25" width="60" height="2" fill="#00d4ff" opacity="0.3"/>
+        <rect x="115" y="25" width="55" height="2" fill="#00d4ff"/>
+        
+        <rect x="195" y="25" width="90" height="2" fill="#a855f7" opacity="0.3"/>
+        <rect x="195" y="25" width="80" height="2" fill="#a855f7"/>
+        
+        <rect x="305" y="25" width="100" height="2" fill="#ef4444" opacity="0.3"/>
+        <rect x="305" y="25" width="75" height="2" fill="#ef4444"/>
+      </g>
+    </g>
+    
+    <!-- Enhanced description with tech formatting -->
+    <g transform="translate(0, 200)">
+      <rect x="-5" y="0" width="420" height="40" fill="rgba(255,255,255,0.01)" rx="4"/>
+      <text x="0" y="15" font-family="Inter, sans-serif" font-size="16" font-weight="400" 
+            fill="#cccccc">
+        Exploring cybersecurity landscapes, building secure solutions,
+      </text>
+      <text x="0" y="32" font-family="Inter, sans-serif" font-size="16" font-weight="400" 
+            fill="#cccccc">
+        and sharing knowledge through CTF competitions
+      </text>
+    </g>
+    
+    <!-- Enhanced website section with terminal styling -->
+    <g transform="translate(0, 260)">
+      <!-- Terminal window frame -->
+      <rect x="-5" y="-5" width="320" height="25" rx="4" fill="rgba(0,0,0,0.3)" stroke="rgba(0,255,136,0.2)" stroke-width="0.5"/>
+      <circle cx="2" cy="2" r="2" fill="#ef4444" opacity="0.6"/>
+      <circle cx="12" cy="2" r="2" fill="#f59e0b" opacity="0.6"/>
+      <circle cx="22" cy="2" r="2" fill="#00ff88" opacity="0.6"/>
+      
+      <!-- Enhanced terminal icon -->
+      <rect x="0" y="2" width="14" height="14" rx="2" fill="rgba(0,255,136,0.1)" stroke="#00ff88" stroke-width="1" filter="url(#neonGlow)"/>
+      <path d="M3 7l2 1.5-2 1.5M7 10h4" stroke="#00ff88" stroke-width="1.2" fill="none"/>
+      
+      <text x="22" y="12" font-family="JetBrains Mono, Consolas, monospace" font-size="14" font-weight="500" 
+            fill="#00ff88">
+        dimasma0305.github.io/blog
+      </text>
+      
+      <!-- Command prompt style -->
+      <text x="0" y="30" font-family="JetBrains Mono, Consolas, monospace" font-size="8" 
+            fill="#666666" opacity="0.6">
+        $ curl -X GET "https://api.security.blog"
+      </text>
+    </g>
+  </g>
+</g>
+
+  <!-- Enhanced bottom accent with data visualization -->
+  <rect x="60" y="590" width="1080" height="4" rx="2" fill="url(#accentGradient)" filter="url(#neonGlow)"/>
+  
+  <!-- Data visualization bars -->
+  <g transform="translate(70, 570)" opacity="0.3">
+    <rect x="0" y="0" width="2" height="15" fill="#00ff88"/>
+    <rect x="5" y="3" width="2" height="12" fill="#00d4ff"/>
+    <rect x="10" y="1" width="2" height="14" fill="#a855f7"/>
+    <rect x="15" y="5" width="2" height="10" fill="#00ff88"/>
+    <rect x="20" y="2" width="2" height="13" fill="#00d4ff"/>
+  </g>
+  
+  <!-- Enhanced corner elements with neon effect and data -->
+  <g stroke="#00ff88" stroke-width="2" fill="none" opacity="0.9" filter="url(#neonGlow)">
+    <path d="M80 100 L80 80 L100 80" stroke-linecap="round"/>
+    <path d="M1100 80 L1120 80 L1120 100" stroke-linecap="round"/>
+    <path d="M100 550 L80 550 L80 530" stroke-linecap="round"/>
+    <path d="M1120 530 L1120 550 L1100 550" stroke-linecap="round"/>
+    
+    <!-- Corner data displays -->
+    <text x="85" y="75" font-family="JetBrains Mono, monospace" font-size="6" fill="#00ff88" opacity="0.6">CPU:85%</text>
+    <text x="1080" y="75" font-family="JetBrains Mono, monospace" font-size="6" fill="#00d4ff" opacity="0.6">NET:OK</text>
+    <text x="85" y="570" font-family="JetBrains Mono, monospace" font-size="6" fill="#a855f7" opacity="0.6">MEM:78%</text>
+    <text x="1080" y="570" font-family="JetBrains Mono, monospace" font-size="6" fill="#00ff88" opacity="0.6">SEC:HIGH</text>
+  </g>
+  
+  <!-- Enhanced status indicator with system info -->
+  <g transform="translate(1040, 100)">
+    <circle cx="0" cy="0" r="6" fill="#00ff88" filter="url(#intensiveGlow)"/>
+    <circle cx="0" cy="0" r="12" fill="#00ff88" opacity="0.2"/>
+    <circle cx="0" cy="0" r="18" fill="#00ff88" opacity="0.1"/>
+    <text x="15" y="4" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#00ff88" filter="url(#neonGlow)">
+      ONLINE
+    </text>
+    <text x="15" y="15" font-family="JetBrains Mono, monospace" font-size="6" fill="#666666">
+      UPTIME: 99.9%
+    </text>
+  </g>
+  
+  <!-- Matrix-style data stream with enhanced info -->
+  <g opacity="0.4" font-family="JetBrains Mono, monospace" font-size="6" fill="#00ff88">
+    <text x="70" y="580">
+      [SECURE_CONNECTION_ESTABLISHED] [ENCRYPTION:AES-256] [STATUS:ACTIVE] [THREAT_LEVEL:LOW]
+    </text>
+    <text x="70" y="595">
+      [FIREWALL:ENABLED] [IDS:MONITORING] [VPN:CONNECTED] [2FA:VERIFIED]
+    </text>
+  </g>
+  
+  <!-- Additional tech elements and circuit patterns -->
+  <g opacity="0.2">
+    <!-- Advanced circuit patterns -->
+    <path d="M1050 200 L1070 200 L1070 220 L1090 220 L1090 240" stroke="#00ff88" stroke-width="0.8" fill="none"/>
+    <path d="M150 450 L170 450 L170 430 L190 430 L190 410" stroke="#00d4ff" stroke-width="0.8" fill="none"/>
+    <circle cx="1070" cy="200" r="2" fill="#00ff88"/>
+    <circle cx="1090" cy="220" r="1.5" fill="#00ff88"/>
+    <circle cx="170" cy="450" r="2" fill="#00d4ff"/>
+    <circle cx="190" cy="430" r="1.5" fill="#00d4ff"/>
+    
+    <!-- Data packet visualization -->
+    <g transform="translate(900, 500)">
+      <rect x="0" y="0" width="40" height="8" rx="2" fill="none" stroke="#00ff88" stroke-width="0.5"/>
+      <rect x="2" y="2" width="8" height="4" fill="#00ff88" opacity="0.3"/>
+      <rect x="12" y="2" width="6" height="4" fill="#00d4ff" opacity="0.3"/>
+      <rect x="20" y="2" width="10" height="4" fill="#a855f7" opacity="0.3"/>
+      <text x="20" y="15" font-size="4" fill="#666666" text-anchor="middle">PACKET_FLOW</text>
+    </g>
+  </g>
+  
+  <!-- Security level indicators -->
+  <g transform="translate(950, 50)" opacity="0.3">
+    <rect x="0" y="0" width="100" height="20" fill="rgba(0,0,0,0.5)" rx="3"/>
+    <text x="5" y="12" font-family="JetBrains Mono, monospace" font-size="8" fill="#00ff88">SECURITY LVL</text>
+    <rect x="70" y="5" width="8" height="3" fill="#00ff88"/>
+    <rect x="79" y="5" width="8" height="3" fill="#00ff88"/>
+    <rect x="88" y="5" width="8" height="3" fill="#00ff88"/>
+    <rect x="70" y="9" width="8" height="3" fill="#00ff88"/>
+    <rect x="79" y="9" width="8" height="3" fill="#00ff88"/>
+    <rect x="88" y="9" width="8" height="3" fill="#666666"/>
+  </g>
+</svg>

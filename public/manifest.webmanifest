@@ -1,0 +1,21 @@
+{
+  "name": "Dimas Maulana | Cybersecurity Researcher & CTF Player",
+  "short_name": "Dimas Maulana",
+  "description": "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
+  "start_url": "/blog/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://dimasma0305.github.io/blog/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "education", "security"],
+  "lang": "en",
+  "dir": "ltr"
+}
