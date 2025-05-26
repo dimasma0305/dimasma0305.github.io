@@ -111,7 +111,9 @@ const projects = [
 export function ProjectsSection() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+  const [visibleProjects, setVisibleProjects] = useState(1) // Start with 1 for mobile
   const carouselRef = useRef<HTMLDivElement>(null)
+  const sliderRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: carouselRef,
     offset: ["start end", "end start"],
@@ -120,7 +122,63 @@ export function ProjectsSection() {
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8])
 
-  const visibleProjects = 3
+  // Touch/swipe handling
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null) // otherwise the swipe is fired even with usual touch events
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe && currentIndex < maxIndex) {
+      nextSlide()
+    }
+    if (isRightSwipe && currentIndex > 0) {
+      prevSlide()
+    }
+  }
+
+  // Responsive visible projects calculation
+  useEffect(() => {
+    const updateVisibleProjects = () => {
+      const width = window.innerWidth
+      if (width >= 1024) {
+        setVisibleProjects(3) // lg: 3 projects
+      } else if (width >= 768) {
+        setVisibleProjects(2) // md: 2 projects
+      } else {
+        setVisibleProjects(1) // sm: 1 project
+      }
+    }
+
+    updateVisibleProjects()
+    window.addEventListener('resize', updateVisibleProjects)
+    return () => window.removeEventListener('resize', updateVisibleProjects)
+  }, [])
+
+  // Reset currentIndex when visibleProjects changes to prevent out-of-bounds
+  useEffect(() => {
+    const maxIndex = Math.max(0, projects.length - visibleProjects)
+    if (currentIndex > maxIndex) {
+      setCurrentIndex(maxIndex)
+    }
+  }, [visibleProjects, currentIndex])
+
   const maxIndex = Math.max(0, projects.length - visibleProjects)
 
   const nextSlide = () => {
@@ -163,28 +221,51 @@ export function ProjectsSection() {
           </motion.div>
         </div>
 
-        <div className="relative">
-          <div className="overflow-hidden">
+        <div className="relative projects-slider">
+          <div 
+            className="overflow-hidden touch-pan-y projects-slider-container"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
             <motion.div
-              className="flex transition-all duration-500 ease-in-out"
+              ref={sliderRef}
+              className="flex projects-slider-container"
               initial={{ x: 0 }}
               animate={{ x: `-${currentIndex * (100 / visibleProjects)}%` }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 200, 
+                damping: 25,
+                mass: 0.8,
+                duration: 0.6
+              }}
             >
               {projects.map((project, index) => (
                 <motion.div
                   key={index}
-                  className={`w-full px-3 md:w-1/2 lg:w-1/3 flex-shrink-0`}
+                  className={`flex-shrink-0 px-3 projects-card ${
+                    visibleProjects === 1 ? 'w-full' : 
+                    visibleProjects === 2 ? 'w-1/2' : 
+                    'w-1/3'
+                  }`}
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: index * 0.08,
+                    ease: "easeOut"
+                  }}
                   viewport={{ once: true }}
-                  whileHover={{ y: -10 }}
+                  whileHover={{ 
+                    y: -10,
+                    transition: { duration: 0.3, ease: "easeOut" }
+                  }}
                   onHoverStart={() => setHoveredCard(index)}
                   onHoverEnd={() => setHoveredCard(null)}
                 >
-                  <Card className="h-full overflow-hidden game-card">
-                    <CardHeader className="relative pb-2 border-b border-muted">
+                  <Card className="h-full overflow-hidden game-card transition-all duration-300 ease-out flex flex-col">
+                    <CardHeader className="relative pb-2 border-b border-muted flex-shrink-0">
                       <div className="absolute top-2 right-2 px-2 py-1 text-xs rounded-full bg-primary/20 text-primary">
                         LVL {project.level}
                       </div>
@@ -201,6 +282,7 @@ export function ProjectsSection() {
                                 duration: 1.5,
                                 repeat: Number.POSITIVE_INFINITY,
                                 repeatType: "loop",
+                                ease: "easeInOut"
                               }}
                             >
                               <Sparkles className="w-4 h-4 text-yellow-500" />
@@ -208,37 +290,43 @@ export function ProjectsSection() {
                           )}
                         </div>
                       </CardTitle>
-                      <CardDescription>{project.description}</CardDescription>
+                      <CardDescription className="line-clamp-3">{project.description}</CardDescription>
                     </CardHeader>
-                    <CardContent className="pt-4">
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs">XP</span>
-                          <span className="text-xs">{project.xp} / 10000</span>
+                    <CardContent className="pt-4 flex-grow flex flex-col justify-between">
+                      <div className="space-y-4">
+                        <div className="mb-4">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs">XP</span>
+                            <span className="text-xs">{project.xp} / 10000</span>
+                          </div>
+                          <div className="xp-bar">
+                            <div 
+                              className="xp-bar-fill transition-all duration-700 ease-out" 
+                              style={{ width: `${(project.xp / 10000) * 100}%` }}
+                            ></div>
+                          </div>
                         </div>
-                        <div className="xp-bar">
-                          <div className="xp-bar-fill" style={{ width: `${(project.xp / 10000) * 100}%` }}></div>
-                        </div>
-                      </div>
 
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.tags.map((tag) => (
-                          <Badge key={tag} variant="secondary" className="bg-primary/20 hover:bg-primary/30">
-                            {tag}
-                          </Badge>
-                        ))}
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {project.tags.map((tag) => (
+                            <Badge key={tag} variant="secondary" className="bg-primary/20 hover:bg-primary/30 transition-colors duration-200 text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                      <div className="text-sm text-muted-foreground">
+                      
+                      <div className="text-sm text-muted-foreground mt-auto">
                         <p>{project.date}</p>
                         {project.team && <p className="mt-1">Associated with {project.team}</p>}
                       </div>
                     </CardContent>
-                    <CardFooter className="flex gap-2 border-t border-muted">
+                    <CardFooter className="flex gap-2 border-t border-muted flex-shrink-0 mt-auto">
                       <Link href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full gap-1 border-primary/50 hover:border-primary hover:bg-primary/10"
+                          className="w-full gap-1 border-primary/50 hover:border-primary hover:bg-primary/10 transition-all duration-200"
                         >
                           <Github className="w-4 h-4" />
                           GitHub
@@ -249,7 +337,7 @@ export function ProjectsSection() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="w-full gap-1 border-secondary/50 hover:border-secondary hover:bg-secondary/10"
+                            className="w-full gap-1 border-secondary/50 hover:border-secondary hover:bg-secondary/10 transition-all duration-200"
                           >
                             <ExternalLink className="w-4 h-4" />
                             Demo
@@ -263,11 +351,12 @@ export function ProjectsSection() {
             </motion.div>
           </div>
 
+          {/* Navigation Buttons - Improved mobile positioning */}
           {currentIndex > 0 && (
             <Button
               variant="ghost"
               size="icon"
-              className="absolute left-0 z-10 transform -translate-y-1/2 bg-background/80 top-1/2 hover:bg-background"
+              className="absolute left-2 md:left-0 z-10 transform -translate-y-1/2 bg-background/80 top-1/2 hover:bg-background backdrop-blur-sm projects-nav-button transition-all duration-200 ease-out"
               onClick={prevSlide}
               aria-label="Previous project"
             >
@@ -279,7 +368,7 @@ export function ProjectsSection() {
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-0 z-10 transform -translate-y-1/2 bg-background/80 top-1/2 hover:bg-background"
+              className="absolute right-2 md:right-0 z-10 transform -translate-y-1/2 bg-background/80 top-1/2 hover:bg-background backdrop-blur-sm projects-nav-button transition-all duration-200 ease-out"
               onClick={nextSlide}
               aria-label="Next project"
             >
@@ -288,19 +377,27 @@ export function ProjectsSection() {
           )}
         </div>
 
+        {/* Pagination Dots - Updated calculation */}
         <div className="flex justify-center mt-8">
           {Array.from({ length: Math.ceil(projects.length / visibleProjects) }).map((_, index) => (
             <Button
               key={index}
               variant="ghost"
               size="sm"
-              className={`w-3 h-3 p-0 mx-1 rounded-full ${
-                index === Math.floor(currentIndex / visibleProjects) ? "bg-primary" : "bg-muted hover:bg-primary/50"
+              className={`w-3 h-3 p-0 mx-1 rounded-full transition-all duration-300 ease-out projects-pagination-dot ${
+                index === Math.floor(currentIndex / visibleProjects) 
+                  ? "bg-primary scale-110 shadow-lg shadow-primary/30" 
+                  : "bg-muted hover:bg-primary/50 hover:scale-105"
               }`}
               onClick={() => setCurrentIndex(index * visibleProjects)}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
+        </div>
+
+        {/* Mobile swipe hint */}
+        <div className="mt-4 text-center md:hidden">
+          <p className="text-sm text-muted-foreground">Swipe left or right to navigate</p>
         </div>
 
         <div className="mt-12 text-center">
