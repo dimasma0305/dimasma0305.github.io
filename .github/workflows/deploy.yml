@@ -1,5 +1,6 @@
 name: Deploy to GitHub Pages
 
+
 on:
   push:
     branches: [ main ]
@@ -40,7 +41,7 @@ jobs:
 
     - name: Refresh content and check for updates
       env:
-        NOTION_TOKEN: ${{ secrets.NOTION_SECRET }}
+        NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         NOTION_DATABASE_ID: "cc2cf42cf4b74db1901b8e28d3f67a06"
         INDEX_OUTPUT: "public/posts/index.json"
         FULL_INDEX_OUTPUT: "public/blog-index.json"
