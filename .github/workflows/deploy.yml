@@ -44,7 +44,6 @@ jobs:
         NOTION_DATABASE_ID: "cc2cf42cf4b74db1901b8e28d3f67a06"
         INDEX_OUTPUT: "public/posts/index.json"
         FULL_INDEX_OUTPUT: "public/blog-index.json"
-        
       run: |
         echo "🔄 Refreshing content..."
         npm run refresh-content || echo "⚠️ Content refresh script not found, skipping..."
