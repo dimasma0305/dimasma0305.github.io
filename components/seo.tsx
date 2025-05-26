@@ -6,7 +6,7 @@ interface SEOProps {
   baseUrl?: string
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL+(process.env.NEXT_PUBLIC_BASE_PATH || "")
+const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://dimasma0305.github.io') + (process.env.NEXT_PUBLIC_BASE_PATH || '')
 export function generatePostMetadata({ post }: SEOProps): Metadata {
   const postUrl = `${baseUrl}/posts/${post.slug}`
   const imageUrl = post.coverImage?.startsWith('http') 

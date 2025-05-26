@@ -4,7 +4,7 @@ import HomePageClient from "@/components/home-page-client"
 
 // Environment variables with fallbacks
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dimasma0305.github.io"
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/blog"
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
 const fullUrl = `${baseUrl}${basePath}`
 
 export const metadata: Metadata = {

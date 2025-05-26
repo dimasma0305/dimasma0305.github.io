@@ -56,7 +56,7 @@ export const viewport: Viewport = {
   ],
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_+(process.env.NEXT_PUBLIC_BASE_PATH || "")
+const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://dimasma0305.github.io') + (process.env.NEXT_PUBLIC_BASE_PATH || '')
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
