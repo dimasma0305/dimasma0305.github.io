@@ -393,11 +393,33 @@ async function convertNotionBlockToHtml(block: any, folder: string): Promise<str
 
     case "bulleted_list_item":
       const liText = processRichText(block.content?.rich_text)
-      return liText ? `<li class="notion-list-item">${liText}</li>` : ""
+      
+      // Process children blocks if they exist (for nested lists)
+      let liChildren = ""
+      if (block.children && Array.isArray(block.children)) {
+        const childPromises = block.children.map((child: any) => convertNotionBlockToHtml(child, folder))
+        const childResults = await Promise.all(childPromises)
+        liChildren = childResults.join("")
+      }
+      
+      return liText || liChildren
+        ? `<li class="notion-list-item">${liText}${liChildren ? `<ul class="notion-nested-list">${liChildren}</ul>` : ""}</li>`
+        : ""
 
     case "numbered_list_item":
       const numLiText = processRichText(block.content?.rich_text)
-      return numLiText ? `<li class="notion-numbered-item">${numLiText}</li>` : ""
+      
+      // Process children blocks if they exist (for nested lists)
+      let numLiChildren = ""
+      if (block.children && Array.isArray(block.children)) {
+        const childPromises = block.children.map((child: any) => convertNotionBlockToHtml(child, folder))
+        const childResults = await Promise.all(childPromises)
+        numLiChildren = childResults.join("")
+      }
+      
+      return numLiText || numLiChildren
+        ? `<li class="notion-numbered-item">${numLiText}${numLiChildren ? `<ol class="notion-nested-list">${numLiChildren}</ol>` : ""}</li>`
+        : ""
 
     case "code":
       // For code blocks, preserve the content exactly as-is with minimal escaping
@@ -412,10 +434,22 @@ async function convertNotionBlockToHtml(block: any, folder: string): Promise<str
     case "callout":
       const calloutText = processRichText(block.content?.rich_text)
       const icon = block.content?.icon?.emoji || "💡"
-      return calloutText
+      
+      // Process children blocks if they exist
+      let calloutChildren = ""
+      if (block.children && Array.isArray(block.children)) {
+        const childPromises = block.children.map((child: any) => convertNotionBlockToHtml(child, folder))
+        const childResults = await Promise.all(childPromises)
+        calloutChildren = childResults.join("")
+      }
+      
+      return calloutText || calloutChildren
         ? `<div class="notion-callout">
              <span class="notion-callout-icon">${escapeHtml(icon)}</span>
-             <div class="notion-callout-content">${escapeHtml(calloutText)}</div>
+             <div class="notion-callout-content">
+               ${calloutText ? escapeHtml(calloutText) : ""}
+               ${calloutChildren}
+             </div>
            </div>`
         : ""
 
@@ -536,6 +570,18 @@ async function convertNotionBlockToHtml(block: any, folder: string): Promise<str
       </details>`
 
     default:
+      // Generic fallback for any block type that has children but isn't explicitly handled
+      if (block.children && Array.isArray(block.children)) {
+        const childPromises = block.children.map((child: any) => convertNotionBlockToHtml(child, folder))
+        const childResults = await Promise.all(childPromises)
+        const childrenContent = childResults.join("")
+        
+        if (childrenContent) {
+          // Wrap in a generic container with the block type as a class
+          return `<div class="notion-block notion-${escapeHtml(block.type)}">${childrenContent}</div>`
+        }
+      }
+      
       return ""
   }
 }
