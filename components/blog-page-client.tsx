@@ -144,7 +144,6 @@ Sidebar.displayName = "Sidebar"
 
 function BlogPageClient() {
   const { posts, loading, refreshing, error, refresh } = usePosts()
-  console.log("Posts from usePosts:", posts.length, posts.slice(0, 2))
   const [searchQuery, setSearchQuery] = useState("")
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 

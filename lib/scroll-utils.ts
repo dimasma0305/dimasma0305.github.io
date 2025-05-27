@@ -93,7 +93,7 @@ export function handleAnchorNavigation(
       e.preventDefault()
       smoothScrollToElement(hash, options).then((success) => {
         if (success) {
-          window.history.pushState(null, '', `#${hash}`)
+          window.location.hash = `#${hash}`
         }
       })
     }

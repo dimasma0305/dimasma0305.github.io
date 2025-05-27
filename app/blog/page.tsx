@@ -1,9 +1,7 @@
 import { generateBlogMetadata, BlogStructuredData } from "@/components/seo"
 import { Suspense, lazy } from "react"
 import { LoadingSpinner } from "@/components/loading-spinner"
-
-// Lazy load BlogPageClient for better initial page load
-const BlogPageClient = lazy(() => import("@/components/blog-page-client"))
+import BlogPageClient from "@/components/blog-page-client"
 
 export const metadata = generateBlogMetadata()
 

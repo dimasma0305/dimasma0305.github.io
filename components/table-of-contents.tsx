@@ -33,6 +33,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
   const mobileScrollRef = useRef<HTMLDivElement>(null)
   const desktopScrollRef = useRef<HTMLDivElement>(null)
   const autoScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
 
   // Calculate dynamic height based on viewport and content
   const calculateDynamicHeight = useCallback(() => {
@@ -189,14 +190,26 @@ export function TableOfContents({ content }: TableOfContentsProps) {
     return () => clearTimeout(timer)
   }, [tocItems, showOnlyTopLevel, collapsedSections, checkScrollIndicators])
 
+  // Handle initial mount
+  useEffect(() => {
+    setIsMounted(true)
+    return () => setIsMounted(false)
+  }, [])
+
   // Set up intersection observer
   useEffect(() => {
-    if (tocItems.length === 0) return
+    if (!isMounted || tocItems.length === 0) return
+
+    // Disconnect any existing observer
+    if (observerRef.current) {
+      observerRef.current.disconnect()
+    }
 
     const headingElements = tocItems.flatMap(function flattenItems(item: TocItem): string[] {
       return [item.id, ...item.children.flatMap(flattenItems)]
     })
-
+    
+    // Create new observer
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -206,22 +219,42 @@ export function TableOfContents({ content }: TableOfContentsProps) {
         })
       },
       {
-        rootMargin: "-20% 0% -35% 0%",
-        threshold: 0,
+        rootMargin: "-10% 0% -10% 0%",
+        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5],
       },
     )
 
-    headingElements.forEach((id) => {
-      const element = document.getElementById(id)
-      if (element) {
-        observerRef.current?.observe(element)
-      }
+    // Function to observe elements
+    const observeElements = () => {
+      headingElements.forEach((id) => {
+        const element = document.getElementById(id)
+        if (element) {
+          observerRef.current?.observe(element)
+        }
+      })
+    }
+
+    // Initial observation
+    observeElements()
+
+    // Set up a MutationObserver to watch for DOM changes
+    const mutationObserver = new MutationObserver(() => {
+      observeElements()
+    })
+
+    // Start observing the document body for changes
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true
     })
 
     return () => {
-      observerRef.current?.disconnect()
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
+      mutationObserver.disconnect()
     }
-  }, [tocItems])
+  }, [tocItems, isMounted])
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -239,7 +272,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
         behavior: "smooth",
         block: "start",
       })
-      window.history.pushState(null, '', `#${id}`)
+      window.location.hash = `#${id}`
     }
   }
 
