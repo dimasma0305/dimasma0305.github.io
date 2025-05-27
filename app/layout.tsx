@@ -134,9 +134,9 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
         
         {/* Favicon and icons */}
-        <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-        <link rel="apple-touch-icon" href="./favicon.svg" />
-        <link rel="manifest" href="./manifest.webmanifest" />
+        <link rel="icon" type="image/svg+xml" href={baseUrl+"/favicon.svg"} />
+        <link rel="apple-touch-icon" href={baseUrl+"/favicon.svg"} />
+        <link rel="manifest" href={baseUrl+"/manifest.webmanifest"} />
         
         {/* Theme and PWA meta tags */}
         <meta name="theme-color" content="#000000" />
