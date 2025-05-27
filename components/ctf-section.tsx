@@ -165,7 +165,7 @@ export function CTFSection() {
     offset: ["start end", "end start"],
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100])
+  const y = useTransform(scrollYProgress, [0, 1], [50, -50])
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
 
   const { ref: titleRef, inView: titleInView } = useInView({
@@ -240,17 +240,17 @@ export function CTFSection() {
       <motion.div style={{ opacity, y }} className="container relative z-10 px-4 mx-auto max-w-7xl">
         <div className="mb-16 text-center" ref={titleRef}>
           <motion.h2
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -15 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
             className="text-5xl font-bold tracking-tight neon-text-pink"
           >
             CTF Achievements
           </motion.h2>
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={titleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
             className="mt-4 text-xl text-muted-foreground"
           >
             Battle-tested in the digital arena
@@ -268,22 +268,22 @@ export function CTFSection() {
               {achievements.slice(0, 6).map((achievement, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -15 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
                   viewport={{ once: true }}
-                  whileHover={{ scale: 1.03 }}
+                  whileHover={{ scale: 1.02 }}
                   onClick={() => handleAchievementClick(index)}
                   className="cursor-pointer"
                 >
                   <Card
-                    className={`game-card transition-all duration-300 ${selectedAchievement === index ? "ring-2 ring-primary" : ""}`}
+                    className={`game-card transition-all duration-300 min-h-[200px] ${selectedAchievement === index ? "ring-2 ring-primary" : ""}`}
                   >
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           {achievement.icon}
-                          <CardTitle className="text-lg">{achievement.title}</CardTitle>
+                          <CardTitle className="text-lg min-h-[24px]">{achievement.title}</CardTitle>
                         </div>
                         <Badge
                           variant="outline"
@@ -294,7 +294,7 @@ export function CTFSection() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="mb-3">
+                      <div className="mb-3 min-h-[80px]">
                         <p>
                           <strong>Event:</strong> {achievement.event}
                         </p>
@@ -399,7 +399,7 @@ export function CTFSection() {
                   viewport={{ once: true }}
                   whileHover={{ scale: 1.02 }}
                 >
-                  <Card className="game-card overflow-hidden">
+                  <Card className="game-card overflow-hidden min-h-[300px]">
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -407,8 +407,8 @@ export function CTFSection() {
                             <Users className="w-5 h-5 text-primary" />
                           </div>
                           <div>
-                            <CardTitle>{team.name}</CardTitle>
-                            <CardDescription>{team.role}</CardDescription>
+                            <CardTitle className="min-h-[24px]">{team.name}</CardTitle>
+                            <CardDescription className="min-h-[20px]">{team.role}</CardDescription>
                           </div>
                         </div>
                         <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-full bg-primary/20">
@@ -524,9 +524,9 @@ export function CTFSection() {
 
         <motion.div
           className="p-6 mt-16 text-center rounded-lg bg-primary/5"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
           viewport={{ once: true }}
         >
           <div className="relative">
@@ -541,11 +541,11 @@ export function CTFSection() {
               <motion.div
                 className="absolute -top-1 -right-1"
                 animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 15, -15, 0],
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 10, -10, 0],
                 }}
                 transition={{
-                  duration: 2,
+                  duration: 1.5,
                   repeat: Number.POSITIVE_INFINITY,
                   repeatType: "loop",
                 }}

@@ -16,6 +16,7 @@ import { withBasePath } from "@/lib/utils"
 export function HeroSection() {
   const [activeTab, setActiveTab] = useState("hacker")
   const [particlesContainer, setParticlesContainer] = useState<Engine | null>(null)
+  const [isParticlesLoaded, setIsParticlesLoaded] = useState(false)
   const { ref, inView } = useInView({
     threshold: 0.1,
     triggerOnce: true,
@@ -27,12 +28,13 @@ export function HeroSection() {
     offset: ["start start", "end start"],
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, 300])
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
+  const y = useTransform(scrollYProgress, [0, 1], [0, 200])
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
 
   const particlesInit = async (engine: Engine) => {
     await loadSlim(engine)
     setParticlesContainer(engine)
+    setIsParticlesLoaded(true)
   }
 
   const tabs = [
@@ -94,69 +96,111 @@ export function HeroSection() {
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-gradient-to-b from-black to-background py-24"
+      className="relative overflow-hidden bg-gradient-to-b from-black to-background"
       ref={containerRef}
+      style={{ 
+        height: "100vh",
+        width: "100%",
+        padding: "6rem 0",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative"
+      }}
     >
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={{
-          background: {
-            color: {
-              value: "transparent",
-            },
-          },
-          fpsLimit: 120,
-          particles: {
-            color: {
-              value: ["#9c27b0", "#2196f3", "#ff5722"],
-            },
-            links: {
-              color: "#ffffff",
-              distance: 150,
-              enable: true,
-              opacity: 0.2,
-              width: 1,
-            },
-            move: {
-              direction: "none",
-              enable: true,
-              outModes: {
-                default: "bounce",
-              },
-              random: true,
-              speed: 1,
-              straight: false,
-            },
-            number: {
-              density: {
-                enable: true,
-                area: 800,
-              },
-              value: 80,
-            },
-            opacity: {
-              value: 0.5,
-            },
-            shape: {
-              type: "circle",
-            },
-            size: {
-              value: { min: 1, max: 3 },
-            },
-          },
-          detectRetina: true,
-        }}
+      <div 
         className="absolute inset-0 z-0"
-      />
+        style={{ 
+          width: "100%", 
+          height: "100%",
+          opacity: isParticlesLoaded ? 1 : 0,
+          transition: "opacity 0.3s ease-in-out",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0
+        }}
+      >
+        <Particles
+          id="tsparticles"
+          init={particlesInit}
+          options={{
+            background: {
+              color: {
+                value: "transparent",
+              },
+            },
+            fpsLimit: 60,
+            particles: {
+              color: {
+                value: ["#9c27b0", "#2196f3", "#ff5722"],
+              },
+              links: {
+                color: "#ffffff",
+                distance: 150,
+                enable: true,
+                opacity: 0.2,
+                width: 1,
+              },
+              move: {
+                direction: "none",
+                enable: true,
+                outModes: {
+                  default: "bounce",
+                },
+                random: true,
+                speed: 1,
+                straight: false,
+              },
+              number: {
+                density: {
+                  enable: true,
+                  area: 1000,
+                },
+                value: 60,
+              },
+              opacity: {
+                value: 0.5,
+              },
+              shape: {
+                type: "circle",
+              },
+              size: {
+                value: { min: 1, max: 3 },
+              },
+            },
+            detectRetina: true,
+          }}
+          className="absolute inset-0"
+          style={{ 
+            width: "100%", 
+            height: "100%",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0
+          }}
+        />
+      </div>
 
-      <motion.div style={{ opacity, y }} className="container relative z-10 px-4 mx-auto max-w-7xl">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+      <motion.div 
+        style={{ opacity, y }} 
+        className="container relative z-10 mx-auto max-w-7xl h-full"
+      >
+        <div className="grid items-center h-full gap-12 px-4 lg:grid-cols-2">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="space-y-8"
+            style={{ 
+              minHeight: "400px",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center"
+            }}
           >
             <div className="space-y-4">
               <div className="inline-block px-4 py-2 mb-4 text-sm font-medium rounded-full bg-primary/20 text-primary">
@@ -289,19 +333,37 @@ export function HeroSection() {
 
           <motion.div
             ref={ref}
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
             className="relative"
+            style={{ 
+              height: "500px",
+              width: "100%",
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
           >
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, x: 50 }}
+                initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.5 }}
-                className="relative h-[500px] w-full rounded-lg overflow-hidden"
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.4 }}
+                className="absolute inset-0"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
               >
                 {activeTab === "hacker" && (
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -353,13 +415,28 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
                     <div className="w-full max-w-md p-4 game-card">
                       <div className="mb-4 text-center">
                         <h3 className="mb-2 text-xl font-bold text-blue-400">PLAYER STATS</h3>
-                        <div className="w-16 h-16 mx-auto mb-3 overflow-hidden rounded-full">
+                        <div 
+                          className="relative mx-auto mb-3 overflow-hidden rounded-full"
+                          style={{ 
+                            width: "64px", 
+                            height: "64px",
+                            aspectRatio: "1/1"
+                          }}
+                        >
                           <Image
                             src="https://avatars.githubusercontent.com/u/92920739"
                             alt="Dimas Maulana Avatar"
                             width={64}
                             height={64}
                             className="object-cover"
+                            priority
+                            sizes="64px"
+                            style={{ 
+                              width: "64px", 
+                              height: "64px",
+                              maxWidth: "100%",
+                              display: "block"
+                            }}
                           />
                         </div>
                         <p className="text-lg font-semibold">DimasMa</p>
@@ -455,12 +532,18 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
 
                         <div className="grid grid-cols-3 gap-3 mb-6">
                           {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div key={i} className="relative h-24 overflow-hidden bg-gray-200 rounded-md shadow-md">
+                            <div 
+                              key={i} 
+                              className="relative overflow-hidden bg-gray-200 rounded-md shadow-md"
+                              style={{ width: "100%", height: "96px" }}
+                            >
                               <Image
                                 src={withBasePath(`/placeholder.svg?height=96&width=64&text=Manga ${i}`)}
                                 alt={`Manga ${i}`}
-                                fill
-                                className="object-cover"
+                                width={64}
+                                height={96}
+                                className="object-cover w-full h-full"
+                                style={{ width: "100%", height: "100%" }}
                               />
                             </div>
                           ))}
@@ -505,6 +588,7 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="w-6 h-6"
               >
                 <path d="M12 5v14M5 12l7 7 7-7" />
               </svg>

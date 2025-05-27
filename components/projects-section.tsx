@@ -120,7 +120,7 @@ export function ProjectsSection() {
   })
 
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8])
+  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.9, 1, 1, 0.9])
 
   // Touch/swipe handling
   const [touchStart, setTouchStart] = useState<number | null>(null)
@@ -235,10 +235,10 @@ export function ProjectsSection() {
               animate={{ x: `-${currentIndex * (100 / visibleProjects)}%` }}
               transition={{ 
                 type: "spring", 
-                stiffness: 200, 
-                damping: 25,
-                mass: 0.8,
-                duration: 0.6
+                stiffness: 150,
+                damping: 20,
+                mass: 0.5,
+                duration: 0.4
               }}
             >
               {projects.map((project, index) => (
@@ -249,17 +249,17 @@ export function ProjectsSection() {
                     visibleProjects === 2 ? 'w-1/2' : 
                     'w-1/3'
                   }`}
-                  initial={{ opacity: 0, y: 50 }}
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ 
-                    duration: 0.6, 
-                    delay: index * 0.08,
+                    duration: 0.4,
+                    delay: index * 0.05,
                     ease: "easeOut"
                   }}
                   viewport={{ once: true }}
                   whileHover={{ 
-                    y: -10,
-                    transition: { duration: 0.3, ease: "easeOut" }
+                    y: -5,
+                    transition: { duration: 0.2, ease: "easeOut" }
                   }}
                   onHoverStart={() => setHoveredCard(index)}
                   onHoverEnd={() => setHoveredCard(null)}
