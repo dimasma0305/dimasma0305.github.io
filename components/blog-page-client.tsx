@@ -11,7 +11,7 @@ import type { Post } from "@/lib/posts-client"
 
 // Lazy load sidebar components for better initial page load
 const BlogStats = lazy(() => import("@/components/blog-stats").then(m => ({ default: m.BlogStats })))
-const Categories = lazy(() => import("@/components/categories").then(m => ({ default: m.Categories })))
+const BlogCategories = lazy(() => import("@/components/blog-categories").then(m => ({ default: m.BlogCategories })))
 
 // Memoized error component
 const ErrorDisplay = memo(({ error, onRetry }: { error: string; onRetry: () => void }) => (
@@ -138,7 +138,7 @@ const Sidebar = memo(({ posts }: { posts: Post[] }) => {
         <BlogStats />
       </Suspense>
       <Suspense fallback={<div className="h-48 bg-muted/20 rounded-lg animate-pulse" />}>
-        <Categories 
+        <BlogCategories 
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
         />
