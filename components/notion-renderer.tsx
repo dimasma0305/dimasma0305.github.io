@@ -309,7 +309,7 @@ const NotionRenderer: React.FC<NotionRendererProps> = ({ blocks }) => {
                 {showLineNumbers && (
                   <div className="absolute left-0 top-0 p-4 pointer-events-none select-none">
                     <div className="text-gray-500 text-sm font-mono leading-relaxed">
-                      {lines.map((_, index) => (
+                      {lines.map((_: string, index: number) => (
                         <div key={index} className="text-right pr-4 min-w-[2rem]">
                           {index + 1}
                         </div>

@@ -34,7 +34,7 @@ export function Header() {
 
   // Custom scroll handler for anchor links using centralized utility
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
-    handleAnchorNavigation(e, path, pathname, {
+    handleAnchorNavigation(e, path, pathname || "/", {
       headerOffset: 80,
       behavior: "smooth",
     })
@@ -147,9 +147,11 @@ export function Header() {
 
   // Helper function to determine if a nav item should be active
   const isNavItemActive = (item: { name: string; path: string }) => {
-    if (pathname !== "/") {
+    const currentPath = pathname || "/"
+    
+    if (currentPath !== "/") {
       // For non-home pages, use the original logic
-      return pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path))
+      return currentPath === item.path || (item.path !== "/" && currentPath.startsWith(item.path))
     }
 
     // For home page, check section-based activation

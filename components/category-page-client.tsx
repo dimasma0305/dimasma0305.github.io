@@ -49,8 +49,8 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
   // Check if category exists after posts are loaded (case-insensitive)
   const categoryExists = categories.some(cat => cat.toLowerCase() === decodedCategory.toLowerCase())
 
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query)
+  const handleSearch = useCallback((value: string) => {
+    setSearchQuery(value)
   }, [])
 
   const handleClearSearch = useCallback(() => {
@@ -107,7 +107,8 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Category: {actualCategoryName}</h1>
         <SearchBar 
-          onSearch={handleSearch} 
+          value={searchQuery}
+          onChange={handleSearch}
           placeholder={`Search in ${actualCategoryName}...`}
         />
       </div>

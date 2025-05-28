@@ -26,15 +26,17 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for each note
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  return generateNoteMetadata((await params).slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  return generateNoteMetadata(slug)
 }
 
-export default async function NotePage({ params }: { params: { slug: string } }) {
+export default async function NotePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   return (
     <>
-      <NoteStructuredData slug={(await params).slug} />
-      <NotePageClient slug={(await params).slug} />
+      <NoteStructuredData slug={slug} />
+      <NotePageClient slug={slug} />
     </>
   )
 }

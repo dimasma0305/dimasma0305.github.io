@@ -19,7 +19,7 @@ export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("")
   
   const searchParams = useSearchParams()
-  const initialQuery = searchParams.get('q') || ""
+  const initialQuery = searchParams?.get('q') ?? ""
 
   // Set initial search query from URL params
   useEffect(() => {
@@ -130,7 +130,8 @@ export default function SearchPage() {
         <div className="max-w-2xl">
           <Suspense fallback={<LoadingSpinner />}>
             <SearchBar 
-              onSearch={handleSearch}
+              value={searchQuery}
+              onChange={handleSearch}
               placeholder="Search posts, categories, content..."
               className="w-full max-w-none"
             />

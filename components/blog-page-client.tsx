@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useCallback, memo, useRef, useEffect, lazy, Suspense } from "react"
+import { useEffect, useState, useMemo, useCallback, memo, useRef, Suspense, lazy } from "react"
 import { usePosts } from "@/hooks/use-posts"
 import PostCard from "@/components/post-card"
 import { SearchBar } from "@/components/search-bar"
@@ -129,16 +129,23 @@ const EmptyState = memo(
 EmptyState.displayName = "EmptyState"
 
 // Memoized sidebar with lazy loaded components
-const Sidebar = memo(({ posts }: { posts: Post[] }) => (
-  <div className="w-full lg:w-1/4 space-y-6">
-    <Suspense fallback={<div className="h-32 bg-muted/20 rounded-lg animate-pulse" />}>
-      <BlogStats />
-    </Suspense>
-    <Suspense fallback={<div className="h-48 bg-muted/20 rounded-lg animate-pulse" />}>
-      <Categories />
-    </Suspense>
-  </div>
-))
+const Sidebar = memo(({ posts }: { posts: Post[] }) => {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+
+  return (
+    <div className="w-full lg:w-1/4 space-y-6">
+      <Suspense fallback={<div className="h-32 bg-muted/20 rounded-lg animate-pulse" />}>
+        <BlogStats />
+      </Suspense>
+      <Suspense fallback={<div className="h-48 bg-muted/20 rounded-lg animate-pulse" />}>
+        <Categories 
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
+      </Suspense>
+    </div>
+  )
+})
 
 Sidebar.displayName = "Sidebar"
 
@@ -212,7 +219,11 @@ function BlogPageClient() {
             Refresh
           </Button>
         </div>
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar 
+          value={searchQuery}
+          onChange={handleSearch}
+          placeholder="Search posts..."
+        />
       </div>
 
       {searchQuery && (

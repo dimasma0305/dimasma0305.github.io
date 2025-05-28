@@ -11,12 +11,12 @@ export async function getNotesStats() {
 
     // Get unique categories
     const categories = new Set<string>()
-    notesIndex.posts.forEach(note => {
+    notesIndex.posts.all.forEach(note => {
       note.categories.forEach(category => categories.add(category))
     })
 
     // Count notes with Notion links
-    const notesWithNotionLinks = notesIndex.posts.filter(note => note.public_url).length
+    const notesWithNotionLinks = notesIndex.posts.all.filter(note => note.public_url).length
 
     return {
       totalNotes: notesIndex.meta.total_posts,
@@ -35,7 +35,7 @@ export async function getNoteBySlug(slug: string): Promise<Note | null> {
     const indexContent = await fs.promises.readFile(NOTES_INDEX_PATH, 'utf8')
     const notesIndex: NotesIndex = JSON.parse(indexContent)
 
-    const note = notesIndex.posts.find(note => note.slug === slug)
+    const note = notesIndex.posts.all.find(note => note.slug === slug)
     if (!note) {
       return null
     }
@@ -59,7 +59,7 @@ export async function getAllNotes(): Promise<Note[]> {
   try {
     const indexContent = await fs.promises.readFile(NOTES_INDEX_PATH, 'utf8')
     const notesIndex: NotesIndex = JSON.parse(indexContent)
-    return notesIndex.posts
+    return notesIndex.posts.all
   } catch (error) {
     console.error('Error loading all notes:', error)
     throw error
