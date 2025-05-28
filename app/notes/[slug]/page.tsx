@@ -1,8 +1,6 @@
 import NotePageClient from "@/components/note-page-client"
 import { generateNoteMetadata, NoteStructuredData } from "@/components/seo"
 import type { Metadata } from "next"
-import { Suspense } from "react"
-import ShareButtons from "@/components/share-buttons"
 
 // Generate static params for all notes
 export async function generateStaticParams() {
