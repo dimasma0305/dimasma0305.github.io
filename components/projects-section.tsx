@@ -378,13 +378,13 @@ export function ProjectsSection() {
         </div>
 
         {/* Pagination Dots - Updated calculation */}
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-8 gap-2">
           {Array.from({ length: Math.ceil(projects.length / visibleProjects) }).map((_, index) => (
             <Button
               key={index}
               variant="ghost"
               size="sm"
-              className={`w-3 h-3 p-0 mx-1 rounded-full transition-all duration-300 ease-out projects-pagination-dot ${
+              className={`w-2 h-2 md:w-3 md:h-3 p-0 rounded-full transition-all duration-300 ease-out projects-pagination-dot ${
                 index === Math.floor(currentIndex / visibleProjects) 
                   ? "bg-primary scale-110 shadow-lg shadow-primary/30" 
                   : "bg-muted hover:bg-primary/50 hover:scale-105"

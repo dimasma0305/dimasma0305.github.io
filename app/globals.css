@@ -671,10 +671,23 @@ pre.line-numbers > code {
   }
   
   .projects-pagination-dot {
-    min-width: 44px;
-    min-height: 44px;
-    padding: 8px;
+    position: relative;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
     transform: translateZ(0);
+  }
+  
+  .projects-pagination-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: inherit;
   }
   
   /* Prevent text selection during swipe */

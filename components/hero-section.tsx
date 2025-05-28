@@ -99,9 +99,9 @@ export function HeroSection() {
       className="relative overflow-hidden bg-gradient-to-b from-black to-background"
       ref={containerRef}
       style={{ 
-        height: "100vh",
+        minHeight: "100vh",
         width: "100%",
-        padding: "6rem 0",
+        padding: "2rem 0",
         display: "flex",
         flexDirection: "column",
         position: "relative"
@@ -188,14 +188,14 @@ export function HeroSection() {
         style={{ opacity, y }} 
         className="container relative z-10 mx-auto max-w-7xl h-full"
       >
-        <div className="grid items-center h-full gap-12 px-4 lg:grid-cols-2">
+        <div className="grid items-center h-full gap-8 px-4 lg:grid-cols-2 md:gap-12">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="space-y-8"
+            className="space-y-6 md:space-y-8"
             style={{ 
-              minHeight: "400px",
+              minHeight: "auto",
               height: "100%",
               display: "flex",
               flexDirection: "column",
@@ -213,7 +213,7 @@ export function HeroSection() {
               </div>
 
               <h1
-                className="text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl glitch"
+                className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl glitch"
                 data-text="Dimas Maulana"
               >
                 <span
@@ -223,12 +223,12 @@ export function HeroSection() {
                 </span>
               </h1>
 
-              <h2 className="text-2xl font-medium text-muted-foreground">
+              <h2 className="text-xl sm:text-2xl font-medium text-muted-foreground">
                 {tabContent[activeTab as keyof typeof tabContent].subtitle}
               </h2>
             </div>
 
-            <p className="text-xl text-muted-foreground">
+            <p className="text-lg sm:text-xl text-muted-foreground">
               {tabContent[activeTab as keyof typeof tabContent].description}
             </p>
 
@@ -238,56 +238,56 @@ export function HeroSection() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-full ${
+                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium transition-all rounded-full ${
                       activeTab === tab.id
                         ? "bg-background text-primary shadow-lg"
                         : "hover:bg-background/50 text-muted-foreground"
                     }`}
                   >
                     {tab.icon}
-                    {tab.label}
+                    <span className="hidden sm:inline">{tab.label}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
               {tabContent[activeTab as keyof typeof tabContent].stats.map((stat, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="p-4 text-center rounded-lg bg-background/50 backdrop-blur-sm"
+                  className="p-3 text-center rounded-lg bg-background/50 backdrop-blur-sm"
                 >
-                  <div className="text-2xl font-bold text-primary">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-primary">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
 
-            <div className="flex flex-wrap gap-4">
-              <Link href="#projects">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="#projects" className="w-full sm:w-auto">
                 <Button
                   size="lg"
-                  className="gap-2 transition-all duration-300 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary"
+                  className="w-full gap-2 transition-all duration-300 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary"
                 >
                   View Projects
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
-              <Link href="#blog">
+              <Link href="#blog" className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
+                  className="w-full border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
                 >
                   Read My Blog
                 </Button>
               </Link>
             </div>
 
-            <div className="flex items-center gap-4 pt-2">
+            <div className="flex items-center justify-center gap-4 pt-2 sm:justify-start">
               <Link href="https://github.com/dimasma0305" target="_blank" rel="noopener noreferrer">
                 <Button
                   variant="ghost"
@@ -336,12 +336,12 @@ export function HeroSection() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="relative"
+            className="relative hidden lg:flex"
             style={{ 
-              height: "500px",
+              height: "auto",
+              minHeight: "500px",
               width: "100%",
               position: "relative",
-              display: "flex",
               alignItems: "center",
               justifyContent: "center"
             }}
