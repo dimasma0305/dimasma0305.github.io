@@ -54,7 +54,7 @@ jobs:
     - name: Refresh notes content and check for updates
       env:
         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        NOTION_DATABASE_ID: "cc2cf42cf4b74db1901b8e28d3f67a06"
+        NOTION_DATABASE_ID: "19448583e65d80f7b5a1e7218bf4e049"
         INDEX_OUTPUT: "public/notes/index.json"
         FULL_INDEX_OUTPUT: "public/notes-index.json"
         POSTS_DIR: "public/notes"
