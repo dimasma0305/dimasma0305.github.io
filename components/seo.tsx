@@ -918,9 +918,14 @@ export async function generateNoteMetadata(slug: string): Promise<Metadata> {
     }
 
     const noteUrl = `${baseUrl}/notes/${note.slug}`
-    const imageUrl = note.featured_image?.startsWith('http') 
-      ? note.featured_image 
-      : `${baseUrl}${note.featured_image || '/og-image.jpg'}`
+    
+    // Use OG image first, then featured image, then default
+    const imageUrl = note.og_image 
+      ? `${baseUrl}${note.og_image}` 
+      : note.featured_image 
+        ? `${baseUrl}${note.featured_image}` 
+        : `${baseUrl}/og-image.jpg`
+
     const description = note.excerpt
       ?.replace(/[#*_`]/g, '')
       ?.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')

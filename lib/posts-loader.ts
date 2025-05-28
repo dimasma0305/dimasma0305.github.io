@@ -260,7 +260,7 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
         content: processedHtml, // No sanitization, just safe HTML entity encoding
         createdAt: notionPost.created_time,
         updatedAt: notionPost.last_edited_time,
-        coverImage,
+        coverImage: notionPost.featured_image || "",
         iconEmoji: notionPost.icon?.emoji || "",
         categories: Array.isArray(postFromIndex.categories) ? postFromIndex.categories : [],
         notionUrl: postFromIndex.notionUrl || createNotionPublicUrl(notionPost.id),

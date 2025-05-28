@@ -2,6 +2,9 @@ require('dotenv').config();
 const { Client } = require('@notionhq/client');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
+const http = require('http');
+const { URL } = require('url');
 
 // Configuration
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
@@ -77,6 +80,98 @@ function createSlug(title) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .substring(0, 50);
+}
+
+// Helper function to get the correct image path
+function getImagePath(folderName, imageName) {
+  const basePath = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_BASE_PATH || '' : '';
+  return `${basePath}/posts/${folderName}/${imageName}`;
+}
+
+// Helper function to get clean file extension from URL or filename
+function getCleanFileExtension(url) {
+  try {
+    // Remove query parameters and get the last part of the path
+    const filename = url.split('?')[0].split('/').pop();
+    // Get the extension
+    const ext = filename.split('.').pop() || '';
+    // Clean and validate the extension
+    const cleanExt = ext.toLowerCase().replace(/[^a-z0-9]/g, '');
+    // Check if it's a valid image extension
+    const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+    if (validExtensions.includes(cleanExt)) {
+      return cleanExt;
+    }
+    // Try to determine extension from content type
+    if (url.includes('bing.com') || url.includes('microsoft.com')) {
+      return 'jpg';
+    }
+    // Default to jpg if no valid extension found
+    return 'jpg';
+  } catch (error) {
+    return 'jpg';
+  }
+}
+
+// Helper function to download image
+function downloadImage(urlString) {
+  return new Promise((resolve, reject) => {
+    const handleResponse = (response) => {
+      // Handle redirects
+      if (response.statusCode === 301 || response.statusCode === 302) {
+        const redirectUrl = response.headers.location;
+        if (!redirectUrl) {
+          reject(new Error(`Redirect location not found: ${response.statusCode}`));
+          return;
+        }
+        // Handle relative redirects
+        const finalUrl = new URL(redirectUrl, urlString);
+        const client = finalUrl.protocol === 'https:' ? https : http;
+        client.get(finalUrl, handleResponse).on('error', reject);
+        return;
+      }
+
+      if (response.statusCode !== 200) {
+        reject(new Error(`Failed to download image: ${response.statusCode}`));
+        return;
+      }
+
+      // Try to get extension from content-type
+      let contentTypeExt = '';
+      const contentType = response.headers['content-type'];
+      if (contentType) {
+        const match = contentType.match(/image\/(.*)/);
+        if (match && match[1]) {
+          contentTypeExt = match[1].split(';')[0].toLowerCase();
+          if (contentTypeExt === 'jpeg') contentTypeExt = 'jpg';
+        }
+      }
+
+      const chunks = [];
+      response.on('data', (chunk) => chunks.push(chunk));
+      response.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        // Return both the buffer and the content type extension
+        resolve({ buffer, contentTypeExt });
+      });
+      response.on('error', reject);
+    };
+
+    try {
+      const url = new URL(urlString);
+      const client = url.protocol === 'https:' ? https : http;
+      const options = {
+        hostname: url.hostname,
+        path: url.pathname + url.search,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      };
+      client.get(options, handleResponse).on('error', reject);
+    } catch (error) {
+      reject(new Error(`Invalid URL: ${error.message}`));
+    }
+  });
 }
 
 // Function to process different block types
@@ -478,6 +573,70 @@ async function processSinglePage(page, pageIndex, totalPages) {
     if (!fs.existsSync(postDir)) {
       fs.mkdirSync(postDir, { recursive: true });
     }
+
+    // Download and save cover image if it exists
+    if (blogPost.cover?.external?.url || blogPost.cover?.file?.url) {
+      try {
+        const coverUrl = blogPost.cover.external?.url || blogPost.cover.file?.url;
+        const { buffer, contentTypeExt } = await downloadImage(coverUrl);
+        const imageExtension = contentTypeExt || getCleanFileExtension(coverUrl);
+        const imagePath = path.join(postDir, `cover.${imageExtension}`);
+        fs.writeFileSync(imagePath, buffer);
+        console.log(`📸 Saved cover image: ${imagePath}`);
+
+        // Use cover image as both featured and OG image with correct base path
+        blogPost.featured_image = getImagePath(folderName, `cover.${imageExtension}`);
+        blogPost.og_image = blogPost.featured_image;
+      } catch (error) {
+        console.error(`❌ Failed to save cover image for ${folderName}:`, error.message);
+      }
+    }
+    // If no cover image, try featured image
+    else if (blogPost.properties.featured_image?.[0]?.url) {
+      try {
+        const featuredImageUrl = blogPost.properties.featured_image[0].url;
+        const { buffer, contentTypeExt } = await downloadImage(featuredImageUrl);
+        const imageExtension = contentTypeExt || getCleanFileExtension(featuredImageUrl);
+        const imagePath = path.join(postDir, `featured-image.${imageExtension}`);
+        fs.writeFileSync(imagePath, buffer);
+        console.log(`📸 Saved featured image: ${imagePath}`);
+
+        // Update the featured image path in the post metadata
+        blogPost.featured_image = `/posts/${folderName}/featured-image.${imageExtension}`;
+        blogPost.og_image = blogPost.featured_image;
+      } catch (error) {
+        console.error(`❌ Failed to save featured image for ${folderName}:`, error.message);
+      }
+    }
+
+    // If no cover or featured image, try to find first image in content
+    if (!blogPost.og_image) {
+      let firstImage = null;
+      for (const block of blogPost.content) {
+        if (block.type === 'image') {
+          firstImage = block.content;
+          break;
+        }
+      }
+      
+      if (firstImage && firstImage.url) {
+        try {
+          const { buffer, contentTypeExt } = await downloadImage(firstImage.url);
+          const imageExtension = contentTypeExt || getCleanFileExtension(firstImage.url);
+          const imagePath = path.join(postDir, `og-image.${imageExtension}`);
+          fs.writeFileSync(imagePath, buffer);
+          console.log(`📸 Saved OG image: ${imagePath}`);
+
+          // Add the image path to the post metadata
+          blogPost.og_image = `/posts/${folderName}/og-image.${imageExtension}`;
+          if (!blogPost.featured_image) {
+            blogPost.featured_image = blogPost.og_image;
+          }
+        } catch (error) {
+          console.error(`❌ Failed to save OG image for ${folderName}:`, error.message);
+        }
+      }
+    }
     
     // Save individual post JSON
     const postFile = path.join(postDir, 'post.json');
@@ -487,7 +646,9 @@ async function processSinglePage(page, pageIndex, totalPages) {
         notion_api_version: '2022-06-28',
         includes_content: true,
         folder: folderName,
-        slug: slug
+        slug: slug,
+        og_image: blogPost.og_image,
+        featured_image: blogPost.featured_image
       },
       post: blogPost
     };
@@ -513,8 +674,9 @@ async function processSinglePage(page, pageIndex, totalPages) {
         published: blogPost.properties.published,
         tags: blogPost.properties.tags,
         excerpt: blogPost.properties.excerpt,
-        featured_image: blogPost.properties.featured_image
+        featured_image: blogPost.featured_image // Use the local path
       },
+      og_image: blogPost.og_image,
       file_size_kb: parseFloat(fileSizeInKB),
       file_size_bytes: stats.size
     };

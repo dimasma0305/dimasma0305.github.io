@@ -59,19 +59,29 @@ function estimateReadingTime(content) {
   return Math.ceil(wordCount / 200)
 }
 
+// Helper function to get the correct image path
+function getImagePath(folderName, imageName) {
+  const basePath = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_BASE_PATH || '' : '';
+  return `${basePath}/posts/${folderName}/${imageName}`;
+}
+
 // Helper function to extract featured image
 function extractFeaturedImage(post) {
+  if (post.featured_image) {
+    return post.featured_image;
+  }
+
   // Check if there's a featured image in properties
   if (post.properties && post.properties.featured_image && post.properties.featured_image.length > 0) {
-    return post.properties.featured_image[0].url
+    return post.properties.featured_image[0].url;
   }
 
   // Check cover image
   if (post.cover) {
     if (post.cover.type === "external") {
-      return post.cover.external.url
+      return post.cover.external.url;
     } else if (post.cover.type === "file") {
-      return post.cover.file.url
+      return post.cover.file.url;
     }
   }
 
@@ -79,12 +89,12 @@ function extractFeaturedImage(post) {
   if (post.content && Array.isArray(post.content)) {
     for (const block of post.content) {
       if (block.type === "image" && block.content && block.content.url) {
-        return block.content.url
+        return block.content.url;
       }
     }
   }
 
-  return null
+  return null;
 }
 
 // Enhanced function to extract categories and tags from post
