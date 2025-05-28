@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "refresh-content": "node scripts/generate-blog-content.js && node scripts/generate-blog-index.js"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
