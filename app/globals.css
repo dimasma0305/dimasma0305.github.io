@@ -263,23 +263,35 @@ html {
 }
 
 .notion-table-wrapper {
-  @apply overflow-x-auto my-8;
+  @apply my-6 overflow-x-auto rounded-lg border shadow-sm;
 }
 
 .notion-table {
-  @apply w-full border-collapse border border-gray-300 dark:border-gray-600;
+  @apply w-full divide-y divide-border;
 }
 
 .notion-table-header {
-  @apply border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 px-4 py-2 font-semibold text-left;
+  @apply bg-muted/50;
 }
 
 .notion-table-cell {
-  @apply border border-gray-300 dark:border-gray-600 px-4 py-2;
+  @apply px-4 py-3 text-left text-sm;
+}
+
+.notion-table-cell:first-child {
+  @apply font-medium text-foreground;
+}
+
+.notion-table-cell:not(:first-child) {
+  @apply text-muted-foreground;
 }
 
 .notion-table-row:nth-child(even) {
-  @apply bg-gray-50 dark:bg-gray-900;
+  @apply bg-muted/5;
+}
+
+.notion-table-row:hover {
+  @apply bg-muted/10 transition-colors;
 }
 
 .notion-toggle {
@@ -741,4 +753,96 @@ pre.line-numbers > code {
 
 .game-card:hover {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Code block styles */
+pre[class*="language-"] {
+  @apply bg-zinc-950 text-zinc-100 p-4 rounded-lg overflow-x-auto;
+  font-size: 0.9em;
+}
+
+:not(pre) > code[class*="language-"] {
+  @apply bg-zinc-900 text-zinc-100 px-1.5 py-0.5 rounded-sm text-sm;
+}
+
+.line-numbers .line-numbers-rows {
+  @apply border-r border-zinc-700;
+  padding: 1em 0;
+}
+
+.line-numbers-rows > span:before {
+  @apply text-zinc-600;
+}
+
+/* Dark mode adjustments */
+.dark pre[class*="language-"] {
+  @apply bg-zinc-900;
+}
+
+.dark :not(pre) > code[class*="language-"] {
+  @apply bg-zinc-800;
+}
+
+.dark .line-numbers .line-numbers-rows {
+  @apply border-zinc-700;
+}
+
+.dark .line-numbers-rows > span:before {
+  @apply text-zinc-500;
+}
+
+/* Token colors */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  @apply text-zinc-500;
+}
+
+.token.punctuation {
+  @apply text-zinc-400;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  @apply text-orange-400;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  @apply text-green-400;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  @apply text-yellow-400;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  @apply text-blue-400;
+}
+
+.token.function,
+.token.class-name {
+  @apply text-purple-400;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  @apply text-red-400;
 }

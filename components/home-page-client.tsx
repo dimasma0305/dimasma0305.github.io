@@ -166,4 +166,4 @@ function HomePageClient() {
   )
 }
 
-export default memo(HomePageClient) 
+export default memo(HomePageClient)

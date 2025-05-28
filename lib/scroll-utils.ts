@@ -117,4 +117,4 @@ export function handleHashOnPageLoad(
       waitForLazyLoad: true 
     })
   }
-} 
+}

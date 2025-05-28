@@ -39,12 +39,25 @@ jobs:
       run: |
         npm install --legacy-peer-deps
 
-    - name: Refresh content and check for updates
+    - name: Refresh blog content and check for updates
       env:
         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         NOTION_DATABASE_ID: "cc2cf42cf4b74db1901b8e28d3f67a06"
         INDEX_OUTPUT: "public/posts/index.json"
         FULL_INDEX_OUTPUT: "public/blog-index.json"
+        POSTS_DIR: "public/posts"
+      run: |
+        echo "🔄 Refreshing content..."
+        npm run refresh-content || echo "⚠️ Content refresh script not found, skipping..."
+        echo "✅ Content refresh completed"
+
+    - name: Refresh notes content and check for updates
+      env:
+        NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        NOTION_DATABASE_ID: "cc2cf42cf4b74db1901b8e28d3f67a06"
+        INDEX_OUTPUT: "public/notes/index.json"
+        FULL_INDEX_OUTPUT: "public/notes-index.json"
+        POSTS_DIR: "public/notes"
       run: |
         echo "🔄 Refreshing content..."
         npm run refresh-content || echo "⚠️ Content refresh script not found, skipping..."

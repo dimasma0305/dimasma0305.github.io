@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect, useRef, lazy, Suspense } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -10,7 +12,7 @@ import { handleAnchorNavigation } from "@/lib/scroll-utils"
 import { Button } from "@/components/ui/button"
 
 // Lazy load ThemeToggle for better initial page load
-const ThemeToggle = lazy(() => import("@/components/theme-toggle").then(m => ({ default: m.ThemeToggle })))
+const ThemeToggle = lazy(() => import("@/components/theme-toggle").then((m) => ({ default: m.ThemeToggle })))
 
 const navItems = [
   { name: "Home", path: "/", icon: <Shield className="w-4 h-4" /> },
@@ -20,6 +22,7 @@ const navItems = [
   { name: "Projects", path: "/#projects", icon: <BookOpen className="w-4 h-4" /> },
   { name: "CTF", path: "/#ctf", icon: <Shield className="w-4 h-4" /> },
   { name: "Blog", path: "/blog", icon: <BookOpen className="w-4 h-4" /> },
+  { name: "Notes", path: "/notes", icon: <BookOpen className="w-4 h-4" /> },
   { name: "Search", path: "/search", icon: <Search className="w-4 h-4" /> },
 ]
 
@@ -33,13 +36,13 @@ export function Header() {
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
     handleAnchorNavigation(e, path, pathname, {
       headerOffset: 80,
-      behavior: 'smooth'
+      behavior: "smooth",
     })
   }
 
   // Set up intersection observer for section detection on home page
   useEffect(() => {
-    if (pathname !== '/') {
+    if (pathname !== "/") {
       setActiveSection("")
       return
     }
@@ -51,7 +54,7 @@ export function Header() {
 
     // Fallback scroll handler for manual section detection
     const handleScroll = () => {
-      const sections = ['about', 'skills', 'experience', 'projects', 'ctf', 'blog']
+      const sections = ["about", "skills", "experience", "projects", "ctf", "blog"]
       const scrollY = window.scrollY + 100 // Account for header height
 
       // If at the very top, no section is active
@@ -80,10 +83,10 @@ export function Header() {
     // Wait for components to be fully loaded (especially lazy-loaded ones)
     const setupObserver = () => {
       // Get all sections that correspond to navigation items
-      const sections = ['about', 'skills', 'experience', 'projects', 'ctf', 'blog']
+      const sections = ["about", "skills", "experience", "projects", "ctf", "blog"]
       const sectionElements: HTMLElement[] = []
 
-      sections.forEach(sectionId => {
+      sections.forEach((sectionId) => {
         const element = document.getElementById(sectionId)
         if (element) {
           sectionElements.push(element)
@@ -100,7 +103,7 @@ export function Header() {
         (entries) => {
           // Sort entries by intersection ratio to find the most visible section
           const visibleEntries = entries
-            .filter(entry => entry.isIntersecting)
+            .filter((entry) => entry.isIntersecting)
             .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
 
           if (visibleEntries.length > 0) {
@@ -116,16 +119,16 @@ export function Header() {
         },
         {
           rootMargin: "-10% 0% -50% 0%", // More lenient margins for better detection
-          threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0] // More threshold points for better accuracy
-        }
+          threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0], // More threshold points for better accuracy
+        },
       )
 
-      sectionElements.forEach(element => {
+      sectionElements.forEach((element) => {
         observerRef.current?.observe(element)
       })
 
       // Add scroll listener as fallback
-      window.addEventListener('scroll', handleScroll, { passive: true })
+      window.addEventListener("scroll", handleScroll, { passive: true })
     }
 
     // Initial setup with delay to ensure lazy-loaded components are ready
@@ -133,10 +136,10 @@ export function Header() {
 
     return () => {
       observerRef.current?.disconnect()
-      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener("scroll", handleScroll)
     }
   }, [pathname])
-  
+
   useEffect(() => {
     // Close mobile menu when route changes
     setIsOpen(false)
@@ -144,17 +147,17 @@ export function Header() {
 
   // Helper function to determine if a nav item should be active
   const isNavItemActive = (item: { name: string; path: string }) => {
-    if (pathname !== '/') {
+    if (pathname !== "/") {
       // For non-home pages, use the original logic
       return pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path))
     }
 
     // For home page, check section-based activation
-    if (item.path === '/') {
+    if (item.path === "/") {
       return activeSection === "" // Home is active when no section is active (at top)
     }
 
-    if (item.path.startsWith('/#')) {
+    if (item.path.startsWith("/#")) {
       const sectionId = item.path.substring(2) // Remove '/#'
       return activeSection === sectionId
     }
@@ -163,9 +166,7 @@ export function Header() {
   }
 
   return (
-    <header
-      className={`sticky top-0 z-40 w-full transition-all bg-background/80 backdrop-blur-md shadow-md`}
-    >
+    <header className={`sticky top-0 z-40 w-full transition-all bg-background/80 backdrop-blur-md shadow-md`}>
       <div className="container flex items-center justify-between h-16 px-4 mx-auto max-w-7xl">
         <Link href="/" className="flex items-center space-x-2">
           <motion.div
@@ -180,16 +181,10 @@ export function Header() {
         <div className="hidden md:flex md:items-center md:space-x-1">
           <nav className="flex items-center">
             {navItems.map((item) => (
-              <Link 
-                key={item.path} 
-                href={item.path}
-                onClick={(e) => handleAnchorClick(e, item.path)}
-              >
+              <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
                 <Button
                   variant="ghost"
-                  className={`group relative overflow-hidden ${
-                    isNavItemActive(item) ? "text-primary" : ""
-                  }`}
+                  className={`group relative overflow-hidden ${isNavItemActive(item) ? "text-primary" : ""}`}
                 >
                   <span className="flex items-center gap-2">
                     {item.icon}
@@ -234,16 +229,10 @@ export function Header() {
           <div className="container px-4 py-4 mx-auto">
             <nav className="flex flex-col space-y-1">
               {navItems.map((item) => (
-                <Link 
-                  key={item.path} 
-                  href={item.path}
-                  onClick={(e) => handleAnchorClick(e, item.path)}
-                >
+                <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
                   <Button
                     variant="ghost"
-                    className={`w-full justify-start ${
-                      isNavItemActive(item) ? "bg-primary/20 text-primary" : ""
-                    }`}
+                    className={`w-full justify-start ${isNavItemActive(item) ? "bg-primary/20 text-primary" : ""}`}
                   >
                     <span className="flex items-center gap-2">
                       {item.icon}

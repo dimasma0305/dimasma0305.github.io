@@ -19,4 +19,4 @@ export function useLazyLoadingReady({
   }, [delayAfterDOMLoaded])
 
   return isReady
-} 
+}

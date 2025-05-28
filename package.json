@@ -6,12 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "refresh-content": "node scripts/generate-blog-content.js && node scripts/generate-blog-index.js",
-    "generate-blog-index": "node scripts/generate-blog-index.js",
-    "generate-blog-content": "node scripts/generate-blog-content.js",
-    "generate-sitemap": "node scripts/generate-sitemap.js",
-    "generate-robots": "node scripts/generate-robots.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -45,12 +40,14 @@
     "@radix-ui/react-toggle-group": "latest",
     "@radix-ui/react-tooltip": "latest",
     "@tailwindcss/typography": "latest",
+    "@types/prismjs": "^1.26.5",
     "autoprefixer": "^10.4.20",
     "canvas-confetti": "latest",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "latest",
     "date-fns": "latest",
+    "dotenv": "latest",
     "embla-carousel-react": "latest",
     "framer-motion": "latest",
     "fs": "latest",
@@ -79,15 +76,9 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@fullhuman/postcss-purgecss": "^7.0.2",
-    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^22",
-    "@types/prismjs": "^1.26.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "cssnano": "^7.0.7",
-    "dotenv": "^16.5.0",
-    "glob": "^11.0.2",
     "postcss": "^8",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"

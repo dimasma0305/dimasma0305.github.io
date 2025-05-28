@@ -6,7 +6,7 @@ const path = require('path');
 // Configuration
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const DATABASE_ID = process.env.NOTION_DATABASE_ID;
-const OUTPUT_DIR = 'public/posts';
+const OUTPUT_DIR = process.env.POSTS_DIR;
 
 // Initialize Notion client
 const notion = new Client({

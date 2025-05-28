@@ -1,78 +1,55 @@
 "use client"
 
-import type React from "react"
 import { useState, useEffect } from "react"
 import { Search, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 interface SearchBarProps {
-  onSearch: (query: string) => void
+  value?: string
+  onChange: (value: string) => void
   placeholder?: string
   className?: string
 }
 
-export function SearchBar({ 
-  onSearch, 
-  placeholder = "Search posts...",
-  className = ""
-}: SearchBarProps) {
-  const [query, setQuery] = useState("")
+export function SearchBar({ value = "", onChange, placeholder = "Search...", className }: SearchBarProps) {
+  const [localValue, setLocalValue] = useState(value)
 
-  // Debounce search to avoid too many calls
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      onSearch(query)
-    }, 300)
+    setLocalValue(value)
+  }, [value])
 
-    return () => clearTimeout(timeoutId)
-  }, [query, onSearch])
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSearch(query)
+  const handleChange = (newValue: string) => {
+    setLocalValue(newValue)
+    onChange(newValue)
   }
 
   const handleClear = () => {
-    setQuery("")
-    onSearch("")
+    setLocalValue("")
+    onChange("")
   }
 
   return (
-    <form 
-      onSubmit={handleSubmit} 
-      className={`relative flex w-full max-w-sm items-center ${className}`}
-    >
+    <div className={cn("relative", className)}>
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
         type="search"
         placeholder={placeholder}
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="pr-20"
+        value={localValue}
+        onChange={(e) => handleChange(e.target.value)}
+        className="pl-10 pr-10"
       />
-      
-      {query && (
-        <Button 
-          type="button"
-          variant="ghost" 
-          size="icon" 
+      {localValue && (
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={handleClear}
-          className="absolute right-8 h-8 w-8"
+          className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted"
         >
           <X className="h-4 w-4" />
-          <span className="sr-only">Clear search</span>
         </Button>
       )}
-      
-      <Button 
-        type="submit" 
-        variant="ghost" 
-        size="icon" 
-        className="absolute right-0 h-8 w-8"
-      >
-        <Search className="h-4 w-4" />
-        <span className="sr-only">Search</span>
-      </Button>
-    </form>
+    </div>
   )
 }

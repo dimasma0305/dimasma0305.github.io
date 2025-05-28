@@ -327,6 +327,20 @@ export function Mdx({ content }: MdxProps) {
     }
   }, [content, isDOMReady])
 
+  // Modify content to support Notion-style tables
+  const processedContent = content.replace(
+    /\[notion-table\]([\s\S]*?)\[\/notion-table\]/g, 
+    (match, tableJson) => {
+      try {
+        const tableBlock = JSON.parse(tableJson)
+        return renderNotionTable(tableBlock)
+      } catch (error) {
+        console.error('Error parsing Notion table:', error)
+        return match
+      }
+    }
+  )
+
   return (
     <div
       ref={contentRef}
@@ -339,7 +353,75 @@ export function Mdx({ content }: MdxProps) {
         prose-blockquote:border-l-primary prose-blockquote:bg-muted/30
         prose-th:bg-muted prose-th:font-semibold
         prose-td:border-border prose-th:border-border"
-      dangerouslySetInnerHTML={{ __html: content }}
+      dangerouslySetInnerHTML={{ __html: processedContent }}
     />
   )
+}
+
+// Function to render Notion-style tables
+function renderNotionTable(tableBlock: any): string {
+  if (!tableBlock || !tableBlock.children || !Array.isArray(tableBlock.children)) {
+    return ''
+  }
+
+  const hasColumnHeader = tableBlock.content?.has_column_header || false
+  const hasRowHeader = tableBlock.content?.has_row_header || false
+  const tableWidth = tableBlock.content?.table_width || 2
+
+  // Create table HTML
+  let tableHtml = '<div class="table-container overflow-x-auto rounded-lg border my-6">'
+  tableHtml += '<table class="w-full border-collapse">'
+  
+  // Render rows
+  tableBlock.children.forEach((row: any, rowIndex: number) => {
+    if (row.type !== 'table_row' || !row.content?.cells) return
+
+    // Ensure cells match table width
+    const cells = row.content.cells.slice(0, tableWidth)
+    while (cells.length < tableWidth) {
+      cells.push([{ content: '', annotations: {} }])
+    }
+
+    const rowHtml = cells.map((cell: any[], cellIndex: number) => {
+      const isHeaderCell = (hasColumnHeader && rowIndex === 0) || 
+                           (hasRowHeader && cellIndex === 0)
+      
+      const cellContent = cell.map(richText => {
+        // Handle rich text formatting
+        let content = richText.content || ''
+        const annotations = richText.annotations || {}
+        
+        // Apply text formatting
+        if (annotations.bold) content = `<strong>${content}</strong>`
+        if (annotations.italic) content = `<em>${content}</em>`
+        if (annotations.strikethrough) content = `<del>${content}</del>`
+        if (annotations.underline) content = `<u>${content}</u>`
+        if (annotations.code) content = `<code>${content}</code>`
+        
+        // Handle links
+        if (richText.href) {
+          content = `<a href="${richText.href}" class="text-primary hover:underline">${content}</a>`
+        }
+        
+        return content
+      }).join('')
+
+      const cellTag = isHeaderCell ? 'th' : 'td'
+      const cellClasses = [
+        'border', 
+        'border-border', 
+        'p-2', 
+        'text-left', 
+        isHeaderCell ? 'bg-muted font-semibold' : ''
+      ].filter(Boolean).join(' ')
+
+      return `<${cellTag} class="${cellClasses}">${cellContent}</${cellTag}>`
+    }).join('')
+
+    tableHtml += `<tr class="border-b border-border">${rowHtml}</tr>`
+  })
+
+  tableHtml += '</table></div>'
+  
+  return tableHtml
 }

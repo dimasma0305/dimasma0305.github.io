@@ -56,4 +56,4 @@ export function useLazyLoading({
     isInView,
     isDOMReady
   }
-} 
+}

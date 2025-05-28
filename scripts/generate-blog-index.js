@@ -3,7 +3,7 @@ const fs = require("fs")
 const path = require("path")
 
 // Configuration
-const POSTS_DIR = "public/posts"
+const POSTS_DIR = process.env.POSTS_DIR || "public/posts"
 const INDEX_OUTPUT = process.env.INDEX_OUTPUT || "public/posts/index.json"
 const FULL_INDEX_OUTPUT = process.env.FULL_INDEX_OUTPUT || "public/blog-index.json"
 

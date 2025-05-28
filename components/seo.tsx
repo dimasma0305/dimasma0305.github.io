@@ -126,6 +126,39 @@ export function generateBlogMetadata(): Metadata {
   }
 }
 
+export function generateNotesMetadata(): Metadata {
+  return {
+    title: "Notes | Technical Notes & Research",
+    description: "Browse technical notes, research findings, and documentation on various topics including cybersecurity, programming, and system architecture.",
+    keywords: "technical notes, research notes, documentation, cybersecurity notes, programming notes, system architecture",
+    alternates: {
+      canonical: baseUrl,
+    },
+    openGraph: {
+      type: 'website',
+      url: `${baseUrl}/notes`,
+      title: "Notes | Technical Notes & Research",
+      description: "Browse technical notes, research findings, and documentation on various topics.",
+      siteName: 'Dimas Maulana Notes',
+      images: [
+        {
+          url: `${baseUrl}/og-image.jpg`,
+          width: 1200,
+          height: 630,
+          alt: "Dimas Maulana Notes",
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: "Notes | Technical Notes & Research",
+      description: "Browse technical notes, research findings, and documentation.",
+      creator: '@dimasma__',
+      images: [`${baseUrl}/og-image.jpg`],
+    },
+  }
+}
+
 // Enhanced JSON-LD Structured Data Component
 export function PostStructuredData({ post }: SEOProps) {
   const postUrl = `${baseUrl}/posts/${post.slug}`
@@ -699,4 +732,202 @@ export function HomepageStructuredData() {
       ))}
     </>
   )
+}
+
+export function NotesStructuredData() {
+  const notesStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Collection",
+    "@id": `${baseUrl}/notes#collection`,
+    url: `${baseUrl}/notes`,
+    name: "Dimas Maulana Technical Notes",
+    description: "Collection of technical notes, research findings, and documentation",
+    creator: {
+      "@type": "Person",
+      "@id": `${baseUrl}/#person`,
+      name: "Dimas Maulana",
+      url: baseUrl,
+      sameAs: [
+        "https://twitter.com/dimasma__",
+        "https://github.com/dimasma0305",
+        "https://linkedin.com/in/dimas-maulana"
+      ]
+    },
+    inLanguage: "en-US",
+    genre: ["Technology", "Research", "Documentation"],
+    keywords: "technical notes, research notes, documentation, cybersecurity, programming",
+    about: [
+      {
+        "@type": "Thing",
+        name: "Technical Documentation",
+        sameAs: "https://en.wikipedia.org/wiki/Technical_documentation"
+      },
+      {
+        "@type": "Thing",
+        name: "Research Notes",
+        sameAs: "https://en.wikipedia.org/wiki/Research"
+      }
+    ],
+    potentialAction: [
+      {
+        "@type": "ReadAction",
+        target: `${baseUrl}/notes`
+      },
+      {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${baseUrl}/search?q={search_term_string}`
+        },
+        "query-input": "required name=search_term_string"
+      }
+    ]
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(notesStructuredData),
+      }}
+    />
+  )
+}
+
+export function NoteStructuredData({ slug }: { slug: string }) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "@id": `${baseUrl}/notes/${slug}`,
+    headline: `Technical Note: ${slug}`,
+    url: `${baseUrl}/notes/${slug}`,
+    datePublished: new Date().toISOString(),
+    author: {
+      "@type": "Person",
+      "@id": `${baseUrl}/#person`,
+      name: "Dimas Maulana",
+      url: baseUrl,
+      image: {
+        "@type": "ImageObject",
+        url: `${baseUrl}/avatar.jpg`,
+        caption: "Dimas Maulana"
+      },
+      sameAs: [
+        "https://twitter.com/dimasma__",
+        "https://github.com/dimasma0305",
+        "https://linkedin.com/in/dimas-maulana"
+      ],
+      jobTitle: "Cybersecurity Researcher"
+    },
+    publisher: {
+      "@type": "Organization",
+      "@id": `${baseUrl}/#organization`,
+      name: "Dimas Maulana Notes",
+      url: baseUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${baseUrl}/logo.png`,
+        width: 512,
+        height: 512
+      }
+    },
+    inLanguage: "en-US",
+    isAccessibleForFree: true
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+    />
+  )
+}
+
+export async function generateNoteMetadata(slug: string): Promise<Metadata> {
+  try {
+    // Read the notes-index.json file directly from the file system during build
+    const fs = require("fs")
+    const path = require("path")
+
+    const indexPath = path.join(process.cwd(), "public", "notes-index.json")
+    const indexContent = fs.readFileSync(indexPath, "utf8")
+    const data = JSON.parse(indexContent)
+    
+    const note = data.posts?.all?.find((note: any) => note.slug === slug)
+
+    if (!note) {
+      return {
+        title: 'Note Not Found',
+        description: 'The requested technical note could not be found.'
+      }
+    }
+
+    const noteUrl = `${baseUrl}/notes/${note.slug}`
+    const description = note.excerpt
+      ?.replace(/[#*_`]/g, '')
+      ?.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      ?.trim()
+      ?.substring(0, 160) || 'Technical note'
+
+    return {
+      title: note.title,
+      description,
+      keywords: [...(note.categories || []), ...(note.tags || []), 'technical notes', 'documentation'].join(', '),
+      authors: [{ name: note.properties?.author || 'Dimas Maulana' }],
+      creator: note.properties?.author || 'Dimas Maulana',
+      publisher: 'Dimas Maulana',
+      formatDetection: {
+        email: false,
+        address: false,
+        telephone: false,
+      },
+      metadataBase: new URL(baseUrl),
+      alternates: {
+        canonical: noteUrl,
+      },
+      openGraph: {
+        type: 'article',
+        url: noteUrl,
+        title: note.title,
+        description,
+        siteName: 'Dimas Maulana Notes',
+        publishedTime: note.created_time,
+        modifiedTime: note.last_edited_time,
+        authors: [note.properties?.author || 'Dimas Maulana'],
+        tags: [...(note.categories || []), ...(note.tags || [])],
+        images: note.featured_image ? [
+          {
+            url: note.featured_image,
+            width: 1200,
+            height: 630,
+            alt: note.title,
+          },
+        ] : undefined,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: note.title,
+        description,
+        creator: '@dimasma__',
+        images: note.featured_image ? [note.featured_image] : undefined,
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
+      },
+    }
+  } catch (error) {
+    console.error('Error generating note metadata:', error)
+    return {
+      title: 'Technical Note',
+      description: 'A technical note on various topics including cybersecurity, programming, and system architecture.'
+    }
+  }
 }

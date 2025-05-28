@@ -17,15 +17,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Mdx } from "@/components/mdx"
-import { FallbackImage } from "@/components/fallback-image"
-import { LazyImage } from "@/components/lazy-image"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { NotionLinkButton } from "@/components/notion-link-button"
 
 // Lazy load heavy components for better initial page load
-const TableOfContents = lazy(() => import("@/components/table-of-contents").then(m => ({ default: m.TableOfContents })))
-const ShareButtons = lazy(() => import("@/components/share-buttons").then(m => ({ default: m.ShareButtons })))
-const PostNavigation = lazy(() => import("@/components/post-navigation").then(m => ({ default: m.PostNavigation })))
+const TableOfContents = lazy(() =>
+  import("@/components/table-of-contents").then((m) => ({ default: m.TableOfContents })),
+)
+const ShareButtons = lazy(() => import("@/components/share-buttons").then((m) => ({ default: m.ShareButtons })))
+const PostNavigation = lazy(() => import("@/components/post-navigation").then((m) => ({ default: m.PostNavigation })))
 
 interface PostPageClientProps {
   slug: string
@@ -45,6 +45,17 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
           setError("Post not found")
           return
         }
+
+        // Process the content if needed
+        if (fetchedPost.content) {
+          // Make sure code blocks have proper language classes
+          fetchedPost.content = fetchedPost.content
+            .replace(/<pre><code>/g, '<pre><code class="language-text">')
+            .replace(/<pre><code class="language-(\w+)">/g, (match, lang) => {
+              return `<pre><code class="language-${lang}">`
+            })
+        }
+
         setPost(fetchedPost)
       } catch (err) {
         console.error("Error loading post:", err)
@@ -64,8 +75,8 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
     if (!loading && post) {
       handleHashOnPageLoad({
         headerOffset: 80,
-        behavior: 'smooth',
-        lazyLoadDelay: 250
+        behavior: "smooth",
+        lazyLoadDelay: 250,
       })
     }
   }, [loading, post])
@@ -152,7 +163,9 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
 
               {/* Excerpt */}
               {post.excerpt && (
-                <p className="text-lg lg:text-xl text-muted-foreground mb-6 lg:mb-8 leading-relaxed max-w-3xl break-words">{post.excerpt}</p>
+                <p className="text-lg lg:text-xl text-muted-foreground mb-6 lg:mb-8 leading-relaxed max-w-3xl break-words">
+                  {post.excerpt}
+                </p>
               )}
 
               {/* Meta Information */}
@@ -161,7 +174,10 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                 {post.owner && (
                   <div className="flex items-center gap-3 min-w-0">
                     <Avatar className="w-10 h-10 flex-shrink-0">
-                      <AvatarImage src={post.owner.avatar_url || withBasePath("/placeholder.svg")} alt={post.owner.name} />
+                      <AvatarImage
+                        src={post.owner.avatar_url || withBasePath("/placeholder.svg")}
+                        alt={post.owner.name}
+                      />
                       <AvatarFallback>{post.owner.name.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="min-w-0">
@@ -217,7 +233,12 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
               <div className="flex flex-wrap items-center gap-3 lg:gap-4 mt-6 lg:mt-8">
                 {post.notionUrl && <NotionLinkButton notionUrl={post.notionUrl} />}
                 <Suspense fallback={<div>Loading Share Buttons...</div>}>
-                  <ShareButtons title={post.title} slug={post.slug} excerpt={post.excerpt} categories={post.categories} />
+                  <ShareButtons
+                    title={post.title}
+                    slug={post.slug}
+                    excerpt={post.excerpt}
+                    categories={post.categories}
+                  />
                 </Suspense>
               </div>
             </div>
@@ -229,7 +250,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
           <div className="container max-w-7xl mx-auto px-4 py-6 lg:py-8 overflow-x-hidden">
             <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] xl:h-[600px] overflow-hidden rounded-xl shadow-2xl">
               <Image
-                src={post.coverImage}
+                src={post.coverImage || "/placeholder.svg"}
                 alt={post.title}
                 width={1200}
                 height={600}
@@ -256,7 +277,13 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
               {/* Article Body */}
               <article className="prose prose-lg dark:prose-invert max-w-none prose-pre:overflow-x-auto prose-code:break-words prose-p:break-words prose-headings:break-words">
                 <div className="bg-card rounded-xl p-4 md:p-8 shadow-sm border overflow-hidden">
-                  {post.content && <Mdx content={post.content} />}
+                  {post.content ? (
+                    <Mdx content={post.content} />
+                  ) : (
+                    <div className="text-center py-8">
+                      <p className="text-muted-foreground">No content available for this post.</p>
+                    </div>
+                  )}
                 </div>
               </article>
 
@@ -285,7 +312,12 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                                   <Tag className="w-4 h-4 text-primary" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <p className="font-medium group-hover:text-primary transition-colors truncate" title={category}>{category}</p>
+                                  <p
+                                    className="font-medium group-hover:text-primary transition-colors truncate"
+                                    title={category}
+                                  >
+                                    {category}
+                                  </p>
                                   <p className="text-xs text-muted-foreground">
                                     {posts.filter((p) => p.categories?.includes(category)).length} posts
                                   </p>
@@ -309,7 +341,12 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                   </CardHeader>
                   <CardContent>
                     <Suspense fallback={<div>Loading Share Buttons...</div>}>
-                      <ShareButtons title={post.title} slug={post.slug} excerpt={post.excerpt} categories={post.categories} />
+                      <ShareButtons
+                        title={post.title}
+                        slug={post.slug}
+                        excerpt={post.excerpt}
+                        categories={post.categories}
+                      />
                     </Suspense>
                   </CardContent>
                 </Card>
@@ -348,7 +385,12 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                           <div className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group min-w-0">
                             <div className="flex items-center gap-2 min-w-0 flex-1">
                               <Tag className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
-                              <span className="font-medium group-hover:text-primary transition-colors truncate" title={category}>{category}</span>
+                              <span
+                                className="font-medium group-hover:text-primary transition-colors truncate"
+                                title={category}
+                              >
+                                {category}
+                              </span>
                             </div>
                             <Badge variant="outline" className="text-xs flex-shrink-0 ml-2">
                               {posts.filter((p) => p.categories?.includes(category)).length}
@@ -376,17 +418,27 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                             href={`/posts/${relatedPost.slug}`}
                             className="block space-y-2 p-3 rounded-lg hover:bg-muted/50 transition-colors"
                           >
-                            <h4 className="font-medium line-clamp-2 group-hover:text-primary transition-colors break-words" title={relatedPost.title}>
+                            <h4
+                              className="font-medium line-clamp-2 group-hover:text-primary transition-colors break-words"
+                              title={relatedPost.title}
+                            >
                               {relatedPost.title}
                             </h4>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <Calendar className="w-3 h-3 flex-shrink-0" />
-                              <span className="whitespace-nowrap">{format(new Date(relatedPost.createdAt), "MMM d, yyyy")}</span>
+                              <span className="whitespace-nowrap">
+                                {format(new Date(relatedPost.createdAt), "MMM d, yyyy")}
+                              </span>
                             </div>
                             {relatedPost.categories && relatedPost.categories.length > 0 && (
                               <div className="flex flex-wrap gap-1">
                                 {relatedPost.categories.slice(0, 2).map((category) => (
-                                  <Badge key={category} variant="outline" className="text-xs max-w-[100px] truncate" title={category}>
+                                  <Badge
+                                    key={category}
+                                    variant="outline"
+                                    className="text-xs max-w-[100px] truncate"
+                                    title={category}
+                                  >
                                     {category}
                                   </Badge>
                                 ))}
@@ -414,12 +466,17 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                           href={`/posts/${recentPost.slug}`}
                           className="block space-y-2 p-3 rounded-lg hover:bg-muted/50 transition-colors"
                         >
-                          <h4 className="font-medium line-clamp-2 group-hover:text-primary transition-colors break-words" title={recentPost.title}>
+                          <h4
+                            className="font-medium line-clamp-2 group-hover:text-primary transition-colors break-words"
+                            title={recentPost.title}
+                          >
                             {recentPost.title}
                           </h4>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <Calendar className="w-3 h-3 flex-shrink-0" />
-                            <span className="whitespace-nowrap">{format(new Date(recentPost.createdAt), "MMM d, yyyy")}</span>
+                            <span className="whitespace-nowrap">
+                              {format(new Date(recentPost.createdAt), "MMM d, yyyy")}
+                            </span>
                           </div>
                         </Link>
                       </div>

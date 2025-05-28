@@ -1,15 +1,13 @@
 import PostPageClient from "@/components/post-page-client"
 import { generatePostMetadata, PostStructuredData } from "@/components/seo"
-import { withBasePath } from "@/lib/utils"
 import type { Metadata } from "next"
+import fs from "fs"
+import path from "path"
 
 // Generate static params for all posts
 export async function generateStaticParams() {
   try {
     // Read the blog-index.json file directly from the file system during build
-    const fs = require("fs")
-    const path = require("path")
-
     const indexPath = path.join(process.cwd(), "public", "blog-index.json")
     const indexContent = fs.readFileSync(indexPath, "utf8")
     const blogIndex = JSON.parse(indexContent)
@@ -26,12 +24,10 @@ export async function generateStaticParams() {
 
     // Try to generate the blog index if it doesn't exist
     try {
-      const { generateBlogIndex } = require("../../../scripts/generate-blog-index")
+      const { generateBlogIndex } = await import("../../../scripts/generate-blog-index")
       await generateBlogIndex()
 
       // Try again after generating
-      const fs = require("fs")
-      const path = require("path")
       const indexPath = path.join(process.cwd(), "public", "blog-index.json")
       const indexContent = fs.readFileSync(indexPath, "utf8")
       const blogIndex = JSON.parse(indexContent)
@@ -55,9 +51,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params
 
     // Read the post data from the blog-index for metadata generation
-    const fs = require("fs")
-    const path = require("path")
-
     const indexPath = path.join(process.cwd(), "public", "blog-index.json")
     const indexContent = fs.readFileSync(indexPath, "utf8")
     const blogIndex = JSON.parse(indexContent)
@@ -109,20 +102,17 @@ interface PostPageProps {
 
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params
-  
+
   // Get post data for structured data
   let post = null
   try {
-    const fs = require("fs")
-    const path = require("path")
-
     const indexPath = path.join(process.cwd(), "public", "blog-index.json")
     const indexContent = fs.readFileSync(indexPath, "utf8")
     const blogIndex = JSON.parse(indexContent)
 
     // Find the post in the blog index
     const foundPost = blogIndex.posts?.published?.find((p: any) => p.slug === slug)
-    
+
     if (foundPost) {
       post = {
         id: foundPost.id,
@@ -144,8 +134,8 @@ export default async function PostPage({ params }: PostPageProps) {
           id: "author",
           name: "Dimas Maulana",
           avatar_url: "/avatar.jpg",
-          type: "person"
-        }
+          type: "person",
+        },
       }
     }
   } catch (error) {
