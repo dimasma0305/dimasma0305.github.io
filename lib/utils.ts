@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function withBasePath(path: string): string {
-  const basePath = process.env.NODE_ENV === "production" ? "/dimasma0305.github.io" : ""
+  const basePath = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_BASE_PATH : ""
   return `${basePath}${path}`
 }
 
