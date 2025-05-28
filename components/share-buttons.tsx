@@ -12,12 +12,15 @@ interface ShareButtonsProps {
   slug: string
   excerpt?: string
   categories?: readonly string[]
+  type?: "posts" | "notes"
 }
 
-export function ShareButtons({ title, slug, excerpt, categories }: ShareButtonsProps) {
+export function ShareButtons({ title, slug, excerpt, categories, type = "posts" }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false)
 
-  const shareUrl = typeof window !== "undefined" ? `${window.location.origin}${withBasePath(`/posts/${slug}`)}` : `${withBasePath(`/posts/${slug}`)}`
+  const shareUrl = typeof window !== "undefined" 
+    ? `${window.location.origin}${withBasePath(`/${type}/${slug}`)}` 
+    : `${withBasePath(`/${type}/${slug}`)}`
 
   // Generate hashtags from categories
   const generateHashtags = () => {

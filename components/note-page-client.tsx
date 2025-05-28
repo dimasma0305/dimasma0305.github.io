@@ -162,6 +162,7 @@ const NoteHero = memo(({ note }: { note: Note }) => {
                 slug={note.slug}
                 excerpt={note.excerpt}
                 categories={note.categories}
+                type="notes"
               />
             </Suspense>
           </div>
@@ -467,6 +468,7 @@ export default function NotePageClient({ slug }: { slug: string }) {
                       slug={note.slug}
                       excerpt={note.excerpt}
                       categories={note.categories}
+                      type="notes"
                     />
                   </Suspense>
                 </CardContent>
