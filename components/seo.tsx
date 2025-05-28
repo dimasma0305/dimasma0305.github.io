@@ -130,15 +130,24 @@ export function generateNotesMetadata(): Metadata {
   return {
     title: "Notes | Technical Notes & Research",
     description: "Browse technical notes, research findings, and documentation on various topics including cybersecurity, programming, and system architecture.",
-    keywords: "technical notes, research notes, documentation, cybersecurity notes, programming notes, system architecture",
+    keywords: "technical notes, research notes, documentation, cybersecurity notes, programming notes, system architecture, CTF notes, security research, Dimas Maulana",
+    authors: [{ name: "Dimas Maulana" }],
+    creator: "Dimas Maulana",
+    publisher: "Dimas Maulana",
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    metadataBase: new URL(baseUrl),
     alternates: {
-      canonical: baseUrl,
+      canonical: `${baseUrl}/notes`,
     },
     openGraph: {
       type: 'website',
       url: `${baseUrl}/notes`,
       title: "Notes | Technical Notes & Research",
-      description: "Browse technical notes, research findings, and documentation on various topics.",
+      description: "Browse technical notes, research findings, and documentation on various topics including cybersecurity, programming, and system architecture.",
       siteName: 'Dimas Maulana Notes',
       images: [
         {
@@ -152,9 +161,20 @@ export function generateNotesMetadata(): Metadata {
     twitter: {
       card: 'summary_large_image',
       title: "Notes | Technical Notes & Research",
-      description: "Browse technical notes, research findings, and documentation.",
+      description: "Browse technical notes, research findings, and documentation on various topics.",
       creator: '@dimasma__',
       images: [`${baseUrl}/og-image.jpg`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
   }
 }
@@ -203,7 +223,7 @@ export function PostStructuredData({ post }: SEOProps) {
       sameAs: [
         "https://twitter.com/dimasma__",
         "https://github.com/dimasma0305",
-        "https://linkedin.com/in/dimas-maulana"
+        "https://linkedin.com/in/solderet"
       ],
       jobTitle: "Cybersecurity Researcher",
       worksFor: {
@@ -314,7 +334,7 @@ export function PostStructuredData({ post }: SEOProps) {
     sameAs: [
       "https://twitter.com/dimasma__",
       "https://github.com/dimasma0305",
-      "https://linkedin.com/in/dimas-maulana"
+      "https://linkedin.com/in/solderet"
     ],
     jobTitle: "Cybersecurity Researcher",
     description: "Cybersecurity researcher specializing in CTF challenges, vulnerability analysis, and security tutorials",
@@ -431,7 +451,7 @@ export function BlogStructuredData() {
       sameAs: [
         "https://twitter.com/dimasma__",
         "https://github.com/dimasma0305",
-        "https://linkedin.com/in/dimas-maulana"
+        "https://linkedin.com/in/solderet"
       ]
     },
     inLanguage: "en-US",
@@ -520,7 +540,7 @@ export function HomepageStructuredData() {
     sameAs: [
       "https://twitter.com/dimasma__",
       "https://github.com/dimasma0305",
-      "https://linkedin.com/in/dimas-maulana"
+      "https://linkedin.com/in/solderet"
     ],
     jobTitle: "Cybersecurity Researcher",
     description: "Cybersecurity enthusiast and CTF player specializing in penetration testing, vulnerability analysis, and security research",
@@ -626,7 +646,7 @@ export function HomepageStructuredData() {
     sameAs: [
       "https://twitter.com/dimasma__",
       "https://github.com/dimasma0305",
-      "https://linkedin.com/in/dimas-maulana"
+      "https://linkedin.com/in/solderet"
     ],
     contactPoint: {
       "@type": "ContactPoint",
@@ -750,7 +770,7 @@ export function NotesStructuredData() {
       sameAs: [
         "https://twitter.com/dimasma__",
         "https://github.com/dimasma0305",
-        "https://linkedin.com/in/dimas-maulana"
+        "https://linkedin.com/in/solderet"
       ]
     },
     inLanguage: "en-US",
@@ -795,12 +815,14 @@ export function NotesStructuredData() {
 }
 
 export function NoteStructuredData({ slug }: { slug: string }) {
+  const noteUrl = `${baseUrl}/notes/${slug}`
+  
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "@id": `${baseUrl}/notes/${slug}`,
+    "@id": noteUrl,
     headline: `Technical Note: ${slug}`,
-    url: `${baseUrl}/notes/${slug}`,
+    url: noteUrl,
     datePublished: new Date().toISOString(),
     author: {
       "@type": "Person",
@@ -815,7 +837,7 @@ export function NoteStructuredData({ slug }: { slug: string }) {
       sameAs: [
         "https://twitter.com/dimasma__",
         "https://github.com/dimasma0305",
-        "https://linkedin.com/in/dimas-maulana"
+        "https://linkedin.com/in/solderet"
       ],
       jobTitle: "Cybersecurity Researcher"
     },
@@ -829,10 +851,43 @@ export function NoteStructuredData({ slug }: { slug: string }) {
         url: `${baseUrl}/logo.png`,
         width: 512,
         height: 512
-      }
+      },
+      sameAs: [
+        "https://twitter.com/dimasma__",
+        "https://github.com/dimasma0305",
+        "https://linkedin.com/in/solderet"
+      ]
     },
     inLanguage: "en-US",
-    isAccessibleForFree: true
+    isAccessibleForFree: true,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": noteUrl,
+      url: noteUrl,
+      name: `Technical Note: ${slug}`,
+      inLanguage: "en-US",
+      isPartOf: {
+        "@type": "WebSite",
+        "@id": `${baseUrl}/#website`,
+        url: baseUrl,
+        name: "Dimas Maulana Notes"
+      }
+    },
+    genre: ["Technology", "Research", "Documentation"],
+    potentialAction: [
+      {
+        "@type": "ReadAction",
+        target: noteUrl
+      },
+      {
+        "@type": "ShareAction",
+        target: noteUrl,
+        agent: {
+          "@type": "Person",
+          name: "Reader"
+        }
+      }
+    ]
   }
 
   return (
@@ -863,16 +918,29 @@ export async function generateNoteMetadata(slug: string): Promise<Metadata> {
     }
 
     const noteUrl = `${baseUrl}/notes/${note.slug}`
+    const imageUrl = note.featured_image?.startsWith('http') 
+      ? note.featured_image 
+      : `${baseUrl}${note.featured_image || '/og-image.jpg'}`
     const description = note.excerpt
       ?.replace(/[#*_`]/g, '')
       ?.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
       ?.trim()
       ?.substring(0, 160) || 'Technical note'
 
+    // Generate keywords from categories, tags, and title
+    const keywords = [
+      ...(note.categories || []),
+      ...(note.tags || []),
+      'technical notes',
+      'documentation',
+      'research notes',
+      'Dimas Maulana'
+    ].join(', ')
+
     return {
       title: note.title,
       description,
-      keywords: [...(note.categories || []), ...(note.tags || []), 'technical notes', 'documentation'].join(', '),
+      keywords,
       authors: [{ name: note.properties?.author || 'Dimas Maulana' }],
       creator: note.properties?.author || 'Dimas Maulana',
       publisher: 'Dimas Maulana',
@@ -895,21 +963,21 @@ export async function generateNoteMetadata(slug: string): Promise<Metadata> {
         modifiedTime: note.last_edited_time,
         authors: [note.properties?.author || 'Dimas Maulana'],
         tags: [...(note.categories || []), ...(note.tags || [])],
-        images: note.featured_image ? [
+        images: [
           {
-            url: note.featured_image,
+            url: imageUrl,
             width: 1200,
             height: 630,
             alt: note.title,
           },
-        ] : undefined,
+        ],
       },
       twitter: {
         card: 'summary_large_image',
         title: note.title,
         description,
         creator: '@dimasma__',
-        images: note.featured_image ? [note.featured_image] : undefined,
+        images: [imageUrl],
       },
       robots: {
         index: true,
@@ -921,6 +989,13 @@ export async function generateNoteMetadata(slug: string): Promise<Metadata> {
           'max-image-preview': 'large',
           'max-snippet': -1,
         },
+      },
+      other: {
+        'article:author': note.properties?.author || 'Dimas Maulana',
+        'article:published_time': note.created_time,
+        'article:modified_time': note.last_edited_time,
+        'article:section': note.categories?.[0] || 'Technology',
+        'article:tag': (note.categories || []).concat(note.tags || []).join(','),
       },
     }
   } catch (error) {
