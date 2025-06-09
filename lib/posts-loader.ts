@@ -45,14 +45,22 @@ export type BlogStats = {
 }
 
 // Configuration constants
-const CACHE_DURATION = 60 * 60 * 24 // 24 hours
-const ENABLE_LOCAL_STORAGE_CACHE = true
-const LOCAL_STORAGE_KEY = "blogIndexCache"
+const CACHE_DURATION = 60 * 60 * 24 * 1000 // 24 hours in milliseconds
+const INDEX_CACHE_KEY = "blogIndex"
+const POST_CACHE_KEY_PREFIX = "blogPost_"
 
-// In-memory cache
-let indexMemoryCache: { data: PostIndex; timestamp: number } | null = null
+// In-memory cache structure
+interface CacheEntry<T> {
+  data: T
+  timestamp: number
+  expires: number
+}
 
-// Pending request promise (for deduplication)
+// In-memory caches
+const indexCache = new Map<string, CacheEntry<PostIndex>>()
+const postCache = new Map<string, CacheEntry<Post>>()
+
+// Pending request promises (for deduplication)
 let pendingIndexRequest: Promise<PostIndex> | null = null
 const pendingPostRequests = new Map<string, Promise<Post | null>>()
 
@@ -105,42 +113,42 @@ function extractCategories(posts: Post[]): string[] {
   return Array.from(categorySet).sort()
 }
 
-// Helper functions for localStorage caching
-function getCachedIndex(): PostIndex | null {
-  if (!ENABLE_LOCAL_STORAGE_CACHE || typeof localStorage === "undefined") {
+// Cache management functions
+function getCachedData<T>(cache: Map<string, CacheEntry<T>>, key: string): T | null {
+  const entry = cache.get(key)
+  if (!entry) {
     return null
   }
-  try {
-    const cached = localStorage.getItem(LOCAL_STORAGE_KEY)
-    return cached ? (JSON.parse(cached) as PostIndex) : null
-  } catch (error) {
-    console.error("Error reading from localStorage:", error)
+
+  const now = Date.now()
+  console.log("expires:", entry.expires)
+  if (now > entry.expires) {
+    cache.delete(key)
     return null
   }
+
+  return entry.data
 }
 
-function setCachedIndex(index: PostIndex): void {
-  if (!ENABLE_LOCAL_STORAGE_CACHE || typeof localStorage === "undefined") {
-    return
+function setCachedData<T>(cache: Map<string, CacheEntry<T>>, key: string, data: T): void {
+  const now = Date.now()
+  const entry: CacheEntry<T> = {
+    data,
+    timestamp: now,
+    expires: now + CACHE_DURATION
   }
-  try {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(index))
-  } catch (error) {
-    console.error("Error writing to localStorage:", error)
-  }
+  cache.set(key, entry)
+}
+
+function isCacheExpired(entry: CacheEntry<any>): boolean {
+  return Date.now() > entry.expires
 }
 
 // Optimized function to fetch index with caching and deduplication
 async function fetchIndex(): Promise<PostIndex> {
   // Check memory cache first
-  if (indexMemoryCache && Date.now() - indexMemoryCache.timestamp < CACHE_DURATION) {
-    return indexMemoryCache.data
-  }
-
-  // Check localStorage cache
-  const cachedIndex = getCachedIndex()
+  const cachedIndex = getCachedData(indexCache, INDEX_CACHE_KEY)
   if (cachedIndex) {
-    indexMemoryCache = { data: cachedIndex, timestamp: Date.now() }
     return cachedIndex
   }
 
@@ -154,7 +162,7 @@ async function fetchIndex(): Promise<PostIndex> {
     try {
       const response = await fetch(withBasePath("/blog-index.json"))
       if (!response.ok) {
-        throw new Error("Failed to fetch blog index")
+        throw new Error(`Failed to fetch blog index: ${response.status} ${response.statusText}`)
       }
 
       const blogIndex = await response.json()
@@ -189,10 +197,12 @@ async function fetchIndex(): Promise<PostIndex> {
       }
 
       // Cache the results
-      setCachedIndex(indexData)
-      indexMemoryCache = { data: indexData, timestamp: Date.now() }
+      setCachedData(indexCache, INDEX_CACHE_KEY, indexData)
 
       return indexData
+    } catch (error) {
+      console.error("Error fetching blog index:", error)
+      throw error
     } finally {
       pendingIndexRequest = null
     }
@@ -203,6 +213,13 @@ async function fetchIndex(): Promise<PostIndex> {
 
 // Highly optimized function to fetch individual posts with request deduplication
 export async function fetchPostBySlug(slug: string): Promise<Post | null> {
+  // Check cache first
+  const cacheKey = `${POST_CACHE_KEY_PREFIX}${slug}`
+  const cachedPost = getCachedData(postCache, cacheKey)
+  if (cachedPost) {
+    return cachedPost
+  }
+
   // Check if there's already a pending request for this slug
   if (pendingPostRequests.has(slug)) {
     return pendingPostRequests.get(slug)!
@@ -222,7 +239,7 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
       // Fetch the post.json file
       const response = await fetch(withBasePath(`/posts/${postFromIndex.folder}/post.json`))
       if (!response.ok) {
-        throw new Error(`Failed to fetch post ${slug}`)
+        throw new Error(`Failed to fetch post ${slug}: ${response.status} ${response.statusText}`)
       }
 
       const postData = await response.json()
@@ -257,7 +274,7 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
         slug: postFromIndex.slug,
         title: notionPost.title || notionPost.properties.title || "Untitled",
         excerpt,
-        content: processedHtml, // No sanitization, just safe HTML entity encoding
+        content: processedHtml,
         createdAt: notionPost.created_time,
         updatedAt: notionPost.last_edited_time,
         coverImage: notionPost.featured_image || "",
@@ -278,6 +295,9 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
             }
           : undefined,
       }
+
+      // Cache the post
+      setCachedData(postCache, cacheKey, post)
 
       return post
     } catch (error) {
@@ -324,23 +344,71 @@ export async function getBlogStats(): Promise<BlogStats | null> {
 
 // Function to invalidate all caches
 export function invalidateCache(): void {
-  // Clear memory cache
-  indexMemoryCache = null
-
-  // Clear localStorage cache
-  if (ENABLE_LOCAL_STORAGE_CACHE && typeof localStorage !== "undefined") {
-    try {
-      localStorage.removeItem(LOCAL_STORAGE_KEY)
-    } catch (error) {
-      console.error("Error clearing localStorage cache:", error)
-    }
-  }
+  // Clear memory caches
+  indexCache.clear()
+  postCache.clear()
 
   // Clear any pending requests
   pendingIndexRequest = null
   pendingPostRequests.clear()
 
   console.log("Blog cache invalidated")
+}
+
+// Function to get cache statistics
+export function getCacheStats() {
+  const now = Date.now()
+  
+  const indexCacheEntry = indexCache.get(INDEX_CACHE_KEY)
+  const indexCacheStatus = indexCacheEntry 
+    ? (isCacheExpired(indexCacheEntry) ? 'expired' : 'valid')
+    : 'empty'
+
+  const postCacheEntries = Array.from(postCache.entries())
+  const validPostCacheEntries = postCacheEntries.filter(([_, entry]) => !isCacheExpired(entry))
+  
+  return {
+    indexCache: {
+      status: indexCacheStatus,
+      cachedAt: indexCacheEntry?.timestamp ? new Date(indexCacheEntry.timestamp).toISOString() : null,
+      expiresAt: indexCacheEntry?.expires ? new Date(indexCacheEntry.expires).toISOString() : null
+    },
+    postCache: {
+      totalEntries: postCache.size,
+      validEntries: validPostCacheEntries.length,
+      expiredEntries: postCache.size - validPostCacheEntries.length,
+      cachedSlugs: validPostCacheEntries.map(([key]) => key.replace(POST_CACHE_KEY_PREFIX, ''))
+    },
+    pendingRequests: {
+      indexRequest: !!pendingIndexRequest,
+      postRequests: Array.from(pendingPostRequests.keys())
+    }
+  }
+}
+
+// Function to clean expired cache entries
+export function cleanExpiredCache(): void {
+  const now = Date.now()
+  let cleanedCount = 0
+
+  // Clean index cache
+  const indexEntry = indexCache.get(INDEX_CACHE_KEY)
+  if (indexEntry && isCacheExpired(indexEntry)) {
+    indexCache.delete(INDEX_CACHE_KEY)
+    cleanedCount++
+  }
+
+  // Clean post cache
+  for (const [key, entry] of postCache.entries()) {
+    if (isCacheExpired(entry)) {
+      postCache.delete(key)
+      cleanedCount++
+    }
+  }
+
+  if (cleanedCount > 0) {
+    console.log(`Cleaned ${cleanedCount} expired cache entries`)
+  }
 }
 
 // Function to prefetch posts for performance optimization
@@ -382,5 +450,17 @@ export async function fetchAllPosts(): Promise<Post[]> {
   } catch (error) {
     console.error("Error fetching all posts:", error)
     return []
+  }
+}
+
+// Auto-cleanup function to run periodically
+export function startCacheCleanup(intervalMinutes: number = 60): () => void {
+  const intervalId = setInterval(() => {
+    cleanExpiredCache()
+  }, intervalMinutes * 60 * 1000)
+
+  // Return cleanup function
+  return () => {
+    clearInterval(intervalId)
   }
 }
