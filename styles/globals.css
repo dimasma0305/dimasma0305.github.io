@@ -92,3 +92,55 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Notion Link Preview Styles */
+.notion-link-preview {
+  @apply my-6 max-w-full;
+}
+
+.notion-link-preview-link {
+  @apply block no-underline transition-all duration-200 ease-in-out;
+  @apply border border-border rounded-lg overflow-hidden;
+  @apply hover:border-muted-foreground hover:shadow-md hover:bg-muted/50;
+  @apply bg-card text-card-foreground;
+  @apply cursor-pointer;
+}
+
+.notion-link-preview-content {
+  @apply p-4;
+}
+
+.notion-link-preview-header {
+  @apply flex items-center justify-between mb-3;
+}
+
+.notion-link-preview-header > div:first-child {
+  @apply flex items-center gap-2;
+}
+
+.notion-link-preview-favicon {
+  @apply w-4 h-4 rounded-sm flex-shrink-0;
+}
+
+.notion-link-preview-domain {
+  @apply text-sm text-muted-foreground font-medium;
+}
+
+.notion-link-preview-external-icon {
+  @apply text-muted-foreground opacity-60 transition-opacity duration-200;
+}
+
+.notion-link-preview-link:hover .notion-link-preview-external-icon {
+  @apply opacity-100;
+}
+
+.notion-link-preview-title {
+  @apply text-sm font-medium text-foreground mb-2 leading-relaxed;
+  @apply break-all;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.notion-link-preview-description {
+  @apply text-xs text-muted-foreground italic;
+}

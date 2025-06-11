@@ -99,6 +99,16 @@ export function sanitizeUrl(url: string): string {
   return ''
 }
 
+// Utility function to extract domain from URL
+export function extractDomain(url: string): string {
+  try {
+    const parsedUrl = new URL(url)
+    return parsedUrl.hostname
+  } catch {
+    return url
+  }
+}
+
 // Process rich text content
 export function processRichText(richText: RichText[]): string {
   if (!richText || !Array.isArray(richText)) {
@@ -337,7 +347,19 @@ export async function convertNotionBlockToHtml(block: NotionBlock, folder: strin
         <summary class="notion-toggle-summary">${toggleText}</summary>
         <div class="notion-toggle-content">${toggleContent}</div>
       </details>`
-
+    case "link_preview":
+      return `
+        <div key="${block.id}" className="mb-4 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+          <a
+            href="${block.content?.url}"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+          >
+            ${block.content?.url}
+          </a>
+        </div>
+      `
     default:
       // Generic fallback for any block type that has children but isn't explicitly handled
       if (block.children && Array.isArray(block.children)) {
