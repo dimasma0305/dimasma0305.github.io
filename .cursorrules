@@ -1,0 +1,161 @@
+# Cursor Rules for Dimas Maulana's Blog
+
+## Project Overview
+This is a personal blog and portfolio website built with Next.js 14+ App Router, TypeScript, and Tailwind CSS. The site features:
+- Blog posts with categories, search, and SEO
+- Notes system (integrated with Notion)
+- Personal portfolio sections (hero, projects, CTF, experience, skills)
+- Responsive design with dark/light theme support
+
+## Tech Stack
+- **Framework**: Next.js 14+ with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **UI Components**: Radix UI primitives
+- **Content**: MDX for blog posts, Notion API for notes
+- **Deployment**: GitHub Pages (static export)
+
+## Project Structure
+```
+├── app/                    # Next.js App Router pages
+│   ├── blog/              # Blog posts and categories
+│   ├── notes/             # Notes from Notion
+│   ├── posts/             # Individual blog post pages
+│   ├── about/             # About page
+│   └── search/            # Search functionality
+├── components/            # React components
+│   ├── ui/               # shadcn/ui components (Radix UI based)
+│   ├── *-section.tsx     # Homepage sections
+│   ├── *-page-client.tsx # Client-side page components
+│   └── *.tsx             # Other components
+├── lib/                   # Utilities and configurations
+│   ├── site-config.ts    # Site configuration
+│   ├── utils.ts          # Utility functions
+│   ├── *-loader.ts       # Data loading utilities
+│   └── *-client.ts       # Client-side utilities
+├── hooks/                 # Custom React hooks
+├── styles/                # Global styles
+├── public/                # Static assets
+└── out/                   # Static export output (GitHub Pages deployment)
+```
+
+## Coding Standards
+
+### TypeScript
+- Use strict TypeScript configuration
+- Prefer type imports: `import type { SiteConfig } from '@/lib/site-config'`
+- Use `const` assertions for immutable objects
+- Define proper types for all props and functions
+
+### React Components
+- Use functional components with hooks
+- Prefer `tsx` extension for React components
+- Use PascalCase for component names
+- Client components should have `'use client'` directive
+- Follow the pattern: `ComponentName.tsx` or `component-name.tsx`
+
+### Styling
+- Use Tailwind CSS classes for styling
+- Follow mobile-first responsive design
+- Use CSS variables for theme colors
+- Leverage shadcn/ui components for consistency
+- Use `clsx` or `cn` utility for conditional classes
+
+### File Naming Conventions
+- Components: `PascalCase.tsx` or `kebab-case.tsx`
+- Pages: `page.tsx` (App Router convention)
+- Layouts: `layout.tsx`
+- Utilities: `kebab-case.ts`
+- Types: `types.ts` or inline with usage
+
+## Key Patterns
+
+### Component Structure
+```typescript
+'use client' // if client component
+
+import { ComponentProps } from 'react'
+import { cn } from '@/lib/utils'
+
+interface MyComponentProps extends ComponentProps<'div'> {
+  // component-specific props
+}
+
+export function MyComponent({ className, ...props }: MyComponentProps) {
+  return (
+    <div className={cn('base-styles', className)} {...props}>
+      {/* content */}
+    </div>
+  )
+}
+```
+
+### Data Loading
+- Use server components for data fetching when possible
+- Client components for interactive features
+- Implement proper loading states and error handling
+- Use the established loader patterns in `lib/`
+
+### SEO & Meta
+- Every page should have proper SEO metadata
+- Use the `seo.tsx` component for consistent meta tags
+- Implement structured data where appropriate
+- Follow Next.js App Router metadata conventions
+
+## Component Libraries
+- **UI Components**: Use shadcn/ui components from `components/ui/`
+- **Icons**: Lucide React icons preferred
+- **Animations**: Framer Motion for complex animations
+- **Forms**: React Hook Form with Zod validation
+- **State Management**: React state + Context when needed
+
+## Content Management
+- Blog posts: MDX files with frontmatter
+- Notes: Notion API integration
+- Static content: Direct in components
+- Images: Optimized with Next.js Image component
+
+## Performance Considerations
+- Use Next.js Image component for images
+- Implement lazy loading for heavy components
+- Use React.memo for expensive computations
+- Leverage Next.js static generation where possible
+
+## Common Utilities
+- `cn()`: Tailwind class merging utility
+- `formatDate()`: Date formatting
+- `slugify()`: URL slug generation
+- Site config: Import from `@/lib/site-config`
+
+## Development Guidelines
+- Follow the existing code patterns
+- Test components in isolation
+- Use TypeScript strict mode
+- Implement proper error boundaries
+- Consider accessibility (a11y) in all components
+
+## API & Data
+- Static content generation for blog posts
+- Notion API for notes (see `lib/notes-client.ts`)
+- Client-side search functionality
+- SEO-friendly URLs and metadata
+
+## Deployment
+- Built for static export to GitHub Pages
+- All routes must be statically exportable
+- Images and assets properly optimized
+- Environment variables for API keys
+
+## Key Commands
+- `npm run dev`: Development server
+- `npm run build`: Production build
+- `npm run lint`: ESLint check
+- `npm run refresh-content`: Update blog content
+
+When making changes:
+1. Maintain consistency with existing patterns
+2. Ensure TypeScript compliance
+3. Test responsive design
+4. Verify SEO metadata
+5. Check accessibility
+6. Test both light and dark themes 
