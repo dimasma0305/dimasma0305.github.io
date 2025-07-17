@@ -95,7 +95,7 @@ jobs:
       run: |
         echo "🎉 Deployment successful!"
         echo "📍 Site URL: ${{ steps.deployment.outputs.page_url }}"
-        echo "🗺️ Sitemap: ${{ steps.deployment.outputs.page_url }}sitemap.xml"
+        echo "🗺️ Sitemap: ${{ steps.deployment.outputs.page_url }}sitemap-indexs.xml"
         echo "🤖 Robots.txt: ${{ steps.deployment.outputs.page_url }}robots.txt"
         echo ""
         echo "📋 Next steps for SEO:"
