@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Github, Twitter, Linkedin, Mail, MapPin, FileText } from "lucide-react"
+import { Github, Twitter, Linkedin, Mail, MapPin, FileText, Wrench } from "lucide-react"
 import { withBasePath } from "@/lib/utils"
 
 export function Footer() {
@@ -35,6 +35,12 @@ export function Footer() {
                 <Link href={"/blog"} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
                   <FileText className="w-4 h-4" />
                   Blog
+                </Link>
+              </li>
+              <li>
+                <Link href={"/tools"} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                  <Wrench className="w-4 h-4" />
+                  Tools
                 </Link>
               </li>
             </ul>

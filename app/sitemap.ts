@@ -40,6 +40,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.6,
     },
+    {
+      url: `${baseUrl}/tools`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/tools/ctf-calculator`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
   ]
 
   // Dynamic blog posts

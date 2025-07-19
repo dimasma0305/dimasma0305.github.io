@@ -6,7 +6,7 @@ import { useState, useEffect, useRef, lazy, Suspense } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
-import { Menu, X, Shield, BookOpen, Search } from "lucide-react"
+import { Menu, X, Shield, BookOpen, Search, Wrench } from "lucide-react"
 import { handleAnchorNavigation } from "@/lib/scroll-utils"
 
 import { Button } from "@/components/ui/button"
@@ -23,6 +23,7 @@ const navItems = [
   { name: "CTF", path: "/#ctf", icon: <Shield className="w-4 h-4" /> },
   { name: "Blog", path: "/blog", icon: <BookOpen className="w-4 h-4" /> },
   { name: "Notes", path: "/notes", icon: <BookOpen className="w-4 h-4" /> },
+  { name: "Tools", path: "/tools", icon: <Wrench className="w-4 h-4" /> },
   { name: "Search", path: "/search", icon: <Search className="w-4 h-4" /> },
 ]
 
