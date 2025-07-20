@@ -30,40 +30,7 @@ export default function CTFCalculatorPage() {
 
 
 
-      {/* Difficulty Scale */}
-      <div className="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <h2 className="text-xl font-semibold mb-4">Difficulty Scale</h2>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="text-center">
-            <div className="text-2xl mb-1">★</div>
-            <div className="font-medium">Baby</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">1.0-2.0</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl mb-1">★★</div>
-            <div className="font-medium">Easy</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">2.0-3.0</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl mb-1">★★★</div>
-            <div className="font-medium">Medium</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">3.0-4.0</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl mb-1">★★★★</div>
-            <div className="font-medium">Hard</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">4.0-5.0</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl mb-1">★★★★★</div>
-            <div className="font-medium">Insane</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">5.0+</div>
-          </div>
-        </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
-          Unfilled stars (☆) indicate challenges that were easier than expected due to unintended solutions.
-        </p>
-      </div>
+
 
       {/* Calculator */}
       <div className="mb-8">

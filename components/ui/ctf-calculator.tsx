@@ -7,15 +7,29 @@ import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Calculator, RotateCcw, Star, HelpCircle, Copy, Check } from "lucide-react"
+import { Calculator, RotateCcw, Star, HelpCircle, Copy, Check, AlertTriangle, Shield, Zap } from "lucide-react"
 
 interface RangeValues {
   [key: string]: number
 }
 
+interface CVSSMetrics {
+  [key: string]: string
+}
+
+// CVSS-like severity levels
+const cvssSeverityLevels = [
+  { name: "None", min: 0, max: 0.1, color: "text-gray-500", bgColor: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200" },
+  { name: "Low", min: 0.1, max: 3.9, color: "text-blue-500", bgColor: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" },
+  { name: "Medium", min: 4.0, max: 6.9, color: "text-yellow-500", bgColor: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" },
+  { name: "High", min: 7.0, max: 8.9, color: "text-orange-500", bgColor: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200" },
+  { name: "Critical", min: 9.0, max: 10.0, color: "text-red-500", bgColor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" },
+]
+
 const criteriaData = [
   {
     name: 'Multifaceted Skills Needed',
+    shortName: 'MSN',
     description: (
       <div>
         <h3 className="font-bold text-lg mb-4">Multifaceted Skills Needed</h3>
@@ -31,6 +45,7 @@ const criteriaData = [
   },
   {
     name: 'Complex Code/Payload/Bypass',
+    shortName: 'CCP',
     description: (
       <div>
         <h3 className="font-bold text-lg mb-4">Complex Code/Payload/Bypass</h3>
@@ -46,6 +61,7 @@ const criteriaData = [
   },
   {
     name: 'Multiple Steps of Complexity',
+    shortName: 'MSC',
     description: (
       <div>
         <h3 className="font-bold text-lg mb-4">Multiple Steps of Complexity</h3>
@@ -61,6 +77,7 @@ const criteriaData = [
   },
   {
     name: 'Dynamic Elements and Updates',
+    shortName: 'DEU',
     description: (
       <div>
         <h3 className="font-bold text-lg mb-4">Dynamic Elements and Updates</h3>
@@ -76,6 +93,7 @@ const criteriaData = [
   },
   {
     name: 'Hidden Attack Vectors or Non-Traditional Attack Vectors',
+    shortName: 'HAV',
     description: (
       <div>
         <h3 className="font-bold text-lg mb-4">Hidden Attack Vectors or Non-Traditional Attack Vectors</h3>
@@ -98,6 +116,41 @@ const difficulties = [
   { name: "hard", color: "text-red-400", bgColor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" },
   { name: "insane", color: "text-red-600", bgColor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" },
 ]
+
+// CVSS-like scoring function
+function calculateCVSSScore(rangeValues: RangeValues): number {
+  const values = Object.values(rangeValues)
+  if (values.length === 0) return 0
+  
+  // Convert 1-5 scale to 0-10 scale (CVSS-like)
+  const cvssValues = values.map(v => (v - 1) * 2.5)
+  
+  // Calculate weighted average (similar to CVSS)
+  const weights = [0.25, 0.25, 0.2, 0.15, 0.15] // Weighted importance
+  let weightedSum = 0
+  
+  cvssValues.forEach((value, index) => {
+    weightedSum += value * (weights[index] || 0.2)
+  })
+  
+  return Math.min(10, Math.max(0, weightedSum))
+}
+
+// Get CVSS severity level
+function getCVSSSeverity(score: number) {
+  return cvssSeverityLevels.find(level => score >= level.min && score <= level.max) || cvssSeverityLevels[0]
+}
+
+// Generate CVSS-like vector string
+function generateVectorString(rangeValues: RangeValues): string {
+  const vectorParts = criteriaData.map(criteria => {
+    const value = rangeValues[criteria.name] || 1
+    const level = value === 1 ? 'L' : value === 2 ? 'L' : value === 3 ? 'M' : value === 4 ? 'H' : 'C'
+    return `${criteria.shortName}:${level}`
+  })
+  
+  return `CTF:1.0/${vectorParts.join('/')}`
+}
 
 function RangeInput({ 
   label, 
@@ -223,14 +276,96 @@ export function CTFCalculator() {
   const [resultPercentage, setResultPercentage] = useState(20)
   const [resultStars, setResultStars] = useState(1)
   const [copied, setCopied] = useState(false)
+  
+  // CVSS-like calculations
+  const cvssScore = calculateCVSSScore(rangeValues)
+  const cvssSeverity = getCVSSSeverity(cvssScore)
+  const vectorString = generateVectorString(rangeValues)
 
+  // Parse vector parameter from URL
+  const parseVectorFromURL = (vectorStr: string): RangeValues => {
+    const parsedValues: RangeValues = {}
+    
+    try {
+      // URL decode the vector string first
+      const decodedVector = decodeURIComponent(vectorStr)
+      console.log('Decoded vector:', decodedVector)
+      
+      // Remove CTF:1.0/ prefix if present
+      const cleanVector = decodedVector.replace(/^CTF:1\.0\//, '')
+      console.log('Clean vector:', cleanVector)
+      
+      // Split by / and parse each metric
+      const metrics = cleanVector.split('/')
+      console.log('Metrics:', metrics)
+      
+      metrics.forEach(metric => {
+        const [shortName, level] = metric.split(':')
+        console.log('Parsing metric:', shortName, level)
+        
+        // Find the criteria by short name
+        const criteria = criteriaData.find(c => c.shortName === shortName)
+        if (criteria) {
+          // Convert level back to 1-5 scale
+          let value = 1
+          switch (level) {
+            case 'L':
+              value = 1 // or 2, but we'll use 1 for Low
+              break
+            case 'M':
+              value = 3
+              break
+            case 'H':
+              value = 4
+              break
+            case 'C':
+              value = 5
+              break
+            default:
+              value = 1
+          }
+          parsedValues[criteria.name] = value
+          console.log('Set', criteria.name, 'to', value)
+        } else {
+          console.log('Criteria not found for shortName:', shortName)
+        }
+      })
+    } catch (error) {
+      console.error('Error parsing vector string:', error)
+    }
+    
+    console.log('Final parsed values:', parsedValues)
+    return parsedValues
+  }
+
+  // Initialize default values first
   useEffect(() => {
-    // Initialize all values to 1
     const initialValues: RangeValues = {}
     criteriaData.forEach(criteria => {
       initialValues[criteria.name] = 1
     })
     setRangeValues(initialValues)
+  }, [])
+
+  // Then check for URL parameters after component mounts
+  useEffect(() => {
+    // Check if we're in the browser environment
+    if (typeof window === 'undefined') return
+
+    // Check for vector parameter in URL
+    const urlParams = new URLSearchParams(window.location.search)
+    const vectorParam = urlParams.get('vector')
+    console.log('Vector param from URL:', vectorParam)
+    
+    if (vectorParam) {
+      // Parse vector and set values
+      const parsedValues = parseVectorFromURL(vectorParam)
+      console.log('Parsed values:', parsedValues)
+      if (Object.keys(parsedValues).length > 0) {
+        console.log('Setting range values to:', parsedValues)
+        setRangeValues(parsedValues)
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -289,17 +424,17 @@ export function CTFCalculator() {
 - **Rating:** ${stars} (${currentDifficulty.name.toUpperCase()})
 - **Percentage:** ${resultPercentage.toFixed(1)}%
 
+## CVSS-like Scoring
+- **CVSS Score:** ${cvssScore.toFixed(1)}/10.0
+- **Severity:** ${cvssSeverity.name}
+- **Vector String:** ${vectorString}
+
 ## Criteria Breakdown
 ${tableHeader}
 ${tableSeparator}
 ${tableRows}
 
-## Legend
-- ★ = Filled star
-- ☆ = Empty star
-- Rating scale: 1 (Baby) → 5 (Insane)
-
-Calculated using: https://dimasma0305.github.io/tools/ctf-calculator`
+Calculated using: https://dimasma0305.github.io/tools/ctf-calculator?vector=${encodeURIComponent(vectorString)}`
 
     try {
       await navigator.clipboard.writeText(resultText)
@@ -410,6 +545,14 @@ Calculated using: https://dimasma0305.github.io/tools/ctf-calculator`
                   <strong>Formula:</strong> Average of all criteria ratings
                 </div>
                 
+                {/* Vector String */}
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">Vector String:</div>
+                  <div className="p-3 bg-muted rounded-md font-mono text-xs break-all">
+                    {vectorString}
+                  </div>
+                </div>
+                
                 {/* Criteria Table */}
                 <Table>
                   <TableHeader>
@@ -420,25 +563,30 @@ Calculated using: https://dimasma0305.github.io/tools/ctf-calculator`
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {criteriaData.map((criteria) => (
-                      <TableRow key={criteria.name}>
-                        <TableCell className="font-medium">
-                          <div className="max-w-xs">
-                            <div className="font-semibold text-sm">{criteria.name}</div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Badge variant="outline" className="font-mono">
-                            {rangeValues[criteria.name] || 1}/5
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <div className="flex justify-center">
-                            {renderSmallStars(rangeValues[criteria.name] || 1)}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {criteriaData.map((criteria) => {
+                      const value = rangeValues[criteria.name] || 1
+                      
+                      return (
+                        <TableRow key={criteria.name}>
+                          <TableCell className="font-medium">
+                            <div className="max-w-xs">
+                              <div className="font-semibold text-sm">{criteria.name}</div>
+                              <div className="text-xs text-muted-foreground">{criteria.shortName}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <Badge variant="outline" className="font-mono">
+                              {value}/5
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <div className="flex justify-center">
+                              {renderSmallStars(value)}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableBody>
                 </Table>
                 
