@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "refresh-content": "node scripts/generate-blog-content.js && node scripts/generate-blog-index.js"
+    "refresh-content": "node scripts/generate-blog-content.js && node scripts/generate-blog-index.js && node scripts/generate-rss.js",
+    "generate-rss": "node scripts/generate-rss.js"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
