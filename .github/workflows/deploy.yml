@@ -67,7 +67,7 @@ jobs:
       run: npm run build
       env:
         NODE_ENV: production
-        NEXT_PUBLIC_BASE_URL: "https://dimasma0305.github.io"
+        NEXT_PUBLIC_BASE_URL: "https://dimasc.tf"
         NEXT_PUBLIC_BASE_PATH: ""
 
     - name: Setup Pages
