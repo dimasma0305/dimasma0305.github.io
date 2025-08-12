@@ -82,7 +82,7 @@ const PostsGrid = memo(({ posts }: { posts: Post[] }) => {
 
   return (
     <>
-      <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
         {displayedPosts.map((post) => (
           <PostCard key={post.id} post={post} />
         ))}

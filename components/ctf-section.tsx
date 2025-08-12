@@ -261,7 +261,7 @@ export function CTFSection() {
             </motion.p>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-2">
+              <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
             <div className="w-full">
               <div className="flex items-center gap-3 mb-6">
                 <Trophy className="w-6 h-6 text-primary" />
@@ -411,7 +411,7 @@ export function CTFSection() {
                 <h3 className="text-xl sm:text-2xl font-semibold neon-text">CTF Guilds</h3>
               </div>
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                 {teams.slice(0, 3).map((team, index) => (
                   <motion.div
                     key={index}
@@ -455,7 +455,7 @@ export function CTFSection() {
                         </div>
 
                         <div className="flex flex-wrap gap-1">
-                          {team.specialties.map((specialty) => (
+                          {team.specialties.slice(0, 6).map((specialty) => (
                             <Badge 
                               key={specialty} 
                               variant="secondary" 
@@ -464,6 +464,9 @@ export function CTFSection() {
                               {specialty}
                             </Badge>
                           ))}
+                          {team.specialties.length > 6 && (
+                            <Badge variant="outline" className="text-xs">+{team.specialties.length - 6} more</Badge>
+                          )}
                         </div>
 
                         <a href={team.link} target="_blank" rel="noopener noreferrer" className="mt-3 block w-full">
@@ -489,7 +492,7 @@ export function CTFSection() {
                       <ChevronDown className="w-4 h-4" />
                     </span>
                   </summary>
-                  <div className="space-y-4 mt-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mt-4">
                     {teams.slice(3).map((team, index) => (
                       <Card key={index + 3} className="relative overflow-hidden">
                         <CardHeader className="space-y-1 p-3">
@@ -524,7 +527,7 @@ export function CTFSection() {
                           </div>
 
                           <div className="flex flex-wrap gap-1">
-                            {team.specialties.map((specialty) => (
+                            {team.specialties.slice(0, 6).map((specialty) => (
                               <Badge 
                                 key={specialty} 
                                 variant="secondary" 
@@ -533,6 +536,9 @@ export function CTFSection() {
                                 {specialty}
                               </Badge>
                             ))}
+                            {team.specialties.length > 6 && (
+                              <Badge variant="outline" className="text-xs">+{team.specialties.length - 6} more</Badge>
+                            )}
                           </div>
 
                           <a href={team.link} target="_blank" rel="noopener noreferrer" className="mt-3 block w-full">

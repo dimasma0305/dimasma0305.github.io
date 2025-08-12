@@ -8,7 +8,7 @@ const siteConfig = {
   url: "https://dimasma0305.github.io",
   author: {
     name: "Dimas Maulana",
-    email: "dimas@example.com"
+    email: "dimasmaulana0305@gmail.com"
   }
 }
 

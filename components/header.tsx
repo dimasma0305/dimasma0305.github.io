@@ -184,7 +184,7 @@ export function Header() {
         <div className="hidden md:flex md:items-center md:space-x-1">
           <nav className="flex items-center">
             {navItems.map((item) => (
-              <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
+              <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)} aria-label={item.name} aria-current={isNavItemActive(item) ? 'page' : undefined}>
                 <Button
                   variant="ghost"
                   className={`group relative overflow-hidden ${isNavItemActive(item) ? "text-primary" : ""}`}
@@ -232,7 +232,7 @@ export function Header() {
           <div className="container px-4 py-4 mx-auto">
             <nav className="flex flex-col space-y-1">
               {navItems.map((item) => (
-                <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
+              <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)} aria-label={item.name} aria-current={isNavItemActive(item) ? 'page' : undefined}>
                   <Button
                     variant="ghost"
                     className={`w-full justify-start ${isNavItemActive(item) ? "bg-primary/20 text-primary" : ""}`}

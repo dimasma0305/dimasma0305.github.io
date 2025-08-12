@@ -128,7 +128,7 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
       )}
 
       {filteredPosts.length > 0 ? (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {filteredPosts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}

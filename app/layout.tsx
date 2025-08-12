@@ -144,10 +144,15 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Dimas Maulana" />
+        {/* RSS feed */}
+        <link rel="alternate" type="application/rss+xml" title="Dimas Maulana RSS" href={`${baseUrl}/rss.xml`} />
       </head>
       <body
         className={`${inter.variable} ${roboto.variable} ${merriweather.variable} ${firaCode.variable} font-roboto antialiased`}
       >
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:bg-primary focus:text-primary-foreground focus:px-3 focus:py-2 focus:rounded">
+          Skip to content
+        </a>
         <ThemeProvider 
           attribute="class" 
           defaultTheme="dark" 
@@ -156,7 +161,7 @@ export default function RootLayout({
         >
           <div className="flex flex-col min-h-screen">
             <Header />
-            <main className="flex-1">
+            <main id="main-content" className="flex-1">
               {children}
             </main>
             <Suspense fallback={null}>
