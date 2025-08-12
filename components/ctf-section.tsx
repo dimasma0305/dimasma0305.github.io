@@ -586,10 +586,10 @@ export function CTFSection() {
               </div>
               <h3 className="mb-2 text-xl font-semibold">Join My CTF Adventure!</h3>
               <p className="mb-4 text-sm text-muted-foreground">
-                I'm always looking for new teammates and collaborators for CTF competitions and security research.
+                I'm always looking for new friends and opportunities.
               </p>
-              <a href="mailto:dimasmaulana0305@gmail.com" className="inline-flex items-center text-primary hover:underline text-sm">
-                Send a request to join →
+              <a className="inline-flex items-center text-primary hover:underline text-sm">
+                Send a message to me on discord @dimasmaulana
               </a>
             </div>
           </motion.div>
