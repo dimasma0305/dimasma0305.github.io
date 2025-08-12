@@ -16,7 +16,8 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Mdx } from "@/components/mdx"
+import dynamic from "next/dynamic"
+const Mdx = dynamic(() => import("@/components/mdx").then(m => m.Mdx), { ssr: false })
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { NotionLinkButton } from "@/components/notion-link-button"
 
