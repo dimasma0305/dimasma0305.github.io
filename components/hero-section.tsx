@@ -99,7 +99,7 @@ export function HeroSection() {
       className="relative overflow-hidden bg-gradient-to-b from-black to-background"
       ref={containerRef}
       style={{ 
-        minHeight: "100dvh",
+        minHeight: "100vh",
         width: "100%",
         padding: "2rem 0",
         display: "flex",

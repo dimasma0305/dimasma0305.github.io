@@ -86,7 +86,7 @@ const BlogSection = memo(({ posts, loading }: { posts: any[], loading: boolean }
             <LoadingSpinner />
           </div>
         ) : posts.length > 0 ? (
-          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {posts.slice(0, 3).map((post) => (
               <PostCard key={post.id} post={post} />
             ))}

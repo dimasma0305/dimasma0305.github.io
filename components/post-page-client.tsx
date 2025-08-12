@@ -248,13 +248,13 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
         {/* Cover Image */}
         {post.coverImage && (
           <div className="container max-w-7xl mx-auto px-4 py-6 lg:py-8 overflow-x-hidden">
-            <div className="relative w-full aspect-[2/1] sm:aspect-[5/2] md:aspect-[3/1] overflow-hidden rounded-xl shadow-2xl">
+            <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] xl:h-[600px] overflow-hidden rounded-xl shadow-2xl">
               <Image
                 src={post.coverImage || "/placeholder.svg"}
                 alt={post.title}
-                fill
+                width={1200}
+                height={600}
                 className="object-cover w-full h-full"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
               />
             </div>
           </div>
