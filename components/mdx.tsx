@@ -5,8 +5,40 @@ import { useEffect, useRef } from "react"
 import { useLazyLoading } from "@/hooks/use-lazy-loading"
 import { initializeLazyLoadingTimer } from "@/lib/scroll-utils"
 
+// Import Prism.js for syntax highlighting
 import Prism from 'prismjs'
+import 'prismjs/themes/prism-tomorrow.css' // Dark theme
 
+// Load core components first
+import 'prismjs/components/prism-markup'
+import 'prismjs/components/prism-css'
+import 'prismjs/components/prism-clike'
+import 'prismjs/components/prism-javascript'
+
+// Load language components in dependency order
+import 'prismjs/components/prism-typescript'
+import 'prismjs/components/prism-jsx'
+import 'prismjs/components/prism-tsx'
+import 'prismjs/components/prism-python'
+import 'prismjs/components/prism-bash'
+import 'prismjs/components/prism-shell-session'
+import 'prismjs/components/prism-json'
+import 'prismjs/components/prism-yaml'
+import 'prismjs/components/prism-markdown'
+import 'prismjs/components/prism-sql'
+import 'prismjs/components/prism-java'
+import 'prismjs/components/prism-c'
+import 'prismjs/components/prism-cpp'
+import 'prismjs/components/prism-csharp'
+import 'prismjs/components/prism-go'
+import 'prismjs/components/prism-rust'
+import 'prismjs/components/prism-ruby'
+import 'prismjs/components/prism-docker'
+import 'prismjs/components/prism-nginx'
+
+// Load PHP last as it has complex dependencies
+import 'prismjs/components/prism-markup-templating'
+import 'prismjs/components/prism-php'
 
 interface MdxProps {
   content: string
@@ -23,85 +55,114 @@ export function Mdx({ content }: MdxProps) {
     initializeLazyLoadingTimer(250)
     
     if (contentRef.current && isDOMReady) {
-      // Enhanced image handling with lazy loading
+      // Enhanced image handling with staged lazy loading (viewport first, then the rest)
       const images = contentRef.current.querySelectorAll("img")
-      images.forEach((img, index) => {
-        // Skip if already processed
+      type LazyEntry = {
+        wrapper: HTMLDivElement
+        newImg: HTMLImageElement
+        placeholder: HTMLDivElement
+        originalSrc: string
+        loaded: boolean
+      }
+      const lazyEntries: LazyEntry[] = []
+
+      images.forEach((img) => {
         if (img.hasAttribute('data-lazy-processed')) return
-        
-        // Mark as processed
         img.setAttribute('data-lazy-processed', 'true')
-        
-        // Store original src
+
         const originalSrc = img.src
         const originalAlt = img.alt || 'Image'
-        
-        // Create wrapper for lazy loading
-        const wrapper = document.createElement('div')
+
+        const wrapper = document.createElement('div') as HTMLDivElement
         wrapper.className = 'lazy-image-wrapper relative overflow-hidden'
         wrapper.style.minHeight = '200px'
-        
-        // Create placeholder
-        const placeholder = document.createElement('div')
+
+        const placeholder = document.createElement('div') as HTMLDivElement
         placeholder.className = 'absolute inset-0 bg-muted animate-pulse flex items-center justify-center'
         placeholder.innerHTML = '<div class="text-muted-foreground text-sm">Loading image...</div>'
-        
-        // Create new image element
-        const newImg = document.createElement('img')
+
+        const newImg = document.createElement('img') as HTMLImageElement
         newImg.alt = originalAlt
         newImg.className = img.className + ' transition-opacity duration-300 opacity-0'
-        
-        // Add enhanced styling if not present
-        if (!newImg.classList.contains("enhanced")) {
+
+        if (!newImg.classList.contains('enhanced')) {
           newImg.classList.add(
-            "enhanced",
-            "rounded-xl",
-            "shadow-lg",
-            "my-8",
-            "border",
-            "transition-transform",
-            "hover:scale-[1.02]",
-            "cursor-zoom-in",
+            'enhanced',
+            'rounded-xl',
+            'shadow-lg',
+            'my-8',
+            'border',
+            'transition-transform',
+            'hover:scale-[1.02]',
+            'cursor-zoom-in',
           )
         }
-        
-        // Set up intersection observer for this specific image
-        const observer = new IntersectionObserver(
-          ([entry]) => {
-            if (entry.isIntersecting) {
-              // Load the image
-              newImg.src = originalSrc
-              newImg.onload = () => {
-                newImg.classList.remove('opacity-0')
-                newImg.classList.add('opacity-100')
-                placeholder.remove()
-              }
-              newImg.onerror = () => {
-                newImg.src = withBasePath("/placeholder.svg?height=400&width=600&text=Image%20Not%20Found")
-                newImg.onload = () => {
-                  newImg.classList.remove('opacity-0')
-                  newImg.classList.add('opacity-100')
-                  placeholder.remove()
-                }
-              }
-              observer.disconnect()
-            }
-          },
-          {
-            threshold: 0.1,
-            rootMargin: '50px'
-          }
-        )
-        
-        // Replace original image with wrapper
+
+        const entry: LazyEntry = { wrapper, newImg, placeholder, originalSrc, loaded: false }
+
+        newImg.onload = () => {
+          newImg.classList.remove('opacity-0')
+          newImg.classList.add('opacity-100')
+          placeholder.remove()
+          entry.loaded = true
+        }
+        newImg.onerror = () => {
+          newImg.src = withBasePath('/placeholder.svg?height=400&width=600&text=Image%20Not%20Found')
+        }
+
         img.parentNode?.insertBefore(wrapper, img)
         wrapper.appendChild(placeholder)
         wrapper.appendChild(newImg)
         img.remove()
-        
-        // Start observing
-        observer.observe(wrapper)
+
+        lazyEntries.push(entry)
       })
+
+      const loadImage = (entry: LazyEntry) => {
+        if (!entry.newImg.src) {
+          entry.newImg.src = entry.originalSrc
+        }
+      }
+
+      const waitForLoad = (entry: LazyEntry) =>
+        new Promise<void>((resolve) => {
+          if (entry.loaded) return resolve()
+          const done = () => {
+            entry.newImg.removeEventListener('load', done)
+            entry.newImg.removeEventListener('error', done)
+            resolve()
+          }
+          entry.newImg.addEventListener('load', done, { once: true })
+          entry.newImg.addEventListener('error', done, { once: true })
+        })
+
+      if (lazyEntries.length > 0) {
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight
+        let visible = lazyEntries.filter((e) => {
+          const rect = e.wrapper.getBoundingClientRect()
+          return rect.top < viewportHeight && rect.bottom > 0
+        })
+
+        if (visible.length === 0) {
+          visible = [lazyEntries[0]]
+        }
+
+        // Start loading visible images first
+        const visiblePromises = visible.map((e) => {
+          loadImage(e)
+          return waitForLoad(e)
+        })
+
+        const timeout = new Promise<void>((resolve) => setTimeout(resolve, 1200))
+        Promise.race([Promise.allSettled(visiblePromises).then(() => undefined), timeout]).then(() => {
+          // Then load all remaining images in the background
+          lazyEntries.forEach((e) => {
+            if (!visible.includes(e)) {
+              loadImage(e)
+            }
+          })
+        })
+      }
 
       // Enhanced heading styling and ID generation
       const headings = contentRef.current.querySelectorAll("h1, h2, h3, h4, h5, h6")
