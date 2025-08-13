@@ -7,6 +7,7 @@ import { Header } from "@/components/header"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@/components/analytics"
 import { Suspense, lazy } from "react"
+import { BackgroundPreloader } from "@/components/background-preloader"
 
 // Lazy load Footer for better initial page load
 const Footer = lazy(() => import("@/components/footer").then(m => ({ default: m.Footer })))
@@ -167,6 +168,7 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <Analytics />
           </Suspense>
+          <BackgroundPreloader />
         </ThemeProvider>
       </body>
     </html>
