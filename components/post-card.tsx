@@ -1,10 +1,11 @@
 "use client"
 
-import { memo, useCallback, useMemo } from "react"
+import { memo, useCallback, useMemo, useEffect, useRef } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
 import { motion } from "framer-motion"
 import { Calendar } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import type { Post } from "@/lib/posts-client"
 import { Badge } from "@/components/ui/badge"
@@ -12,6 +13,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { FallbackImage } from "@/components/fallback-image"
 import { NotionLinkButton } from "@/components/notion-link-button"
 import { withBasePath } from "@/lib/utils"
+import { fetchPostBySlug } from "@/lib/posts-loader"
 
 interface PostCardProps {
   post: Post
@@ -115,9 +117,44 @@ const cardVariants = {
 function PostCard({ post }: PostCardProps) {
   // Memoize post URL
   const postUrl = useMemo(() => `/posts/${post.slug}`, [post.slug])
+  const router = useRouter()
+  const cardRef = useRef<HTMLDivElement | null>(null)
+  const hasPrefetchedRef = useRef(false)
+
+  const prefetch = useCallback(() => {
+    if (hasPrefetchedRef.current) return
+    hasPrefetchedRef.current = true
+    try {
+      router.prefetch(postUrl)
+    } catch (_) {}
+    // Warm the post content cache
+    fetchPostBySlug(post.slug).catch(() => {})
+  }, [router, postUrl, post.slug])
+
+  useEffect(() => {
+    const element = cardRef.current
+    if (!element) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            prefetch()
+            observer.disconnect()
+            break
+          }
+        }
+      },
+      { rootMargin: "200px" }
+    )
+
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [prefetch])
 
   return (
     <motion.div
+      ref={cardRef}
       variants={cardVariants}
       initial="initial"
       animate="animate"
@@ -125,7 +162,7 @@ function PostCard({ post }: PostCardProps) {
       transition={{ duration: 0.3, ease: "easeOut" }}
       className="group"
     >
-      <Link href={postUrl} prefetch={false}>
+      <Link href={postUrl} onMouseEnter={prefetch}>
         <Card className="overflow-hidden h-full transition-shadow duration-200 hover:shadow-lg">
           {post.coverImage && (
             <CoverImage
