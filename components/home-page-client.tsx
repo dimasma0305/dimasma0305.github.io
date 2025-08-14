@@ -6,6 +6,7 @@ import { usePosts } from "@/hooks/use-posts"
 import PostCard from "@/components/post-card"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { FallbackImage } from "@/components/fallback-image"
+import { motion } from "framer-motion"
 
 // Lazy load heavy sections for better initial page load
 const HeroSection = lazy(() => import("@/components/hero-section").then(m => ({ default: m.HeroSection })))
@@ -14,12 +15,30 @@ const SkillsSection = lazy(() => import("@/components/skills-section").then(m =>
 const CTFSection = lazy(() => import("@/components/ctf-section").then(m => ({ default: m.CTFSection })))
 const ExperienceSection = lazy(() => import("@/components/experience-section").then(m => ({ default: m.ExperienceSection })))
 
+// Motion variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+}
+
+const containerStagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 as number } },
+}
+
 // Memoized About section component
 const AboutSection = memo(() => (
-      <div className="container px-4 py-16 mx-auto max-w-7xl" id="about">
-        <h2 className="mb-8 text-3xl font-bold tracking-tight">About Me</h2>
+      <motion.section
+        id="about"
+        className="container px-4 py-16 mx-auto max-w-7xl"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerStagger}
+      >
+        <motion.h2 className="mb-8 text-3xl font-bold tracking-tight" variants={fadeInUp}>About Me</motion.h2>
         <div className="grid gap-8 md:grid-cols-2">
-          <div className="space-y-4">
+          <motion.div className="space-y-4" variants={fadeInUp}>
             <p className="text-lg">
               I'm a cybersecurity enthusiast and CTF player based in Denpasar, Bali, Indonesia. Currently exploring
               cyber security and computer science with a focus on Linux OS and security.
@@ -52,9 +71,13 @@ const AboutSection = memo(() => (
               </Link>
               {" "}for insights into cybersecurity, CTF writeups, and technical tutorials.
             </p>
-          </div>
-          <div className="flex items-center justify-center">
-            <div className="relative w-64 h-64 overflow-hidden rounded-full border-4 border-primary/20">
+          </motion.div>
+          <motion.div className="flex items-center justify-center" variants={fadeInUp}>
+            <motion.div
+              className="relative w-64 h-64 overflow-hidden rounded-full border-4 border-primary/20"
+              whileHover={{ scale: 1.03 }}
+              transition={{ type: "spring", stiffness: 300, damping: 24 }}
+            >
               <FallbackImage
                 src="https://avatars.githubusercontent.com/u/92920739"
                 alt="Dimas Maulana"
@@ -63,23 +86,30 @@ const AboutSection = memo(() => (
                 className="object-cover rounded-full"
                 priority
               />
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </div>
+      </motion.section>
 ))
 
 AboutSection.displayName = 'AboutSection'
 
 // Memoized Blog section component
 const BlogSection = memo(({ posts, loading }: { posts: any[], loading: boolean }) => (
-      <div className="container px-4 py-16 mx-auto max-w-7xl" id="blog">
-        <div className="flex items-center justify-between mb-8">
+      <motion.section
+        id="blog"
+        className="container px-4 py-16 mx-auto max-w-7xl"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerStagger}
+      >
+        <motion.div className="flex items-center justify-between mb-8" variants={fadeInUp}>
           <h2 className="text-3xl font-bold tracking-tight">Latest Blog Posts</h2>
           <Link href="/blog" className="text-primary hover:underline">
             View all posts →
           </Link>
-        </div>
+        </motion.div>
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
@@ -87,8 +117,16 @@ const BlogSection = memo(({ posts, loading }: { posts: any[], loading: boolean }
           </div>
         ) : posts.length > 0 ? (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {posts.slice(0, 3).map((post) => (
-              <PostCard key={post.id} post={post} />
+            {posts.slice(0, 3).map((post, i) => (
+              <motion.div
+                key={post.id}
+                variants={fadeInUp}
+                whileHover={{ y: -4, scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                transition={{ type: "spring", stiffness: 300, damping: 24 }}
+              >
+                <PostCard post={post} />
+              </motion.div>
             ))}
           </div>
         ) : (
@@ -96,7 +134,7 @@ const BlogSection = memo(({ posts, loading }: { posts: any[], loading: boolean }
             <p className="text-muted-foreground">No posts found. Add markdown files to the /posts directory.</p>
           </div>
         )}
-      </div>
+      </motion.section>
 ))
 
 BlogSection.displayName = 'BlogSection'
@@ -139,27 +177,57 @@ function HomePageClient() {
 
   return (
     <div className="min-h-screen">
-      <Suspense fallback={<SectionFallback />}>
-        <HeroSection />
-      </Suspense>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+        <Suspense fallback={<SectionFallback />}>
+          <HeroSection />
+        </Suspense>
+      </motion.div>
 
       <AboutSection />
 
-      <Suspense fallback={<SectionFallback />}>
-        <SkillsSection />
-      </Suspense>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={fadeInUp}
+      >
+        <Suspense fallback={<SectionFallback />}>
+          <SkillsSection />
+        </Suspense>
+      </motion.div>
 
-      <Suspense fallback={<SectionFallback />}>
-        <ExperienceSection />
-      </Suspense>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={fadeInUp}
+      >
+        <Suspense fallback={<SectionFallback />}>
+          <ExperienceSection />
+        </Suspense>
+      </motion.div>
 
-      <Suspense fallback={<SectionFallback />}>
-        <ProjectsSection />
-      </Suspense>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={fadeInUp}
+      >
+        <Suspense fallback={<SectionFallback />}>
+          <ProjectsSection />
+        </Suspense>
+      </motion.div>
 
-      <Suspense fallback={<SectionFallback />}>
-        <CTFSection />
-      </Suspense>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={fadeInUp}
+      >
+        <Suspense fallback={<SectionFallback />}>
+          <CTFSection />
+        </Suspense>
+      </motion.div>
 
       <BlogSection posts={latestPosts} loading={loading} />
     </div>

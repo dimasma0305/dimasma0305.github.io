@@ -5,7 +5,6 @@ import type React from "react"
 import { useState, useEffect, useRef, lazy, Suspense } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
 import { Menu, X, Shield, BookOpen, Search, Wrench } from "lucide-react"
 import { handleAnchorNavigation } from "@/lib/scroll-utils"
 
@@ -172,13 +171,9 @@ export function Header() {
     <header className={`sticky top-0 z-40 w-full transition-all bg-background/80 backdrop-blur-md shadow-md`}>
       <div className="container flex items-center justify-between h-16 px-4 mx-auto max-w-7xl">
         <Link href="/" className="flex items-center space-x-2">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-          >
+          <div>
             <span className="text-2xl font-bold">Dimas Maulana</span>
-          </motion.div>
+          </div>
         </Link>
 
         <div className="hidden md:flex md:items-center md:space-x-1">

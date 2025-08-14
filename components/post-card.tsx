@@ -3,7 +3,6 @@
 import { memo, useCallback, useMemo, useEffect, useRef } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
-import { motion } from "framer-motion"
 import { Calendar } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -107,12 +106,7 @@ const PostFooter = memo(({ createdAt, categories }: {
 
 PostFooter.displayName = 'PostFooter'
 
-// Optimized animation variants
-const cardVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  hover: { y: -5 }
-}
+// CSS-based hover effect only
 
 function PostCard({ post }: PostCardProps) {
   // Memoize post URL
@@ -153,14 +147,9 @@ function PostCard({ post }: PostCardProps) {
   }, [prefetch])
 
   return (
-    <motion.div
+    <div
       ref={cardRef}
-      variants={cardVariants}
-      initial="initial"
-      animate="animate"
-      whileHover="hover"
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className="group"
+      className="group transform transition-transform duration-200 ease-out hover:-translate-y-1"
     >
       <Link href={postUrl} onMouseEnter={prefetch}>
         <Card className="overflow-hidden h-full transition-shadow duration-200 hover:shadow-lg">
@@ -191,7 +180,7 @@ function PostCard({ post }: PostCardProps) {
           />
         </Card>
       </Link>
-    </motion.div>
+    </div>
   )
 }
 

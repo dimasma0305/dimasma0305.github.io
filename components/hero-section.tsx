@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { ArrowRight, Github, Linkedin, Mail, Twitter, Gamepad2, BookOpen, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -24,13 +23,9 @@ export function HeroSection() {
   })
 
   const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  })
-
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200])
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
+  // Basic scroll fade without framer-motion
+  const y = 0
+  const opacity = 1
 
   const particlesInit = async (engine: Engine) => {
     await loadSlim(engine)
@@ -185,15 +180,11 @@ export function HeroSection() {
         />
       </div>
 
-      <motion.div 
-        style={{ opacity, y }} 
+      <div 
         className="container relative z-10 mx-auto max-w-7xl h-full"
       >
         <div className="grid items-center h-full gap-8 px-4 lg:grid-cols-2 md:gap-12">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+          <div
             className="space-y-6 md:space-y-8"
             style={{ 
               minHeight: "auto",
@@ -254,16 +245,13 @@ export function HeroSection() {
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
               {tabContent[activeTab as keyof typeof tabContent].stats.map((stat, index) => (
-                <motion.div
+                <div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="p-3 text-center rounded-lg bg-background/50 backdrop-blur-sm"
                 >
                   <div className="text-xl sm:text-2xl font-bold text-primary">{stat.value}</div>
                   <div className="text-xs sm:text-sm text-muted-foreground">{stat.label}</div>
-                </motion.div>
+                </div>
               ))}
             </div>
 
@@ -330,13 +318,10 @@ export function HeroSection() {
                 </Button>
               </Link>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
+          <div
             ref={ref}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
             className="relative hidden lg:flex"
             style={{ 
               height: "auto",
@@ -347,13 +332,8 @@ export function HeroSection() {
               justifyContent: "center"
             }}
           >
-            <AnimatePresence mode="wait">
-              <motion.div
+              <div
                 key={activeTab}
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.4 }}
                 className="absolute inset-0"
                 style={{
                   position: "absolute",
@@ -565,18 +545,13 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
                     </div>
                   </div>
                 )}
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
+              </div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       <div className="absolute bottom-0 left-0 right-0 z-10 flex justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
-        >
+        <div>
           <Link href="#about">
             <Button variant="ghost" className="mb-8 animate-bounce" aria-label="Scroll down">
               <svg
@@ -595,7 +570,7 @@ drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
               </svg>
             </Button>
           </Link>
-        </motion.div>
+        </div>
       </div>
     </div>
   )

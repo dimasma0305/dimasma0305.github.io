@@ -1,12 +1,12 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
 import { Github, ExternalLink, ChevronLeft, ChevronRight, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
+import { motion } from "framer-motion"
 
 const projects = [
   {
@@ -114,13 +114,6 @@ export function ProjectsSection() {
   const [visibleProjects, setVisibleProjects] = useState(1) // Start with 1 for mobile
   const carouselRef = useRef<HTMLDivElement>(null)
   const sliderRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: carouselRef,
-    offset: ["start end", "end start"],
-  })
-
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.9, 1, 1, 0.9])
 
   // Touch/swipe handling
   const [touchStart, setTouchStart] = useState<number | null>(null)
@@ -207,15 +200,16 @@ export function ProjectsSection() {
   }, [maxIndex, hoveredCard])
 
   return (
-    <div className="py-20 bg-gradient-to-b from-background to-black" id="projects">
-      <motion.div ref={carouselRef} style={{ opacity, scale }} className="container px-4 mx-auto max-w-7xl">
+    <motion.section
+      id="projects"
+      className="py-20 bg-gradient-to-b from-background to-black"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
+      <div ref={carouselRef} className="container px-4 mx-auto max-w-7xl">
         <div className="mb-12 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-          >
+          <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <h2 className="text-5xl font-bold tracking-tight neon-text-blue">Featured Projects</h2>
             <p className="mt-4 text-xl text-muted-foreground">Level up your knowledge with my latest creations</p>
           </motion.div>
@@ -228,18 +222,10 @@ export function ProjectsSection() {
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
           >
-            <motion.div
+            <div
               ref={sliderRef}
               className="flex projects-slider-container"
-              initial={{ x: 0 }}
-              animate={{ x: `-${currentIndex * (100 / visibleProjects)}%` }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 150,
-                damping: 20,
-                mass: 0.5,
-                duration: 0.4
-              }}
+              style={{ transform: `translateX(-${currentIndex * (100 / visibleProjects)}%)`, transition: "transform 400ms ease-out" }}
             >
               {projects.map((project, index) => (
                 <motion.div
@@ -249,21 +235,18 @@ export function ProjectsSection() {
                     visibleProjects === 2 ? 'w-1/2' : 
                     'w-1/3'
                   }`}
-                  initial={{ opacity: 0, y: 30 }}
+                  onMouseEnter={() => setHoveredCard(index)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.4,
-                    delay: index * 0.05,
-                    ease: "easeOut"
-                  }}
-                  viewport={{ once: true }}
-                  whileHover={{ 
-                    y: -5,
-                    transition: { duration: 0.2, ease: "easeOut" }
-                  }}
-                  onHoverStart={() => setHoveredCard(index)}
-                  onHoverEnd={() => setHoveredCard(null)}
+                  viewport={{ once: true, amount: 0.2 }}
                 >
+                  <motion.div
+                    whileHover={{ y: -8, scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                    className="h-full"
+                  >
                   <Card className="h-full overflow-hidden game-card transition-all duration-300 ease-out flex flex-col">
                     <CardHeader className="relative pb-2 border-b border-muted flex-shrink-0">
                       <div className="absolute top-2 right-2 px-2 py-1 text-xs rounded-full bg-primary/20 text-primary">
@@ -273,20 +256,13 @@ export function ProjectsSection() {
                         <div className="flex items-center gap-2">
                           {project.title}
                           {hoveredCard === index && (
-                            <motion.div
-                              animate={{
-                                rotate: [0, 10, -10, 0],
-                                scale: [1, 1.2, 1],
-                              }}
-                              transition={{
-                                duration: 1.5,
-                                repeat: Number.POSITIVE_INFINITY,
-                                repeatType: "loop",
-                                ease: "easeInOut"
-                              }}
+                            <motion.span
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ type: "spring", stiffness: 300, damping: 20 }}
                             >
                               <Sparkles className="w-4 h-4 text-yellow-500" />
-                            </motion.div>
+                            </motion.span>
                           )}
                         </div>
                       </CardTitle>
@@ -346,9 +322,10 @@ export function ProjectsSection() {
                       )}
                     </CardFooter>
                   </Card>
+                  </motion.div>
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
           </div>
 
           {/* Navigation Buttons - Improved mobile positioning */}
@@ -411,7 +388,7 @@ export function ProjectsSection() {
             </Button>
           </Link>
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </motion.section>
   )
 }

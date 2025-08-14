@@ -1,6 +1,5 @@
 "use client"
 
-import { motion } from "framer-motion"
 import { Shield, Terminal, Server, Code, Database, Globe } from "lucide-react"
 
 const skills = [
@@ -43,12 +42,8 @@ export function SkillsSection() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {skills.map((skill, index) => (
-          <motion.div
+          <div
             key={index}
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.05 }}
-            viewport={{ once: true, margin: "-50px" }}
             className="p-6 rounded-lg bg-card min-h-[200px]"
           >
             <div className="flex items-center gap-3 mb-4">
@@ -64,7 +59,7 @@ export function SkillsSection() {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>
