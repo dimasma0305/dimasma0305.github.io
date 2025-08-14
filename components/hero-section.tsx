@@ -6,9 +6,10 @@ import { ArrowRight, Github, Linkedin, Mail, Twitter, Gamepad2, BookOpen, Shield
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
-import { TypeAnimation } from "react-type-animation"
+import dynamic from "next/dynamic"
+const TypeAnimation = dynamic(() => import("react-type-animation").then(m => m.TypeAnimation), { ssr: false })
 import { useInView } from "react-intersection-observer"
-import Particles from "react-particles"
+const Particles = dynamic(() => import("react-particles"), { ssr: false })
 import { loadSlim } from "tsparticles-slim"
 import type { Engine } from "tsparticles-engine"
 import { withBasePath } from "@/lib/utils"

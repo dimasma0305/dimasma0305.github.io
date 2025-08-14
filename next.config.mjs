@@ -1,3 +1,9 @@
+import bundleAnalyzer from '@next/bundle-analyzer'
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
@@ -17,16 +23,36 @@ const nextConfig = {
   
   // Disable strict mode for better compatibility
   reactStrictMode: false,
+  // Tree-shake icon imports
+  modularizeImports: {
+    'lucide-react': {
+      transform: 'lucide-react/icons/{{member}}',
+    },
+    'date-fns': {
+      transform: 'date-fns/{{member}}',
+    },
+  },
   
   // Experimental features for better performance
   experimental: {
-    // Disable features that might use problematic dependencies
+    // Optimize icon package imports
     optimizePackageImports: ['lucide-react'],
-    esmExternals: 'loose',
   },
   
   // Webpack configuration for better GitHub Pages compatibility
   webpack: (config, { isServer, dev }) => {
+    // Optional: replace React with Preact in client bundle when enabled
+    if (!isServer && process.env.USE_PREACT === 'true') {
+      config.resolve = config.resolve || {}
+      config.resolve.alias = {
+        ...(config.resolve.alias || {}),
+        react: 'preact/compat',
+        'react-dom/test-utils': 'preact/test-utils',
+        'react-dom': 'preact/compat',
+        'react/jsx-runtime': 'preact/jsx-runtime',
+      }
+    }
+
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -79,6 +105,13 @@ const nextConfig = {
   // Enable source maps only in development
   productionBrowserSourceMaps: false,
 
+  // Strip console logs in production bundles (keep errors/warnings)
+  compiler: {
+    removeConsole: {
+      exclude: ['error', 'warn'],
+    },
+  },
+
   // ESLint configuration
   eslint: {
     ignoreDuringBuilds: true,
@@ -90,4 +123,4 @@ const nextConfig = {
   },
 }
 
-export default nextConfig
+export default withBundleAnalyzer(nextConfig)

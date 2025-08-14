@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "USE_PREACT=true next build",
+    "build:preact": "USE_PREACT=true next build",
+    "analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "refresh-content": "node scripts/generate-blog-content.js && node scripts/generate-blog-index.js && node scripts/generate-rss.js",
@@ -58,6 +60,7 @@
     "next": "15.2.4",
     "next-themes": "latest",
     "path": "latest",
+    "preact": "^10.27.0",
     "prismjs": "^1.30.0",
     "prop-types": "latest",
     "react": "^19",
@@ -78,6 +81,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.4.6",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^22",
     "@types/react": "^19",
