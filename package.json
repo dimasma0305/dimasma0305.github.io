@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "USE_PREACT=true next build",
-    "analyze": "ANALYZE=true USE_PREACT=true  next build",
+    "build": "next build",
+    "analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "refresh-content": "node scripts/generate-blog-content.js && node scripts/generate-blog-index.js && node scripts/generate-rss.js",
@@ -48,29 +48,29 @@
     "canvas-confetti": "latest",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    
+    "cmdk": "latest",
     "date-fns": "latest",
     "dotenv": "latest",
-    
+    "embla-carousel-react": "latest",
     "framer-motion": "latest",
     "fs": "latest",
-    
+    "input-otp": "latest",
     "lucide-react": "^0.454.0",
     "next": "15.2.4",
     "next-themes": "latest",
     "path": "latest",
-    "preact": "^10.27.0",
     "prismjs": "^1.30.0",
     "prop-types": "latest",
     "react": "^19",
-    
+    "react-day-picker": "latest",
     "react-dom": "^19",
     "react-hook-form": "latest",
     "react-intersection-observer": "latest",
     "react-particles": "latest",
-    
+    "react-resizable-panels": "latest",
     "react-type-animation": "latest",
-    
+    "recharts": "latest",
+    "sonner": "latest",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "tsparticles-engine": "latest",

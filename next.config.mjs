@@ -41,18 +41,6 @@ const nextConfig = {
   
   // Webpack configuration for better GitHub Pages compatibility
   webpack: (config, { isServer, dev }) => {
-    // Optional: replace React with Preact in client bundle when enabled
-    if (!isServer && process.env.USE_PREACT === 'true') {
-      config.resolve = config.resolve || {}
-      config.resolve.alias = {
-        ...(config.resolve.alias || {}),
-        react: 'preact/compat',
-        'react-dom/test-utils': 'preact/test-utils',
-        'react-dom': 'preact/compat',
-        'react/jsx-runtime': 'preact/jsx-runtime',
-      }
-    }
-
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
