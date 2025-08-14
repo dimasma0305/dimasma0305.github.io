@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "USE_PREACT=true next build",
-    "build:preact": "USE_PREACT=true next build",
-    "analyze": "ANALYZE=true next build",
+    "analyze": "ANALYZE=true USE_PREACT=true  next build",
     "start": "next start",
     "lint": "next lint",
     "refresh-content": "node scripts/generate-blog-content.js && node scripts/generate-blog-index.js && node scripts/generate-rss.js",
