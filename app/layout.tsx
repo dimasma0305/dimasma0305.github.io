@@ -9,7 +9,6 @@ import { Analytics } from "@/components/analytics"
 import { Suspense, lazy } from "react"
 import { BackgroundPreloader } from "@/components/background-preloader"
 import NavigationLoader from "@/components/navigation-loader"
-import RouteAnnouncer from "@/components/route-announcer"
 
 // Lazy load Footer for better initial page load
 const Footer = lazy(() => import("@/components/footer").then(m => ({ default: m.Footer })))
@@ -151,9 +150,6 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${roboto.variable} ${merriweather.variable} ${firaCode.variable} font-roboto antialiased`}
       >
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 bg-primary text-primary-foreground rounded px-3 py-2">
-          Skip to content
-        </a>
         <ThemeProvider 
           attribute="class" 
           defaultTheme="dark" 
@@ -165,7 +161,7 @@ export default function RootLayout({
               <NavigationLoader />
             </Suspense>
             <Header />
-            <main id="main-content" className="flex-1">
+            <main className="flex-1">
               {children}
             </main>
             <Suspense fallback={null}>
@@ -175,9 +171,6 @@ export default function RootLayout({
           <Toaster />
           <Suspense fallback={null}>
             <Analytics />
-          </Suspense>
-          <Suspense fallback={null}>
-            <RouteAnnouncer />
           </Suspense>
           <BackgroundPreloader />
         </ThemeProvider>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { usePathname, useSearchParams } from "next/navigation"
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 
 // A small, professional top progress bar that reacts to internal navigations.
 export function NavigationLoader() {
@@ -13,7 +13,6 @@ export function NavigationLoader() {
   const [progress, setProgress] = useState(0)
   const timerRef = useRef<number | null>(null)
   const clickedRef = useRef(false)
-  const prefersReducedMotion = useReducedMotion()
 
   const currentLocationKey = useMemo(() => `${pathname}?${searchParams?.toString() ?? ""}`,[pathname, searchParams])
 
@@ -49,10 +48,10 @@ export function NavigationLoader() {
       timerRef.current = window.setInterval(() => {
         setProgress((p) => {
           if (p >= 90) return p
-          const increment = prefersReducedMotion ? 10 : (p < 30 ? 8 : p < 60 ? 4 : 2)
+          const increment = p < 30 ? 8 : p < 60 ? 4 : 2
           return Math.min(90, p + increment)
         })
-      }, prefersReducedMotion ? 200 : 120) as unknown as number
+      }, 120) as unknown as number
     }
 
     document.addEventListener("click", handleClick, true)
@@ -84,20 +83,20 @@ export function NavigationLoader() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.15 }}
+            transition={{ duration: 0.15 }}
             className="relative h-0.5 w-full"
           >
             <motion.div
               className="h-0.5 bg-primary"
               animate={{ width: `${progress}%` }}
               initial={{ width: 0 }}
-              transition={{ ease: "linear", duration: prefersReducedMotion ? 0 : 0.12 }}
+              transition={{ ease: "linear", duration: 0.12 }}
             />
             {/* Glow */}
             <motion.div
               className="absolute right-0 -top-[2px] h-1.5 w-16 rounded-full bg-primary/40 blur-sm"
-              animate={prefersReducedMotion ? undefined : { x: 0 }}
-              initial={prefersReducedMotion ? undefined : { x: -20 }}
+              animate={{ x: 0 }}
+              initial={{ x: -20 }}
             />
           </motion.div>
         )}
