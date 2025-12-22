@@ -13,6 +13,16 @@ import { motion, AnimatePresence } from "framer-motion"
 const achievements = [
   {
     title: "1st Place",
+    event: "XCTF 2025 Professional Division",
+    team: "Individual",
+    date: "November 2025",
+    icon: <Trophy className="w-6 h-6 text-yellow-500" />,
+    issuer: "XCTF",
+    points: 5000,
+    difficulty: "Legendary",
+  },
+  {
+    title: "1st Place",
     event: "idekCTF 2024",
     team: "P1G SEKAI",
     date: "August 2024",
@@ -148,7 +158,7 @@ const teams = [
   },
   {
     name: "HCS",
-    role: "Member", 
+    role: "Member",
     description: "CTF Team from ITS, often participate in CTF competitions on CTFTime",
     link: "https://ctftime.org/team/70159/",
     level: "40",
@@ -209,7 +219,7 @@ export function CTFSection() {
             <p className="mt-4 text-lg sm:text-xl text-muted-foreground">Battle-tested in the digital arena</p>
           </motion.div>
 
-              <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
+          <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
             <div className="w-full">
               <div className="flex items-center gap-3 mb-6">
                 <Trophy className="w-6 h-6 text-primary" />
@@ -409,9 +419,9 @@ export function CTFSection() {
 
                         <div className="flex flex-wrap gap-1">
                           {team.specialties.slice(0, 6).map((specialty) => (
-                            <Badge 
-                              key={specialty} 
-                              variant="secondary" 
+                            <Badge
+                              key={specialty}
+                              variant="secondary"
                               className="bg-primary/20 hover:bg-primary/30 text-xs whitespace-nowrap"
                             >
                               {specialty}
@@ -422,7 +432,7 @@ export function CTFSection() {
                           )}
                         </div>
 
-                      <a href={team.link} target="_blank" rel="noopener noreferrer" className="mt-3 block w-full">
+                        <a href={team.link} target="_blank" rel="noopener noreferrer" className="mt-3 block w-full">
                           <Button
                             variant="outline"
                             className="w-full gap-2 text-sm border-primary/50 hover:border-primary hover:bg-primary/10"
@@ -445,73 +455,73 @@ export function CTFSection() {
                       <ChevronDown className="w-4 h-4" />
                     </span>
                   </summary>
-                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mt-4">
-                     {teams.slice(4).map((team, index) => (
-                       <motion.div
-                         key={index + 4}
-                         initial={{ opacity: 0, y: 24 }}
-                         whileInView={{ opacity: 1, y: 0 }}
-                         viewport={{ once: true, amount: 0.2 }}
-                       >
-                       <Card className="relative overflow-hidden">
-                        <CardHeader className="space-y-1 p-3">
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-3 min-w-0 flex-1">
-                              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 shrink-0">
-                                <Users className="w-5 h-5 text-primary" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mt-4">
+                    {teams.slice(4).map((team, index) => (
+                      <motion.div
+                        key={index + 4}
+                        initial={{ opacity: 0, y: 24 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                      >
+                        <Card className="relative overflow-hidden">
+                          <CardHeader className="space-y-1 p-3">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-3 min-w-0 flex-1">
+                                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 shrink-0">
+                                  <Users className="w-5 h-5 text-primary" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <CardTitle className="text-base sm:text-lg truncate">{team.name}</CardTitle>
+                                  <CardDescription className="text-sm truncate">{team.role}</CardDescription>
+                                </div>
                               </div>
-                              <div className="min-w-0 flex-1">
-                                <CardTitle className="text-base sm:text-lg truncate">{team.name}</CardTitle>
-                                <CardDescription className="text-sm truncate">{team.role}</CardDescription>
+                              <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-full bg-primary/20 shrink-0">
+                                <Star className="w-4 h-4 text-yellow-500" />
+                                <span className="whitespace-nowrap">LVL {team.level}</span>
                               </div>
                             </div>
-                            <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-full bg-primary/20 shrink-0">
-                              <Star className="w-4 h-4 text-yellow-500" />
-                              <span className="whitespace-nowrap">LVL {team.level}</span>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="p-3 pt-0">
-                          <p className="text-sm line-clamp-2 mb-3">{team.description}</p>
+                          </CardHeader>
+                          <CardContent className="p-3 pt-0">
+                            <p className="text-sm line-clamp-2 mb-3">{team.description}</p>
 
-                          <div className="grid grid-cols-2 gap-2 mb-3">
-                            <div className="p-2 text-center rounded-lg bg-muted/50">
-                              <div className="text-xs text-muted-foreground">Members</div>
-                              <div className="text-sm font-bold">{team.members}</div>
+                            <div className="grid grid-cols-2 gap-2 mb-3">
+                              <div className="p-2 text-center rounded-lg bg-muted/50">
+                                <div className="text-xs text-muted-foreground">Members</div>
+                                <div className="text-sm font-bold">{team.members}</div>
+                              </div>
+                              <div className="p-2 text-center rounded-lg bg-muted/50">
+                                <div className="text-xs text-muted-foreground">Specialties</div>
+                                <div className="text-sm font-bold">{team.specialties.length}</div>
+                              </div>
                             </div>
-                            <div className="p-2 text-center rounded-lg bg-muted/50">
-                              <div className="text-xs text-muted-foreground">Specialties</div>
-                              <div className="text-sm font-bold">{team.specialties.length}</div>
-                            </div>
-                          </div>
 
-                          <div className="flex flex-wrap gap-1">
-                            {team.specialties.slice(0, 6).map((specialty) => (
-                              <Badge 
-                                key={specialty} 
-                                variant="secondary" 
-                                className="bg-primary/20 hover:bg-primary/30 text-xs whitespace-nowrap"
+                            <div className="flex flex-wrap gap-1">
+                              {team.specialties.slice(0, 6).map((specialty) => (
+                                <Badge
+                                  key={specialty}
+                                  variant="secondary"
+                                  className="bg-primary/20 hover:bg-primary/30 text-xs whitespace-nowrap"
+                                >
+                                  {specialty}
+                                </Badge>
+                              ))}
+                              {team.specialties.length > 6 && (
+                                <Badge variant="outline" className="text-xs">+{team.specialties.length - 6} more</Badge>
+                              )}
+                            </div>
+
+                            <a href={team.link} target="_blank" rel="noopener noreferrer" className="mt-3 block w-full">
+                              <Button
+                                variant="outline"
+                                className="w-full gap-2 text-sm border-primary/50 hover:border-primary hover:bg-primary/10"
                               >
-                                {specialty}
-                              </Badge>
-                            ))}
-                            {team.specialties.length > 6 && (
-                              <Badge variant="outline" className="text-xs">+{team.specialties.length - 6} more</Badge>
-                            )}
-                          </div>
-
-                          <a href={team.link} target="_blank" rel="noopener noreferrer" className="mt-3 block w-full">
-                            <Button
-                              variant="outline"
-                              className="w-full gap-2 text-sm border-primary/50 hover:border-primary hover:bg-primary/10"
-                            >
-                              View Guild
-                              <ExternalLink className="w-4 h-4" />
-                            </Button>
-                          </a>
-                        </CardContent>
-                      </Card>
-                       </motion.div>
+                                View Guild
+                                <ExternalLink className="w-4 h-4" />
+                              </Button>
+                            </a>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
                     ))}
                   </div>
                 </details>
@@ -528,9 +538,9 @@ export function CTFSection() {
           >
             <div className="relative max-w-md mx-auto">
               <motion.div className="relative w-16 h-16 mx-auto mb-4" whileHover={{ rotate: 2, scale: 1.03 }}>
-                <Image 
-                  src="https://avatars.githubusercontent.com/u/92920739" 
-                  alt="Dimas Maulana Profile" 
+                <Image
+                  src="https://avatars.githubusercontent.com/u/92920739"
+                  alt="Dimas Maulana Profile"
                   width={64}
                   height={64}
                   className="w-16 h-16 rounded-full border-2 border-primary/50 shadow-lg"
