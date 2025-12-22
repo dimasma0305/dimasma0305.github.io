@@ -29,7 +29,6 @@ export function HeroSection() {
       label: "Hacker",
       icon: <Shield className="w-5 h-5" />,
       color: "text-green-500",
-      neonClass: "neon-text-green",
       borderColor: "border-green-500/50"
     },
     {
@@ -37,7 +36,6 @@ export function HeroSection() {
       label: "Gamer",
       icon: <Gamepad2 className="w-5 h-5" />,
       color: "text-blue-500",
-      neonClass: "neon-text-blue",
       borderColor: "border-blue-500/50"
     },
     {
@@ -45,7 +43,6 @@ export function HeroSection() {
       label: "Manga Reader",
       icon: <BookOpen className="w-5 h-5" />,
       color: "text-pink-500",
-      neonClass: "neon-text-pink",
       borderColor: "border-pink-500/50"
     },
   ]
@@ -189,7 +186,7 @@ export function HeroSection() {
               </div>
 
               <h1 className="text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
-                <span className={`block glitch ${tabs.find(t => t.id === activeTab)?.neonClass}`} data-text="Dimas Maulana">
+                <span className="block" data-text="Dimas Maulana">
                   Dimas Maulana
                 </span>
               </h1>
@@ -222,7 +219,7 @@ export function HeroSection() {
                   className={`
                     flex items-center gap-2 px-5 py-2.5 text-sm font-medium transition-all duration-300 rounded-full border
                     ${activeTab === tab.id
-                      ? `${tab.borderColor} bg-background/80 shadow-lg ${tab.neonClass.replace('text', 'shadow')}`
+                      ? `${tab.borderColor} bg-background/80 shadow-lg`
                       : "border-transparent bg-secondary/50 hover:bg-secondary hover:scale-105"
                     }
                   `}

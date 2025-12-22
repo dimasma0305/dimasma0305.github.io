@@ -809,9 +809,7 @@ pre[class*="language-"] {
 .retro-terminal {
   background-color: #0d1117;
   color: #0f0;
-  text-shadow: 0 0 5px #0f0;
   border: 1px solid #0f0;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
   position: relative;
   overflow: hidden;
 }
@@ -1153,30 +1151,6 @@ pre[class*="language-"] {
   100% {
     clip: rect(30px, 9999px, 60px, 0);
   }
-}
-
-/* Neon Text Effects */
-.neon-text {
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(var(--primary), 0.5);
-}
-
-.neon-text-green {
-  color: #0f0;
-  text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 0 0 20px #0f0;
-}
-
-.neon-text-blue {
-  color: #00f0ff;
-  text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff, 0 0 20px #00f0ff;
-}
-
-.neon-text-pink {
-  color: #ff00ff;
-  text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-}
-
-.neon-border {
-  box-shadow: 0 0 5px rgba(var(--primary), 0.5), 0 0 10px rgba(var(--primary), 0.3);
 }
 
 /* Speech Bubble for Manga */

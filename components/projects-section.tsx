@@ -133,7 +133,7 @@ export function ProjectsSection() {
 
   const onTouchEnd = () => {
     if (!touchStart || !touchEnd) return
-    
+
     const distance = touchStart - touchEnd
     const isLeftSwipe = distance > minSwipeDistance
     const isRightSwipe = distance < -minSwipeDistance
@@ -210,13 +210,13 @@ export function ProjectsSection() {
       <div ref={carouselRef} className="container px-4 mx-auto max-w-7xl">
         <div className="mb-12 text-center">
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            <h2 className="text-5xl font-bold tracking-tight neon-text-blue">Featured Projects</h2>
+            <h2 className="text-5xl font-bold tracking-tight text-blue-500">Featured Projects</h2>
             <p className="mt-4 text-xl text-muted-foreground">Level up your knowledge with my latest creations</p>
           </motion.div>
         </div>
 
         <div className="relative projects-slider">
-          <div 
+          <div
             className="overflow-hidden touch-pan-y projects-slider-container"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
@@ -230,11 +230,10 @@ export function ProjectsSection() {
               {projects.map((project, index) => (
                 <motion.div
                   key={index}
-                  className={`flex-shrink-0 px-3 projects-card ${
-                    visibleProjects === 1 ? 'w-full' : 
-                    visibleProjects === 2 ? 'w-1/2' : 
-                    'w-1/3'
-                  }`}
+                  className={`flex-shrink-0 px-3 projects-card ${visibleProjects === 1 ? 'w-full' :
+                      visibleProjects === 2 ? 'w-1/2' :
+                        'w-1/3'
+                    }`}
                   onMouseEnter={() => setHoveredCard(index)}
                   onMouseLeave={() => setHoveredCard(null)}
                   initial={{ opacity: 0, y: 24 }}
@@ -247,81 +246,81 @@ export function ProjectsSection() {
                     transition={{ type: "spring", stiffness: 300, damping: 24 }}
                     className="h-full"
                   >
-                  <Card className="h-full overflow-hidden game-card transition-all duration-300 ease-out flex flex-col">
-                    <CardHeader className="relative pb-2 border-b border-muted flex-shrink-0">
-                      <div className="absolute top-2 right-2 px-2 py-1 text-xs rounded-full bg-primary/20 text-primary">
-                        LVL {project.level}
-                      </div>
-                      <CardTitle className="text-xl neon-text">
-                        <div className="flex items-center gap-2">
-                          {project.title}
-                          {hoveredCard === index && (
-                            <motion.span
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                            >
-                              <Sparkles className="w-4 h-4 text-yellow-500" />
-                            </motion.span>
-                          )}
+                    <Card className="h-full overflow-hidden game-card transition-all duration-300 ease-out flex flex-col">
+                      <CardHeader className="relative pb-2 border-b border-muted flex-shrink-0">
+                        <div className="absolute top-2 right-2 px-2 py-1 text-xs rounded-full bg-primary/20 text-primary">
+                          LVL {project.level}
                         </div>
-                      </CardTitle>
-                      <CardDescription className="line-clamp-3">{project.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-4 flex-grow flex flex-col justify-between">
-                      <div className="space-y-4">
-                        <div className="mb-4">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs">XP</span>
-                            <span className="text-xs">{project.xp} / 10000</span>
+                        <CardTitle className="text-xl">
+                          <div className="flex items-center gap-2">
+                            {project.title}
+                            {hoveredCard === index && (
+                              <motion.span
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                              >
+                                <Sparkles className="w-4 h-4 text-yellow-500" />
+                              </motion.span>
+                            )}
                           </div>
-                          <div className="xp-bar">
-                            <div 
-                              className="xp-bar-fill transition-all duration-700 ease-out" 
-                              style={{ width: `${(project.xp / 10000) * 100}%` }}
-                            ></div>
+                        </CardTitle>
+                        <CardDescription className="line-clamp-3">{project.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="pt-4 flex-grow flex flex-col justify-between">
+                        <div className="space-y-4">
+                          <div className="mb-4">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xs">XP</span>
+                              <span className="text-xs">{project.xp} / 10000</span>
+                            </div>
+                            <div className="xp-bar">
+                              <div
+                                className="xp-bar-fill transition-all duration-700 ease-out"
+                                style={{ width: `${(project.xp / 10000) * 100}%` }}
+                              ></div>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {project.tags.map((tag) => (
+                              <Badge key={tag} variant="secondary" className="bg-primary/20 hover:bg-primary/30 transition-colors duration-200 text-xs">
+                                {tag}
+                              </Badge>
+                            ))}
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {project.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="bg-primary/20 hover:bg-primary/30 transition-colors duration-200 text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
+                        <div className="text-sm text-muted-foreground mt-auto">
+                          <p>{project.date}</p>
+                          {project.team && <p className="mt-1">Associated with {project.team}</p>}
                         </div>
-                      </div>
-                      
-                      <div className="text-sm text-muted-foreground mt-auto">
-                        <p>{project.date}</p>
-                        {project.team && <p className="mt-1">Associated with {project.team}</p>}
-                      </div>
-                    </CardContent>
-                    <CardFooter className="flex gap-2 border-t border-muted flex-shrink-0 mt-auto">
-                      <Link href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full gap-1 border-primary/50 hover:border-primary hover:bg-primary/10 transition-all duration-200"
-                        >
-                          <Github className="w-4 h-4" />
-                          GitHub
-                        </Button>
-                      </Link>
-                      {project.demo && (
-                        <Link href={project.demo} target="_blank" rel="noopener noreferrer" className="flex-1">
+                      </CardContent>
+                      <CardFooter className="flex gap-2 border-t border-muted flex-shrink-0 mt-auto">
+                        <Link href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1">
                           <Button
                             variant="outline"
                             size="sm"
-                            className="w-full gap-1 border-secondary/50 hover:border-secondary hover:bg-secondary/10 transition-all duration-200"
+                            className="w-full gap-1 border-primary/50 hover:border-primary hover:bg-primary/10 transition-all duration-200"
                           >
-                            <ExternalLink className="w-4 h-4" />
-                            Demo
+                            <Github className="w-4 h-4" />
+                            GitHub
                           </Button>
                         </Link>
-                      )}
-                    </CardFooter>
-                  </Card>
+                        {project.demo && (
+                          <Link href={project.demo} target="_blank" rel="noopener noreferrer" className="flex-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full gap-1 border-secondary/50 hover:border-secondary hover:bg-secondary/10 transition-all duration-200"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                              Demo
+                            </Button>
+                          </Link>
+                        )}
+                      </CardFooter>
+                    </Card>
                   </motion.div>
                 </motion.div>
               ))}
@@ -361,11 +360,10 @@ export function ProjectsSection() {
               key={index}
               variant="ghost"
               size="sm"
-              className={`w-2 h-2 md:w-3 md:h-3 p-0 rounded-full transition-all duration-300 ease-out projects-pagination-dot ${
-                index === Math.floor(currentIndex / visibleProjects) 
-                  ? "bg-primary scale-110 shadow-lg shadow-primary/30" 
+              className={`w-2 h-2 md:w-3 md:h-3 p-0 rounded-full transition-all duration-300 ease-out projects-pagination-dot ${index === Math.floor(currentIndex / visibleProjects)
+                  ? "bg-primary scale-110 shadow-lg shadow-primary/30"
                   : "bg-muted hover:bg-primary/50 hover:scale-105"
-              }`}
+                }`}
               onClick={() => setCurrentIndex(index * visibleProjects)}
               aria-label={`Go to slide ${index + 1}`}
             />

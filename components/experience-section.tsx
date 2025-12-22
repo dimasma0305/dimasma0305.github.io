@@ -62,7 +62,7 @@ export function ExperienceSection() {
   return (
     <div className="container px-4 py-16 mx-auto max-w-7xl" id="experience" ref={containerRef}>
       <div className="mb-12 text-center">
-        <h2 className="text-5xl font-bold tracking-tight neon-text-green">Professional Experience</h2>
+        <h2 className="text-5xl font-bold tracking-tight text-green-500">Professional Experience</h2>
         <p className="mt-4 text-xl text-muted-foreground">My journey in the cybersecurity realm</p>
       </div>
 

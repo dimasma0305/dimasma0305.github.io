@@ -215,7 +215,7 @@ export function CTFSection() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight neon-text-pink">CTF Achievements</h2>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-pink-500">CTF Achievements</h2>
             <p className="mt-4 text-lg sm:text-xl text-muted-foreground">Battle-tested in the digital arena</p>
           </motion.div>
 
@@ -223,7 +223,7 @@ export function CTFSection() {
             <div className="w-full">
               <div className="flex items-center gap-3 mb-6">
                 <Trophy className="w-6 h-6 text-primary" />
-                <h3 className="text-xl sm:text-2xl font-semibold neon-text">Achievement Board</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold">Achievement Board</h3>
               </div>
 
               <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 w-full">
@@ -370,7 +370,7 @@ export function CTFSection() {
             <div className="w-full">
               <div className="flex items-center gap-3 mb-6">
                 <Users className="w-6 h-6 text-primary" />
-                <h3 className="text-xl sm:text-2xl font-semibold neon-text">CTF Guilds</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold">CTF Guilds</h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
