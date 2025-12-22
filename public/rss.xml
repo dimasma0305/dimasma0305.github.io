@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dimas Maulana&apos;s Blog</title>
+    <description>Personal blog about technology, programming, and insights</description>
+    <link>https://dimasma0305.github.io</link>
+    <atom:link href="https://dimasma0305.github.io/rss.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <managingEditor>dimas@example.com (Dimas Maulana)</managingEditor>
+    <webMaster>dimas@example.com (Dimas Maulana)</webMaster>
+    <lastBuildDate>Mon, 22 Dec 2025 05:08:32 GMT</lastBuildDate>
+    <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+    <generator>Custom RSS Generator</generator>
+    <item>
+      <title>Home - Dimas Maulana&apos;s Blog</title>
+      <link>https://dimasma0305.github.io</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io</guid>
+      <description>Welcome to my personal blog about technology, programming, cybersecurity, and CTF writeups.</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Static Page</category>
+    </item>
+    <item>
+      <title>Blog - All Posts</title>
+      <link>https://dimasma0305.github.io/blog</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/blog</guid>
+      <description>Browse all blog posts about cybersecurity, CTF writeups, web development, and programming.</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Static Page</category>
+    </item>
+    <item>
+      <title>Categories - Browse by Topic</title>
+      <link>https://dimasma0305.github.io/categories</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/categories</guid>
+      <description>Browse blog posts organized by categories like CTF, Web Security, Programming, and more.</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Static Page</category>
+    </item>
+    <item>
+      <title>Search - Find Content</title>
+      <link>https://dimasma0305.github.io/search</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/search</guid>
+      <description>Search through all blog posts and content on the site.</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Static Page</category>
+    </item>
+    <item>
+      <title>Tools - Utilities</title>
+      <link>https://dimasma0305.github.io/tools</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/tools</guid>
+      <description>Useful tools and utilities for developers and security researchers.</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Tools</category>
+    </item>
+    <item>
+      <title>CTF Calculator - Points Calculator</title>
+      <link>https://dimasma0305.github.io/tools/ctf-calculator</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/tools/ctf-calculator</guid>
+      <description>Calculate CTF points and scores for cybersecurity competitions.</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Tools</category>
+    </item>
+    <item>
+      <title>CTF - Category</title>
+      <link>https://dimasma0305.github.io/categories/ctf</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/categories/ctf</guid>
+      <description>Browse all posts in the CTF category (12 posts).</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Category Page</category>
+      <category>CTF</category>
+    </item>
+    <item>
+      <title>Web - Category</title>
+      <link>https://dimasma0305.github.io/categories/web</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/categories/web</guid>
+      <description>Browse all posts in the Web category (8 posts).</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Category Page</category>
+      <category>Web</category>
+    </item>
+    <item>
+      <title>Security - Category</title>
+      <link>https://dimasma0305.github.io/categories/security</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/categories/security</guid>
+      <description>Browse all posts in the Security category (6 posts).</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Category Page</category>
+      <category>Security</category>
+    </item>
+    <item>
+      <title>wordpress - Category</title>
+      <link>https://dimasma0305.github.io/categories/wordpress</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/categories/wordpress</guid>
+      <description>Browse all posts in the wordpress category (3 posts).</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Category Page</category>
+      <category>wordpress</category>
+    </item>
+    <item>
+      <title>XSS - Category</title>
+      <link>https://dimasma0305.github.io/categories/xss</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/categories/xss</guid>
+      <description>Browse all posts in the XSS category (1 posts).</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Category Page</category>
+      <category>XSS</category>
+    </item>
+    <item>
+      <title>Programming - Category</title>
+      <link>https://dimasma0305.github.io/categories/programming</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/categories/programming</guid>
+      <description>Browse all posts in the Programming category (1 posts).</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Category Page</category>
+      <category>Programming</category>
+    </item>
+    <item>
+      <title>Domclobering - Category</title>
+      <link>https://dimasma0305.github.io/categories/domclobering</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/categories/domclobering</guid>
+      <description>Browse all posts in the Domclobering category (1 posts).</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Category Page</category>
+      <category>Domclobering</category>
+    </item>
+    <item>
+      <title>CSS Leak - Category</title>
+      <link>https://dimasma0305.github.io/categories/css%20leak</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/categories/css%20leak</guid>
+      <description>Browse all posts in the CSS Leak category (1 posts).</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Category Page</category>
+      <category>CSS Leak</category>
+    </item>
+    <item>
+      <title>XXE - Category</title>
+      <link>https://dimasma0305.github.io/categories/xxe</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/categories/xxe</guid>
+      <description>Browse all posts in the XXE category (1 posts).</description>
+      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Category Page</category>
+      <category>XXE</category>
+    </item>
+    <item>
+      <title>PatchStack CTF 2025: End-of-the-year Alliance Capture the Flag</title>
+      <link>https://dimasma0305.github.io/posts/patchstack-ctf-2025-end-of-the-year-alliance-captu</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/patchstack-ctf-2025-end-of-the-year-alliance-captu</guid>
+      <description>The challenge involves a WordPress plugin named &quot;AI Trust Score&quot; (located in wp-content/plugins/ai-badbots/ai-badbots.php). This plugin uses AI heuristics to assign a &quot;trust score&quot; to incoming request...</description>
+      <pubDate>Mon, 22 Dec 2025 04:41:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>wordpress</category>
+      <category>CTF</category>
+    </item>
+    <item>
+      <title>Arbitrary File Inclusion Leading to RCE in Genie.jl - IncludeMe [idekCTF 2024]</title>
+      <link>https://dimasma0305.github.io/posts/arbitrary-file-inclusion-leading-to-rce-in-genie-j</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/arbitrary-file-inclusion-leading-to-rce-in-genie-j</guid>
+      <description>In idekCTF 2024, I played with the P1G SEKAI team and secured 1st place out of 1,068 teams! I solved a challenge named &quot;Included me&quot; and got the first blood on that challenge.another minimalist, front...</description>
+      <pubDate>Wed, 19 Nov 2025 10:31:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>CTF</category>
+    </item>
+    <item>
+      <title>Exploiting Race Condition To Gain Infinity Wealth - m0leCon CTF 2023 - goldinospizza2 </title>
+      <link>https://dimasma0305.github.io/posts/exploiting-race-condition-to-gain-infinity-wealth-</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/exploiting-race-condition-to-gain-infinity-wealth-</guid>
+      <description>In the m0leCon CTF 2023, I participated with team TCP1P and successfully solved several web challenges.In this article, I will provide a write-up about an intriguing challenge named &quot;goldinospizza2.&quot;...</description>
+      <pubDate>Wed, 19 Nov 2025 10:31:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>CTF</category>
+      <category>Security</category>
+      <category>Web</category>
+    </item>
+    <item>
+      <title>X Et Et</title>
+      <link>https://dimasma0305.github.io/posts/x-et-et</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/x-et-et</guid>
+      <description>solver.py
+index.htmlThere are several steps to achieve RCE:Those are the steps required to work on this challenge. For the rest, you can refer to the solve script above to see the execution flow.After...</description>
+      <pubDate>Wed, 19 Nov 2025 10:31:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>CTF</category>
+      <category>Web</category>
+    </item>
+    <item>
+      <title>Patchstack Aliance CTF S02E03 - WordCamp Europe</title>
+      <link>https://dimasma0305.github.io/posts/patchstack-aliance-ctf-s02e03-wordcamp-europe</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/patchstack-aliance-ctf-s02e03-wordcamp-europe</guid>
+      <description>The endpoint /wp-json/ghostly/v1/login is a custom REST route in the WordPress backend. Here’s the kicker:Here’s the vulnerable PHP handler logic (as reverse-engineered from the behavior):This effecti...</description>
+      <pubDate>Sun, 08 Jun 2025 04:32:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>CTF</category>
+    </item>
+    <item>
+      <title>Patchstack Alliance CTF S01E01</title>
+      <link>https://dimasma0305.github.io/posts/patchstack-alliance-ctf-s01e01</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/patchstack-alliance-ctf-s01e01</guid>
+      <description>In the recent Patchstack Alliance CTF S01E01, I am thrilled to share that I earned 2nd place and successfully solved all the challenges presented. Below is my detailed write-up of each challenge:In th...</description>
+      <pubDate>Fri, 23 May 2025 05:37:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>wordpress</category>
+      <category>CTF</category>
+    </item>
+    <item>
+      <title>Bypassing null Origin in 4xx Status Code Using Iframe | disconnection-revenge Writeup | AlpacaHack Round 7 (Web)</title>
+      <link>https://dimasma0305.github.io/posts/bypassing-null-origin-in-4xx-status-code-using-ifr</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/bypassing-null-origin-in-4xx-status-code-using-ifr</guid>
+      <description>Unfortunately, I solved this challenge only 30 minutes after the CTF ended. Here is my write-up about the challenge.This is a fixed challenge of disconnection.In this challenge, we are given source co...</description>
+      <pubDate>Thu, 22 May 2025 09:27:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>XSS</category>
+      <category>CTF</category>
+      <category>Security</category>
+      <category>Web</category>
+      <category>Programming</category>
+    </item>
+    <item>
+      <title>Read the file with lxml.etree that Vulnerable to XXE, include the local DTD, and generate an error to read the Flag: Cyber Jawara National 2025 Quals SVG Validator</title>
+      <link>https://dimasma0305.github.io/posts/read-the-file-with-lxml-etree-that-vulnerable-to-x</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/read-the-file-with-lxml-etree-that-vulnerable-to-x</guid>
+      <description>A simple SVG validator.In order to gain Arbitrary File Read, we will exploit the XXE vulnerability in the lxml.etree. We must introduce an error in the XML since we cannot read the flag information di...</description>
+      <pubDate>Thu, 22 May 2025 09:16:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>XXE</category>
+      <category>Security</category>
+    </item>
+    <item>
+      <title>Exploiting DOM Clobbering and Using Trigram CSS Leak to Expose Nonce: Freedom Notes - Cyber Jawara National 2025 Quals Writeup</title>
+      <link>https://dimasma0305.github.io/posts/exploiting-dom-clobbering-and-using-trigram-css-le</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/exploiting-dom-clobbering-and-using-trigram-css-le</guid>
+      <description>Make your notes has freedom, a freedom from sanitizerIn this challenge, we will exploit two vulnerabilities to gain XSS. The first is DOM Clobbering in the sanitize function in the index.html file, wh...</description>
+      <pubDate>Thu, 22 May 2025 08:42:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Domclobering</category>
+      <category>CSS Leak</category>
+      <category>CTF</category>
+      <category>Security</category>
+      <category>Web</category>
+    </item>
+    <item>
+      <title>Patchstack Alliance CTF S02E01 - WordCamp Asia</title>
+      <link>https://dimasma0305.github.io/posts/patchstack-alliance-ctf-s02e01-wordcamp-asia</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/patchstack-alliance-ctf-s02e01-wordcamp-asia</guid>
+      <description>Last weekend, I participated in the Patchstack WCUS CTF and solved all the WordPress challenges. Here&apos;s my write-up for each challenge from the Patchstack WCUS CTF 2025.Using Semgrep and my Semgrep cu...</description>
+      <pubDate>Thu, 22 May 2025 08:00:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>wordpress</category>
+      <category>CTF</category>
+    </item>
+    <item>
+      <title>Zero-Day XSS Found in Open Source JS Library for CTF Solution - UIUCTF 2023 - peanut-xss Writeup</title>
+      <link>https://dimasma0305.github.io/posts/zero-day-xss-found-in-open-source-js-library-for-c</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/zero-day-xss-found-in-open-source-js-library-for-c</guid>
+      <description>This week, I participated in UIUCTF 2023 with the TCP1P team and successfully solved multiple challenges. One of the challenges I tackled was called &quot;peanut-xss&quot;.In this challenge, our goal was to exp...</description>
+      <pubDate>Sun, 24 Nov 2024 07:12:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>CTF</category>
+    </item>
+    <item>
+      <title>Patchstack WCUS CTF Writeup 2024</title>
+      <link>https://dimasma0305.github.io/posts/patchstack-wcus-ctf-writeup-2024</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/patchstack-wcus-ctf-writeup-2024</guid>
+      <description>Last weekend, I participated in the Patchstack WCUS CTF and solved all the WordPress challenges. Here&apos;s my write-up for each challenge from the Patchstack WCUS CTF 2024.My area have some kind of dynas...</description>
+      <pubDate>Sun, 03 Nov 2024 11:08:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>CTF</category>
+    </item>
+    <item>
+      <title>Tot Musica (Web) Unitended Solution - Cyber Jawara International</title>
+      <link>https://dimasma0305.github.io/posts/tot-musica-web-unitended-solution-cyber-jawara-int</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/tot-musica-web-unitended-solution-cyber-jawara-int</guid>
+      <description>Someone just recently making a new website, find the full name of the author.Please solve it in locally first!BOT: http://152.42.183.87:8182/Submit the Flag With This Format: CJ{[a-z0-9\s]}http://152....</description>
+      <pubDate>Thu, 31 Oct 2024 12:15:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Web</category>
+    </item>
+    <item>
+      <title>Exploiting the Latest Render Engine in Node (EJS) - SEETF 2023 - Express JavaScript Write-up</title>
+      <link>https://dimasma0305.github.io/posts/exploiting-the-latest-render-engine-in-node-ejs-se</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/exploiting-the-latest-render-engine-in-node-ejs-se</guid>
+      <description>During SEETF 2023, I participated as a member of the TCP1P team and successfully solved several web challenges.In this article, I will provide a write-up for a specific challenge called &quot;Express JavaS...</description>
+      <pubDate>Sun, 09 Jun 2024 09:08:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>CTF</category>
+      <category>Security</category>
+      <category>Web</category>
+    </item>
+    <item>
+      <title>Spurdo Enbinling</title>
+      <link>https://dimasma0305.github.io/posts/spurdo-enbinling</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/spurdo-enbinling</guid>
+      <description>Spurdo decided to develop a web game while he was solo leveling. But due to lack of skill, spurdo developed a game that cannot be completed by anyone sane enough. And because of that he decided to inv...</description>
+      <pubDate>Tue, 30 Apr 2024 23:26:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Web</category>
+    </item>
+    <item>
+      <title>Wiki World</title>
+      <link>https://dimasma0305.github.io/posts/wiki-world</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/wiki-world</guid>
+      <description>Can you alpha test out our newest note-taking website? (If you find anything, please report it to us using  nc cha.hackpack.club 8702)Also unrelatedly, our website admin is really fond of the wiki-wor...</description>
+      <pubDate>Tue, 30 Apr 2024 23:08:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>Security</category>
+      <category>Web</category>
+    </item>
+  </channel>
+</rss>

@@ -1,13 +1,14 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { ArrowRight, Github, Linkedin, Mail, Twitter, Gamepad2, BookOpen, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
 import dynamic from "next/dynamic"
-const TypeAnimation = dynamic(() => import("react-type-animation").then(m => m.TypeAnimation), { ssr: false })
-import { useInView } from "react-intersection-observer"
+import { motion, AnimatePresence } from "framer-motion"
+import { TypeAnimation } from "react-type-animation"
+
 const Particles = dynamic(() => import("react-particles"), { ssr: false })
 import { loadSlim } from "tsparticles-slim"
 import type { Engine } from "tsparticles-engine"
@@ -15,21 +16,10 @@ import { withBasePath } from "@/lib/utils"
 
 export function HeroSection() {
   const [activeTab, setActiveTab] = useState("hacker")
-  const [particlesContainer, setParticlesContainer] = useState<Engine | null>(null)
   const [isParticlesLoaded, setIsParticlesLoaded] = useState(false)
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  })
-
-  const containerRef = useRef(null)
-  // Basic scroll fade without framer-motion
-  const y = 0
-  const opacity = 1
 
   const particlesInit = async (engine: Engine) => {
     await loadSlim(engine)
-    setParticlesContainer(engine)
     setIsParticlesLoaded(true)
   }
 
@@ -38,19 +28,25 @@ export function HeroSection() {
       id: "hacker",
       label: "Hacker",
       icon: <Shield className="w-5 h-5" />,
-      color: "neon-text-green",
+      color: "text-green-500",
+      neonClass: "neon-text-green",
+      borderColor: "border-green-500/50"
     },
     {
       id: "gamer",
       label: "Gamer",
       icon: <Gamepad2 className="w-5 h-5" />,
-      color: "neon-text-blue",
+      color: "text-blue-500",
+      neonClass: "neon-text-blue",
+      borderColor: "border-blue-500/50"
     },
     {
       id: "manga",
       label: "Manga Reader",
       icon: <BookOpen className="w-5 h-5" />,
-      color: "neon-text-pink",
+      color: "text-pink-500",
+      neonClass: "neon-text-pink",
+      borderColor: "border-pink-500/50"
     },
   ]
 
@@ -90,488 +86,427 @@ export function HeroSection() {
     },
   }
 
+  // Animation variants
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  }
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }
+
   return (
-    <div
-      className="relative overflow-hidden bg-gradient-to-b from-black to-background"
-      ref={containerRef}
-      style={{ 
-        minHeight: "100vh",
-        width: "100%",
-        padding: "2rem 0",
-        display: "flex",
-        flexDirection: "column",
-        position: "relative"
-      }}
+    <section
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-black via-background to-background pt-20"
+      id="home"
     >
-      <div 
-        className="absolute inset-0 z-0"
-        style={{ 
-          width: "100%", 
-          height: "100%",
-          opacity: isParticlesLoaded ? 1 : 0,
-          transition: "opacity 0.3s ease-in-out",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0
-        }}
-      >
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 z-0">
         <Particles
           id="tsparticles"
           init={particlesInit}
           options={{
-            background: {
-              color: {
-                value: "transparent",
+            background: { color: { value: "transparent" } },
+            fpsLimit: 60,
+            interactivity: {
+              events: {
+                onHover: { enable: true, mode: "grab" },
+                onClick: { enable: true, mode: "push" },
+                resize: true,
+              },
+              modes: {
+                grab: { distance: 140, links: { opacity: 0.5 } },
+                push: { quantity: 4 },
               },
             },
-            fpsLimit: 60,
             particles: {
-              color: {
-                value: ["#9c27b0", "#2196f3", "#ff5722"],
-              },
+              color: { value: ["#22c55e", "#3b82f6", "#ec4899"] },
               links: {
                 color: "#ffffff",
                 distance: 150,
                 enable: true,
-                opacity: 0.2,
+                opacity: 0.1,
                 width: 1,
               },
               move: {
                 direction: "none",
                 enable: true,
-                outModes: {
-                  default: "bounce",
-                },
+                outModes: { default: "bounce" },
                 random: true,
                 speed: 1,
                 straight: false,
               },
               number: {
-                density: {
-                  enable: true,
-                  area: 1000,
-                },
+                density: { enable: true, area: 800 },
                 value: 60,
               },
-              opacity: {
-                value: 0.5,
-              },
-              shape: {
-                type: "circle",
-              },
-              size: {
-                value: { min: 1, max: 3 },
-              },
+              opacity: { value: 0.3 },
+              shape: { type: "circle" },
+              size: { value: { min: 1, max: 3 } },
             },
             detectRetina: true,
           }}
-          className="absolute inset-0"
-          style={{ 
-            width: "100%", 
-            height: "100%",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0
-          }}
+          className={`absolute inset-0 transition-opacity duration-1000 ${isParticlesLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-0 pointer-events-none" />
       </div>
 
-      <div 
-        className="container relative z-10 mx-auto max-w-7xl h-full"
-      >
-        <div className="grid items-center h-full gap-8 px-4 lg:grid-cols-2 md:gap-12">
-          <div
-            className="space-y-6 md:space-y-8"
-            style={{ 
-              minHeight: "auto",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center"
-            }}
+      <div className="container relative z-10 px-4 mx-auto max-w-7xl">
+        <div className="grid items-center gap-12 lg:grid-cols-2">
+
+          {/* Left Content */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            className="space-y-8"
           >
-            <div className="space-y-4">
-              <div className="inline-block px-4 py-2 mb-4 text-sm font-medium rounded-full bg-primary/20 text-primary">
+            <motion.div variants={fadeIn} className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full bg-secondary/50 backdrop-blur-sm border border-white/10">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
                 <TypeAnimation
-                  sequence={["CTF Player", 1000, "Security Researcher", 1000, "Gamer", 1000, "Manga Reader", 1000]}
+                  sequence={[
+                    "CTF Player", 1500,
+                    "Security Researcher", 1500,
+                    "Gamer", 1500,
+                    "Manga Reader", 1500
+                  ]}
                   wrapper="span"
                   speed={50}
-                  repeat={Number.POSITIVE_INFINITY}
+                  repeat={Infinity}
+                  className="text-foreground"
                 />
               </div>
 
-              <h1
-                className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl glitch"
-                data-text="Dimas Maulana"
-              >
-                <span
-                  className={`${activeTab === "hacker" ? "neon-text-green" : ""} ${activeTab === "gamer" ? "neon-text-blue" : ""} ${activeTab === "manga" ? "neon-text-pink" : ""}`}
-                >
+              <h1 className="text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
+                <span className={`block glitch ${tabs.find(t => t.id === activeTab)?.neonClass}`} data-text="Dimas Maulana">
                   Dimas Maulana
                 </span>
               </h1>
 
-              <h2 className="text-xl sm:text-2xl font-medium text-muted-foreground">
+              <motion.p
+                key={activeTab}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="text-xl sm:text-2xl text-muted-foreground font-light"
+              >
                 {tabContent[activeTab as keyof typeof tabContent].subtitle}
-              </h2>
-            </div>
+              </motion.p>
+            </motion.div>
 
-            <p className="text-lg sm:text-xl text-muted-foreground">
+            <motion.p
+              key={`${activeTab}-desc`}
+              variants={fadeIn}
+              className="text-lg text-muted-foreground max-w-xl leading-relaxed glass p-4 rounded-xl"
+            >
               {tabContent[activeTab as keyof typeof tabContent].description}
-            </p>
+            </motion.p>
 
-            <div className="flex flex-wrap gap-4 pt-2">
-              <div className="flex p-1 space-x-1 rounded-full bg-muted">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium transition-all rounded-full ${
-                      activeTab === tab.id
-                        ? "bg-background text-primary shadow-lg"
-                        : "hover:bg-background/50 text-muted-foreground"
-                    }`}
-                  >
-                    {tab.icon}
-                    <span className="hidden sm:inline">{tab.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-              {tabContent[activeTab as keyof typeof tabContent].stats.map((stat, index) => (
-                <div
-                  key={index}
-                  className="p-3 text-center rounded-lg bg-background/50 backdrop-blur-sm"
+            {/* Tabs */}
+            <motion.div variants={fadeIn} className="flex flex-wrap gap-3">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`
+                    flex items-center gap-2 px-5 py-2.5 text-sm font-medium transition-all duration-300 rounded-full border
+                    ${activeTab === tab.id
+                      ? `${tab.borderColor} bg-background/80 shadow-lg ${tab.neonClass.replace('text', 'shadow')}`
+                      : "border-transparent bg-secondary/50 hover:bg-secondary hover:scale-105"
+                    }
+                  `}
                 >
-                  <div className="text-xl sm:text-2xl font-bold text-primary">{stat.value}</div>
-                  <div className="text-xs sm:text-sm text-muted-foreground">{stat.label}</div>
-                </div>
+                  <span className={activeTab === tab.id ? tab.color : "text-muted-foreground"}>{tab.icon}</span>
+                  <span>{tab.label}</span>
+                </button>
               ))}
-            </div>
+            </motion.div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            {/* Stats */}
+            <motion.div
+              variants={fadeIn}
+              className="grid grid-cols-3 gap-4"
+            >
+              <AnimatePresence mode="wait">
+                {tabContent[activeTab as keyof typeof tabContent].stats.map((stat, index) => (
+                  <motion.div
+                    key={`${activeTab}-${index}`}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="glass p-4 rounded-xl text-center hover:bg-white/5 transition-colors"
+                  >
+                    <div className={`text-2xl font-bold mb-1 ${tabs.find(t => t.id === activeTab)?.color}`}>
+                      {stat.value}
+                    </div>
+                    <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                      {stat.label}
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+
+            <motion.div variants={fadeIn} className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link href="#projects" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  className="w-full gap-2 transition-all duration-300 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary"
-                >
+                <Button size="lg" className="w-full gap-2 group bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(var(--primary),0.3)] hover:shadow-[0_0_30px_rgba(var(--primary),0.5)] transition-all">
                   View Projects
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link href="#blog" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
-                >
+              <Link href="/blog" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full group glass hover:bg-white/10 border-white/20">
                   Read My Blog
+                  <BookOpen className="w-4 h-4 ml-2 group-hover:rotate-12 transition-transform" />
                 </Button>
               </Link>
-            </div>
+            </motion.div>
 
-            <div className="flex items-center justify-center gap-4 pt-2 sm:justify-start">
-              <Link href="https://github.com/dimasma0305" target="_blank" rel="noopener noreferrer">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="GitHub"
-                  className="transition-transform hover:text-primary hover:scale-110"
-                >
+            <motion.div variants={fadeIn} className="flex items-center gap-4 text-muted-foreground">
+              <Link href="https://github.com/dimasma0305" target="_blank">
+                <Button variant="ghost" size="icon" className="hover:text-white hover:bg-white/10 hover:scale-110 transition-all rounded-full">
                   <Github className="w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="https://www.linkedin.com/in/solderet/" target="_blank" rel="noopener noreferrer">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="LinkedIn"
-                  className="transition-transform hover:text-primary hover:scale-110"
-                >
+              <Link href="https://www.linkedin.com/in/solderet/" target="_blank">
+                <Button variant="ghost" size="icon" className="hover:text-blue-400 hover:bg-blue-400/10 hover:scale-110 transition-all rounded-full">
                   <Linkedin className="w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="https://twitter.com/dimasma__" target="_blank" rel="noopener noreferrer">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Twitter"
-                  className="transition-transform hover:text-primary hover:scale-110"
-                >
+              <Link href="https://twitter.com/dimasma__" target="_blank">
+                <Button variant="ghost" size="icon" className="hover:text-sky-400 hover:bg-sky-400/10 hover:scale-110 transition-all rounded-full">
                   <Twitter className="w-5 h-5" />
                 </Button>
               </Link>
               <Link href="mailto:dimasmaulana0305@gmail.com">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Email"
-                  className="transition-transform hover:text-primary hover:scale-110"
-                >
+                <Button variant="ghost" size="icon" className="hover:text-red-400 hover:bg-red-400/10 hover:scale-110 transition-all rounded-full">
                   <Mail className="w-5 h-5" />
                 </Button>
               </Link>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          <div
-            ref={ref}
-            className="relative hidden lg:flex"
-            style={{ 
-              height: "auto",
-              minHeight: "500px",
-              width: "100%",
-              position: "relative",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-              <div
-                key={activeTab}
-                className="absolute inset-0"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
-              >
-                {activeTab === "hacker" && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-full max-w-md p-6 rounded-lg retro-terminal scanlines">
-                      <div className="mb-4 text-sm">
-                        <span className="text-green-400">root@dimasma:~#</span>{" "}
-                        <span className="cursor-blink">whoami</span>
-                      </div>
-                      <div className="mb-4">
-                        <pre className="text-sm">
-                          {`
- ____  _                     __  __            _                 
-|  _ \\(_)_ __ ___   __ _ ___| \\/  | __ _ _   _| | __ _ _ __   __ _ 
-| | | | | '_ \` _ \\ / _\` / __| |\\/| |/ _\` | | | | |/ _\` | '_ \\ / _\` |
-| |_| | | | | | | | (_| \\__ \\ |  | | (_| | |_| | | (_| | | | | (_| |
-|____/|_|_| |_| |_|\\__,_|___/_|  |_|\\__,_|\\__,_|_|\\__,_|_| |_|\\__,_|
-                                                                  
-CTF Player | Security Researcher | Bug Hunter
-`}
-                        </pre>
-                      </div>
-                      <div className="mb-4 text-sm">
-                        <span className="text-green-400">root@dimasma:~#</span> ls -la skills/
-                      </div>
-                      <div className="mb-4 text-sm">
-                        <pre>
-                          {`
-total 42
-drwxr-xr-x  2 dimas dimas 4096 May 22 06:23 .
-drwxr-xr-x 10 dimas dimas 4096 May 22 06:23 ..
--rwxr-xr-x  1 dimas dimas 8192 May 22 06:23 web_security.sh
--rwxr-xr-x  1 dimas dimas 6144 May 22 06:23 reverse_engineering.py
--rwxr-xr-x  1 dimas dimas 5120 May 22 06:23 binary_exploitation.c
--rwxr-xr-x  1 dimas dimas 4096 May 22 06:23 cryptography.rb
--rwxr-xr-x  1 dimas dimas 3072 May 22 06:23 forensics.go
-`}
-                        </pre>
-                      </div>
-                      <div className="text-sm">
-                        <span className="text-green-400">root@dimasma:~#</span>{" "}
-                        <span className="cursor-blink">./start_hacking.sh</span>
+          {/* Right Content - Visuals */}
+          <div className="relative hidden lg:block h-[600px] perspective-1000">
+            <AnimatePresence mode="wait">
+              {activeTab === "hacker" && (
+                <motion.div
+                  key="hacker"
+                  initial={{ opacity: 0, rotateY: 90 }}
+                  animate={{ opacity: 1, rotateY: 0 }}
+                  exit={{ opacity: 0, rotateY: -90, transition: { duration: 0.3 } }}
+                  transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                  className="absolute inset-0 flex items-center justify-center p-8"
+                >
+                  <div className="w-full h-full retro-terminal scanlines rounded-xl shadow-2xl p-6 font-mono text-sm leading-relaxed overflow-hidden border border-green-500/30">
+                    <div className="flex items-center justify-between mb-4 border-b border-green-500/30 pb-2">
+                      <span className="text-xs text-green-700">TERMINAL SESSION: ROOT</span>
+                      <div className="flex gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
                       </div>
                     </div>
-                  </div>
-                )}
+                    <div className="h-full overflow-hidden">
+                      <p><span className="text-green-300">dimas@sys:~$</span> init_sequence --cyber-security</p>
+                      <p className="text-gray-500 my-1">[INFO] Loading modules...</p>
+                      <p className="text-gray-500">[INFO] Connecting to secure server...</p>
+                      <p className="my-1"><span className="text-green-300">dimas@sys:~$</span> whoami</p>
+                      <p className="text-emerald-400 font-bold mb-4">root</p>
 
-                {activeTab === "gamer" && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-900/50 to-purple-900/50">
-                    <div className="w-full max-w-md p-4 game-card">
-                      <div className="mb-4 text-center">
-                        <h3 className="mb-2 text-xl font-bold text-blue-400">PLAYER STATS</h3>
-                        <div 
-                          className="relative mx-auto mb-3 overflow-hidden rounded-full"
-                          style={{ 
-                            width: "64px", 
-                            height: "64px",
-                            aspectRatio: "1/1"
-                          }}
-                        >
-                          <Image
-                            src="https://avatars.githubusercontent.com/u/92920739"
-                            alt="Dimas Maulana Avatar"
-                            width={64}
-                            height={64}
-                            className="object-cover"
-                            priority
-                            sizes="64px"
-                            style={{ 
-                              width: "64px", 
-                              height: "64px",
-                              maxWidth: "100%",
-                              display: "block"
-                            }}
+                      <p><span className="text-green-300">dimas@sys:~$</span> cat talents.txt</p>
+                      <div className="pl-4 border-l-2 border-green-500/20 my-2 text-green-200/80">
+                        <p>• Web Exploitation</p>
+                        <p>• Reverse Engineering</p>
+                        <p>• Cryptography</p>
+                        <p>• OSINT</p>
+                      </div>
+
+                      <p className="mt-4"><span className="text-green-300">dimas@sys:~$</span> ./run_exploits.sh</p>
+                      <p className="text-yellow-400 animate-pulse">Running analysis on target...</p>
+
+                      <div className="mt-8 p-4 border border-green-500/20 bg-green-500/5 rounded">
+                        <p className="text-xs text-green-600 mb-2">SYSTEM STATUS</p>
+                        <div className="w-full bg-green-900/30 h-1.5 rounded-full overflow-hidden">
+                          <motion.div
+                            className="h-full bg-green-500"
+                            initial={{ width: "0%" }}
+                            animate={{ width: "100%" }}
+                            transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
                           />
                         </div>
-                        <p className="text-lg font-semibold">DimasMa</p>
-                        <p className="text-xs text-blue-300">Level 42 Cyber Mage</p>
-                      </div>
-
-                      <div className="mb-2">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs">HP</span>
-                          <span className="text-xs">420/420</span>
-                        </div>
-                        <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-red-500 to-red-400 transition-all duration-300" 
-                            style={{ width: "100%" }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="mb-2">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs">MP</span>
-                          <span className="text-xs">340/340</span>
-                        </div>
-                        <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-300" 
-                            style={{ width: "100%" }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs">XP</span>
-                          <span className="text-xs">8,742 / 10,000</span>
-                        </div>
-                        <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-yellow-500 to-yellow-400 transition-all duration-300" 
-                            style={{ width: "87%" }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3 mb-4">
-                        <div className="p-2 text-center rounded-lg bg-blue-900/50">
-                          <div className="text-lg font-bold text-blue-400">STR</div>
-                          <div className="text-base">85</div>
-                        </div>
-                        <div className="p-2 text-center rounded-lg bg-blue-900/50">
-                          <div className="text-lg font-bold text-blue-400">INT</div>
-                          <div className="text-base">95</div>
-                        </div>
-                        <div className="p-2 text-center rounded-lg bg-blue-900/50">
-                          <div className="text-lg font-bold text-blue-400">DEX</div>
-                          <div className="text-base">78</div>
-                        </div>
-                        <div className="p-2 text-center rounded-lg bg-blue-900/50">
-                          <div className="text-lg font-bold text-blue-400">LCK</div>
-                          <div className="text-base">42</div>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-center gap-2">
-                        <div className="p-1.5 text-center rounded-full achievement-badge">
-                          <Gamepad2 className="w-5 h-5 text-black" />
-                        </div>
-                        <div className="p-1.5 text-center rounded-full achievement-badge">
-                          <Shield className="w-5 h-5 text-black" />
-                        </div>
-                        <div className="p-1.5 text-center rounded-full achievement-badge">
-                          <BookOpen className="w-5 h-5 text-black" />
-                        </div>
                       </div>
                     </div>
                   </div>
-                )}
+                </motion.div>
+              )}
 
-                {activeTab === "manga" && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-pink-900/50 to-purple-900/50">
-                    <div className="w-full max-w-md manga-panel bg-white">
-                      <div className="p-6">
-                        <div className="mb-4 text-center">
-                          <h3 className="mb-2 text-2xl font-bold text-black">MANGA COLLECTION</h3>
+              {activeTab === "gamer" && (
+                <motion.div
+                  key="gamer"
+                  initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 2 }}
+                  exit={{ opacity: 0, scale: 0.8, rotate: 5, transition: { duration: 0.3 } }}
+                  transition={{ type: "spring", bounce: 0.4 }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <div className="relative w-full max-w-md bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl p-1 border-4 border-blue-500 shadow-[0_0_50px_rgba(59,130,246,0.5)]">
+                    <div className="bg-slate-950 rounded-xl p-6 h-full relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-4 opacity-10">
+                        <Gamepad2 className="w-32 h-32" />
+                      </div>
+
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-20 h-20 rounded-xl bg-blue-600 p-0.5 shadow-lg overflow-hidden">
+                          <Image
+                            src="https://avatars.githubusercontent.com/u/92920739"
+                            width={80}
+                            height={80}
+                            alt="Avatar"
+                            className="rounded-lg"
+                          />
                         </div>
-
-                        <div className="mb-6 speech-bubble">
-                          <p className="text-black">
-                            "In the world of manga, I find it interesting to see how the characters and stories are created."
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-3 mb-6">
-                          {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div 
-                              key={i} 
-                              className="relative overflow-hidden bg-gray-200 rounded-md shadow-md"
-                              style={{ width: "100%", height: "96px" }}
-                            >
-                              <Image
-                                src={withBasePath(`/placeholder.svg?height=96&width=64&text=Manga ${i}`)}
-                                alt={`Manga ${i}`}
-                                width={64}
-                                height={96}
-                                className="object-cover w-full h-full"
-                                style={{ width: "100%", height: "100%" }}
-                              />
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="pixel-divider"></div>
-
-                        <div className="mt-4 text-center">
-                          <p className="text-sm text-black">Favorite Genres:</p>
-                          <div className="flex flex-wrap justify-center gap-2 mt-2">
-                            <span className="px-2 py-1 text-xs text-white bg-pink-500 rounded-full">Shonen</span>
-                            <span className="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">Action</span>
-                            <span className="px-2 py-1 text-xs text-white bg-purple-500 rounded-full">Fantasy</span>
-                            <span className="px-2 py-1 text-xs text-white bg-green-500 rounded-full">Comedy</span>
+                        <div>
+                          <h3 className="text-2xl font-bold text-white">DimasMa</h3>
+                          <div className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-yellow-500 text-black">
+                            LVL 99
                           </div>
                         </div>
                       </div>
+
+                      <div className="space-y-4">
+                        <div>
+                          <div className="flex justify-between text-xs font-bold text-gray-400 mb-1">
+                            <span>HP</span>
+                            <span>2500/2500</span>
+                          </div>
+                          <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
+                            <div className="h-full bg-gradient-to-r from-red-500 to-orange-500 w-full" />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex justify-between text-xs font-bold text-gray-400 mb-1">
+                            <span>MP</span>
+                            <span>850/850</span>
+                          </div>
+                          <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
+                            <div className="h-full bg-gradient-to-r from-blue-400 to-cyan-400 w-[85%]" />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex justify-between text-xs font-bold text-gray-400 mb-1">
+                            <span>EXP</span>
+                            <span>98.5%</span>
+                          </div>
+                          <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
+                            <div className="h-full bg-gradient-to-r from-yellow-400 to-amber-400 w-[98.5%] animate-pulse" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 mt-8">
+                        <div className="bg-white/5 rounded-lg p-3 text-center border border-white/10">
+                          <div className="text-xs text-gray-400">Class</div>
+                          <div className="font-bold text-blue-300">Cyber Mage</div>
+                        </div>
+                        <div className="bg-white/5 rounded-lg p-3 text-center border border-white/10">
+                          <div className="text-xs text-gray-400">Guild</div>
+                          <div className="font-bold text-purple-300">Sekai</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                )}
-              </div>
+                </motion.div>
+              )}
+
+              {activeTab === "manga" && (
+                <motion.div
+                  key="manga"
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -50, transition: { duration: 0.3 } }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <div className="w-full max-w-md bg-white text-black p-6 rounded-sm shadow-[15px_15px_0px_rgba(0,0,0,1)] border-4 border-black rotate-2 relative">
+                    <div className="absolute -top-6 -right-6 bg-yellow-400 border-4 border-black px-4 py-2 font-bold transform rotate-6 shadow-[4px_4px_0px_rgba(0,0,255,1)]">
+                      OTAKU MODE
+                    </div>
+
+                    <h3 className="text-3xl font-black italic tracking-tighter mb-4 border-b-4 border-black pb-2">
+                      MY COLLECTION
+                    </h3>
+
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="h-32 bg-gray-200 border-2 border-black relative overflow-hidden group cursor-pointer">
+                        <div className="absolute inset-0 flex items-center justify-center font-bold text-xl uppercase opacity-20 group-hover:opacity-100 transition-opacity z-10">Action</div>
+                        <div className="absolute inset-0 bg-blue-500 mix-blend-multiply opacity-0 group-hover:opacity-40 transition-opacity"></div>
+                        <Image
+                          src={withBasePath("/placeholder.svg?height=150&width=200&text=ACTION")}
+                          width={200}
+                          height={150}
+                          alt="Manga"
+                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
+                        />
+                      </div>
+                      <div className="h-32 bg-gray-200 border-2 border-black relative overflow-hidden group cursor-pointer">
+                        <div className="absolute inset-0 flex items-center justify-center font-bold text-xl uppercase opacity-20 group-hover:opacity-100 transition-opacity z-10">Sci-Fi</div>
+                        <div className="absolute inset-0 bg-purple-500 mix-blend-multiply opacity-0 group-hover:opacity-40 transition-opacity"></div>
+                        <Image
+                          src={withBasePath("/placeholder.svg?height=150&width=200&text=SCI-FI")}
+                          width={200}
+                          height={150}
+                          alt="Manga"
+                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="bg-black text-white p-4 font-bold rounded-sm bubble relative">
+                      "I read over 100+ chapters a week! It's not an addiction, it's a lifestyle!"
+                      <div className="absolute -bottom-4 left-8 w-0 h-0 border-l-[10px] border-l-transparent border-t-[15px] border-t-black border-r-[10px] border-r-transparent"></div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
-      </div>
 
-      <div className="absolute bottom-0 left-0 right-0 z-10 flex justify-center">
-        <div>
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        >
           <Link href="#about">
-            <Button variant="ghost" className="mb-8 animate-bounce" aria-label="Scroll down">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-6 h-6"
-              >
-                <path d="M12 5v14M5 12l7 7 7-7" />
-              </svg>
-            </Button>
+            <div className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+              <span className="text-xs uppercase tracking-widest">Scroll</span>
+              <div className="w-6 h-10 border-2 border-current rounded-full flex justify-center p-1">
+                <motion.div
+                  animate={{ y: [0, 12, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-1.5 h-1.5 bg-current rounded-full"
+                />
+              </div>
+            </div>
           </Link>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </section>
   )
 }

@@ -29,6 +29,7 @@ const navItems = [
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [activeSection, setActiveSection] = useState<string>("")
+  const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
   const observerRef = useRef<IntersectionObserver | null>(null)
 
@@ -39,6 +40,14 @@ export function Header() {
       behavior: "smooth",
     })
   }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   // Set up intersection observer for section detection on home page
   useEffect(() => {
@@ -148,7 +157,7 @@ export function Header() {
   // Helper function to determine if a nav item should be active
   const isNavItemActive = (item: { name: string; path: string }) => {
     const currentPath = pathname || "/"
-    
+
     if (currentPath !== "/") {
       // For non-home pages, use the original logic
       return currentPath === item.path || (item.path !== "/" && currentPath.startsWith(item.path))
@@ -168,45 +177,49 @@ export function Header() {
   }
 
   return (
-    <header className={`sticky top-0 z-40 w-full transition-all bg-background/80 backdrop-blur-md shadow-md`}>
+    <header
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled ? "bg-background/70 backdrop-blur-xl border-b border-white/5 shadow-lg" : "bg-transparent"
+        }`}
+    >
       <div className="container flex items-center justify-between h-16 px-4 mx-auto max-w-7xl">
-        <Link href="/" className="flex items-center space-x-2">
-          <div>
-            <span className="text-2xl font-bold">Dimas Maulana</span>
+        <Link href="/" className="flex items-center space-x-2 group">
+          <div className="relative">
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500 group-hover:to-purple-500 transition-all duration-300">
+              Dimas Maulana
+            </span>
           </div>
         </Link>
 
         <div className="hidden md:flex md:items-center md:space-x-1">
-          <nav className="flex items-center">
+          <nav className="flex items-center p-1 rounded-full bg-secondary/30 backdrop-blur-md border border-white/5">
             {navItems.map((item) => (
               <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
                 <Button
                   variant="ghost"
-                  className={`group relative overflow-hidden ${isNavItemActive(item) ? "text-primary" : ""}`}
+                  size="sm"
+                  className={`relative rounded-full px-4 transition-all duration-300 ${isNavItemActive(item)
+                      ? "text-primary-foreground bg-primary shadow-sm hover:bg-primary/90"
+                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                    }`}
                 >
                   <span className="flex items-center gap-2">
                     {item.icon}
                     {item.name}
                   </span>
-                  <span
-                    className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform origin-left transition-transform duration-300 ${
-                      isNavItemActive(item) ? "scale-x-100" : "scale-x-0"
-                    } group-hover:scale-x-100`}
-                  />
                 </Button>
               </Link>
             ))}
           </nav>
 
-          <div className="flex items-center space-x-2">
-            <Suspense fallback={<div>Loading ThemeToggle...</div>}>
+          <div className="flex items-center space-x-2 ml-4">
+            <Suspense fallback={<div className="w-9 h-9" />}>
               <ThemeToggle />
             </Suspense>
           </div>
         </div>
 
         <div className="flex items-center md:hidden">
-          <Suspense fallback={<div>Loading ThemeToggle...</div>}>
+          <Suspense fallback={<div className="w-9 h-9" />}>
             <ThemeToggle />
           </Suspense>
           <Button
@@ -223,14 +236,14 @@ export function Header() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-md">
+        <div className="md:hidden absolute top-16 left-0 w-full bg-background/95 backdrop-blur-xl border-b border-white/10 shadow-xl animate-in slide-in-from-top-5">
           <div className="container px-4 py-4 mx-auto">
             <nav className="flex flex-col space-y-1">
               {navItems.map((item) => (
                 <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
                   <Button
                     variant="ghost"
-                    className={`w-full justify-start ${isNavItemActive(item) ? "bg-primary/20 text-primary" : ""}`}
+                    className={`w-full justify-start ${isNavItemActive(item) ? "bg-primary/20 text-primary border-l-2 border-primary" : ""}`}
                   >
                     <span className="flex items-center gap-2">
                       {item.icon}
