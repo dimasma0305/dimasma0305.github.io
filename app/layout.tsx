@@ -14,9 +14,9 @@ import NavigationLoader from "@/components/navigation-loader"
 const Footer = lazy(() => import("@/components/footer").then(m => ({ default: m.Footer })))
 
 // Optimized font loading with preload
-const inter = Inter({ 
-  subsets: ["latin"], 
-  display: "swap", 
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
   variable: "--font-inter",
   preload: true,
   fallback: ['system-ui', 'arial']
@@ -72,18 +72,18 @@ export const metadata: Metadata = {
   creator: "Dimas Maulana",
   icons: {
     icon: [
-      { url: baseUrl+"/favicon.svg", type: 'image/svg+xml' },
+      { url: baseUrl + "/favicon.svg", type: 'image/svg+xml' },
     ],
-    apple: baseUrl+"/apple-icon.svg",
+    apple: baseUrl + "/apple-icon.svg",
     other: [
       {
         rel: 'icon',
         type: 'image/svg+xml',
-        url: baseUrl+"/favicon.svg",
+        url: baseUrl + "/favicon.svg",
       },
     ],
   },
-  manifest: baseUrl+"/manifest.webmanifest",
+  manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
       "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
     images: [
       {
-        url: baseUrl+"/og-image.jpg",
+        url: baseUrl + "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Dimas Maulana",
@@ -107,7 +107,7 @@ export const metadata: Metadata = {
     description:
       "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
     creator: "dimasma__",
-    images: [baseUrl+"/og-image.jpg"],
+    images: [baseUrl + "/og-image.jpg"],
   },
   robots: {
     index: true,
@@ -134,12 +134,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
-        
+
         {/* Favicon and icons */}
-        <link rel="icon" type="image/svg+xml" href={baseUrl+"/favicon.svg"} />
-        <link rel="apple-touch-icon" href={baseUrl+"/favicon.svg"} />
-        <link rel="manifest" href={baseUrl+"/manifest.webmanifest"} />
-        
+        <link rel="icon" type="image/svg+xml" href={baseUrl + "/favicon.svg"} />
+        <link rel="apple-touch-icon" href={baseUrl + "/favicon.svg"} />
+        <link rel="manifest" href="/manifest.webmanifest" />
+
         {/* Theme and PWA meta tags */}
         <meta name="theme-color" content="#000000" />
         <meta name="application-name" content="Dimas Maulana" />
@@ -150,10 +150,10 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${roboto.variable} ${merriweather.variable} ${firaCode.variable} font-roboto antialiased`}
       >
-        <ThemeProvider 
-          attribute="class" 
-          defaultTheme="dark" 
-          enableSystem 
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
           disableTransitionOnChange
         >
           <div className="flex flex-col min-h-screen">

@@ -190,7 +190,7 @@ export function Header() {
           </div>
         </Link>
 
-        <div className="hidden md:flex md:items-center md:space-x-1">
+        <div className="hidden lg:flex lg:items-center lg:space-x-1">
           <nav className="flex items-center p-1 rounded-full bg-secondary/30 backdrop-blur-md border border-white/5">
             {navItems.map((item) => (
               <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
@@ -198,8 +198,8 @@ export function Header() {
                   variant="ghost"
                   size="sm"
                   className={`relative rounded-full px-4 transition-all duration-300 ${isNavItemActive(item)
-                      ? "text-primary-foreground bg-primary shadow-sm hover:bg-primary/90"
-                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                    ? "text-primary-foreground bg-primary shadow-sm hover:bg-primary/90"
+                    : "text-muted-foreground hover:text-foreground hover:bg-white/5"
                     }`}
                 >
                   <span className="flex items-center gap-2">
@@ -218,7 +218,7 @@ export function Header() {
           </div>
         </div>
 
-        <div className="flex items-center md:hidden">
+        <div className="flex items-center lg:hidden">
           <Suspense fallback={<div className="w-9 h-9" />}>
             <ThemeToggle />
           </Suspense>
@@ -236,7 +236,7 @@ export function Header() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden absolute top-16 left-0 w-full bg-background/95 backdrop-blur-xl border-b border-white/10 shadow-xl animate-in slide-in-from-top-5">
+        <div className="lg:hidden absolute top-16 left-0 w-full bg-background/95 backdrop-blur-xl border-b border-white/10 shadow-xl animate-in slide-in-from-top-5">
           <div className="container px-4 py-4 mx-auto">
             <nav className="flex flex-col space-y-1">
               {navItems.map((item) => (

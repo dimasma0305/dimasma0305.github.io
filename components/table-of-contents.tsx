@@ -1,144 +1,167 @@
-"use client"
+"use client";
 
-import { useEffect, useState, useRef, useCallback } from "react"
-import { ChevronRight, ChevronDown, BookOpen, Eye, EyeOff, ChevronUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Badge } from "@/components/ui/badge"
+import { useEffect, useState, useRef, useCallback } from "react";
+import {
+  ChevronRight,
+  ChevronDown,
+  BookOpen,
+  Eye,
+  EyeOff,
+  ChevronUp,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Badge } from "@/components/ui/badge";
 
 interface TocItem {
-  id: string
-  title: string
-  level: number
-  children: TocItem[]
+  id: string;
+  title: string;
+  level: number;
+  children: TocItem[];
 }
 
 interface TableOfContentsProps {
-  content: string
+  content: string;
 }
 
 export function TableOfContents({ content }: TableOfContentsProps) {
-  const [tocItems, setTocItems] = useState<TocItem[]>([])
-  const [activeId, setActiveId] = useState<string>("")
-  const [isOpen, setIsOpen] = useState(false)
-  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set())
-  const [showOnlyTopLevel, setShowOnlyTopLevel] = useState(false)
-  const [dynamicHeight, setDynamicHeight] = useState("60vh")
-  const [isScrolling, setIsScrolling] = useState(false)
-  const [canScrollUp, setCanScrollUp] = useState(false)
-  const [canScrollDown, setCanScrollDown] = useState(false)
-  const observerRef = useRef<IntersectionObserver | null>(null)
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const mobileScrollRef = useRef<HTMLDivElement>(null)
-  const desktopScrollRef = useRef<HTMLDivElement>(null)
-  const autoScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const [isMounted, setIsMounted] = useState(false)
+  const [tocItems, setTocItems] = useState<TocItem[]>([]);
+  const [activeId, setActiveId] = useState<string>("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(
+    new Set(),
+  );
+  const [showOnlyTopLevel, setShowOnlyTopLevel] = useState(false);
+  const [dynamicHeight, setDynamicHeight] = useState("60vh");
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const desktopScrollRef = useRef<HTMLDivElement>(null);
+  const autoScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Calculate dynamic height based on viewport and content
   const calculateDynamicHeight = useCallback(() => {
-    const viewportHeight = window.innerHeight
-    const headerHeight = 100
-    const footerHeight = 100
-    const padding = 40
+    const viewportHeight = window.innerHeight;
+    const headerHeight = 100;
+    const footerHeight = 100;
+    const padding = 40;
 
-    const availableHeight = viewportHeight - headerHeight - footerHeight - padding
-    const maxHeight = Math.max(300, Math.min(availableHeight, viewportHeight * 0.8))
+    const availableHeight =
+      viewportHeight - headerHeight - footerHeight - padding;
+    const maxHeight = Math.max(
+      300,
+      Math.min(availableHeight, viewportHeight * 0.8),
+    );
 
-    setDynamicHeight(`${maxHeight}px`)
-  }, [])
+    setDynamicHeight(`${maxHeight}px`);
+  }, []);
 
   // Check scroll indicators
-  const checkScrollIndicators = useCallback((element: HTMLDivElement | null) => {
-    if (!element) return
+  const checkScrollIndicators = useCallback(
+    (element: HTMLDivElement | null) => {
+      if (!element) return;
 
-    const { scrollTop, scrollHeight, clientHeight } = element
-    const threshold = 5 // Small threshold to account for rounding
+      const { scrollTop, scrollHeight, clientHeight } = element;
+      const threshold = 5; // Small threshold to account for rounding
 
-    setCanScrollUp(scrollTop > threshold)
-    setCanScrollDown(scrollTop < scrollHeight - clientHeight - threshold)
-  }, [])
+      setCanScrollUp(scrollTop > threshold);
+      setCanScrollDown(scrollTop < scrollHeight - clientHeight - threshold);
+    },
+    [],
+  );
 
   // Auto-scroll TOC to show active item
   const scrollToActiveItem = useCallback((activeItemId: string) => {
-    if (!activeItemId) return
+    if (!activeItemId) return;
 
     // Clear any existing timeout
     if (autoScrollTimeoutRef.current) {
-      clearTimeout(autoScrollTimeoutRef.current)
+      clearTimeout(autoScrollTimeoutRef.current);
     }
 
     // Delay the scroll to avoid conflicts with user scrolling
     autoScrollTimeoutRef.current = setTimeout(() => {
       const scrollActiveItem = (container: HTMLDivElement | null) => {
-        if (!container) return
+        if (!container) return;
 
         // Find the active item button in the TOC
-        const activeButton = container.querySelector(`button[data-toc-id="${activeItemId}"]`) as HTMLElement
-        if (!activeButton) return
+        const activeButton = container.querySelector(
+          `button[data-toc-id="${activeItemId}"]`,
+        ) as HTMLElement;
+        if (!activeButton) return;
 
-        const containerRect = container.getBoundingClientRect()
-        const buttonRect = activeButton.getBoundingClientRect()
-        
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = activeButton.getBoundingClientRect();
+
         // Calculate if the button is visible in the container
-        const isVisible = 
-          buttonRect.top >= containerRect.top && 
-          buttonRect.bottom <= containerRect.bottom
+        const isVisible =
+          buttonRect.top >= containerRect.top &&
+          buttonRect.bottom <= containerRect.bottom;
 
         if (!isVisible) {
           // Calculate the scroll position to center the active item
-          const containerHeight = container.clientHeight
-          const scrollTop = container.scrollTop
-          const buttonOffsetTop = activeButton.offsetTop
-          const buttonHeight = activeButton.offsetHeight
-          
+          const containerHeight = container.clientHeight;
+          const scrollTop = container.scrollTop;
+          const buttonOffsetTop = activeButton.offsetTop;
+          const buttonHeight = activeButton.offsetHeight;
+
           // Center the active item in the container
-          const targetScrollTop = buttonOffsetTop - (containerHeight / 2) + (buttonHeight / 2)
-          
+          const targetScrollTop =
+            buttonOffsetTop - containerHeight / 2 + buttonHeight / 2;
+
           // Smooth scroll to the target position
           container.scrollTo({
             top: Math.max(0, targetScrollTop),
-            behavior: 'smooth'
-          })
+            behavior: "smooth",
+          });
         }
-      }
+      };
 
       // Scroll both mobile and desktop containers
-      scrollActiveItem(mobileScrollRef.current)
-      scrollActiveItem(desktopScrollRef.current)
-    }, 300) // Small delay to avoid conflicts with user interactions
-  }, [])
+      scrollActiveItem(mobileScrollRef.current);
+      scrollActiveItem(desktopScrollRef.current);
+    }, 300); // Small delay to avoid conflicts with user interactions
+  }, []);
 
   useEffect(() => {
-    calculateDynamicHeight()
-    window.addEventListener("resize", calculateDynamicHeight)
-    return () => window.removeEventListener("resize", calculateDynamicHeight)
-  }, [calculateDynamicHeight])
+    calculateDynamicHeight();
+    window.addEventListener("resize", calculateDynamicHeight);
+    return () => window.removeEventListener("resize", calculateDynamicHeight);
+  }, [calculateDynamicHeight]);
 
   // Parse content and extract headings
   useEffect(() => {
-    if (!content) return
+    if (!content) return;
 
-    const tempDiv = document.createElement("div")
-    tempDiv.innerHTML = content
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = content;
 
-    const headings = tempDiv.querySelectorAll("h1, h2, h3, h4, h5, h6")
-    const items: TocItem[] = []
-    const stack: TocItem[] = []
+    const headings = tempDiv.querySelectorAll("h1, h2, h3, h4, h5, h6");
+    const items: TocItem[] = [];
+    const stack: TocItem[] = [];
 
     headings.forEach((heading, index) => {
-      const level = Number.parseInt(heading.tagName.charAt(1))
-      const title = heading.textContent || ""
+      const level = Number.parseInt(heading.tagName.charAt(1));
+      const title = heading.textContent || "";
       const slug = title
         .toLowerCase()
-        .replace(/[^\w\s-]/g, '') 
-        .replace(/\s+/g, '-') 
-        .replace(/-+/g, '-') 
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
         .trim();
-      const id = `${index}-${slug}`
+      const id = `${index}-${slug}`;
 
       if (heading.id === "") {
-        heading.id = id
+        heading.id = id;
       }
 
       const item: TocItem = {
@@ -146,187 +169,202 @@ export function TableOfContents({ content }: TableOfContentsProps) {
         title,
         level,
         children: [],
-      }
+      };
 
       while (stack.length > 0 && stack[stack.length - 1].level >= level) {
-        stack.pop()
+        stack.pop();
       }
 
       if (stack.length === 0) {
-        items.push(item)
+        items.push(item);
       } else {
-        stack[stack.length - 1].children.push(item)
+        stack[stack.length - 1].children.push(item);
       }
 
-      stack.push(item)
-    })
+      stack.push(item);
+    });
 
-    setTocItems(items)
+    setTocItems(items);
 
     // Auto-enable smart features for long TOCs
     const totalItems = items.reduce((count, item) => {
-      return count + 1 + item.children.length
-    }, 0)
+      return count + 1 + item.children.length;
+    }, 0);
 
-    if (totalItems > 15) {
-      setShowOnlyTopLevel(true)
+    if (totalItems > 8) {
+      setShowOnlyTopLevel(true);
     }
-  }, [content])
+  }, [content]);
 
   // Auto-scroll to active item when activeId changes
   useEffect(() => {
     if (activeId) {
-      scrollToActiveItem(activeId)
+      scrollToActiveItem(activeId);
     }
-  }, [activeId, scrollToActiveItem])
+  }, [activeId, scrollToActiveItem]);
 
   // Check scroll indicators when content changes
   useEffect(() => {
     const timer = setTimeout(() => {
-      checkScrollIndicators(mobileScrollRef.current)
-      checkScrollIndicators(desktopScrollRef.current)
-    }, 100)
+      checkScrollIndicators(mobileScrollRef.current);
+      checkScrollIndicators(desktopScrollRef.current);
+    }, 100);
 
-    return () => clearTimeout(timer)
-  }, [tocItems, showOnlyTopLevel, collapsedSections, checkScrollIndicators])
+    return () => clearTimeout(timer);
+  }, [tocItems, showOnlyTopLevel, collapsedSections, checkScrollIndicators]);
 
   // Handle initial mount
   useEffect(() => {
-    setIsMounted(true)
-    return () => setIsMounted(false)
-  }, [])
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
 
   // Set up intersection observer
   useEffect(() => {
-    if (!isMounted || tocItems.length === 0) return
+    if (!isMounted || tocItems.length === 0) return;
 
     // Disconnect any existing observer
     if (observerRef.current) {
-      observerRef.current.disconnect()
+      observerRef.current.disconnect();
     }
 
-    const headingElements = tocItems.flatMap(function flattenItems(item: TocItem): string[] {
-      return [item.id, ...item.children.flatMap(flattenItems)]
-    })
-    
+    const headingElements = tocItems.flatMap(function flattenItems(
+      item: TocItem,
+    ): string[] {
+      return [item.id, ...item.children.flatMap(flattenItems)];
+    });
+
     // Create new observer
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveId(entry.target.id)
+            setActiveId(entry.target.id);
           }
-        })
+        });
       },
       {
         rootMargin: "-10% 0% -10% 0%",
         threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5],
       },
-    )
+    );
 
     // Function to observe elements
     const observeElements = () => {
       headingElements.forEach((id) => {
-        const element = document.getElementById(id)
+        const element = document.getElementById(id);
         if (element) {
-          observerRef.current?.observe(element)
+          observerRef.current?.observe(element);
         }
-      })
-    }
+      });
+    };
 
     // Initial observation
-    observeElements()
+    observeElements();
 
     // Set up a MutationObserver to watch for DOM changes
     const mutationObserver = new MutationObserver(() => {
-      observeElements()
-    })
+      observeElements();
+    });
 
     // Start observing the document body for changes
     mutationObserver.observe(document.body, {
       childList: true,
-      subtree: true
-    })
+      subtree: true,
+    });
 
     return () => {
       if (observerRef.current) {
-        observerRef.current.disconnect()
+        observerRef.current.disconnect();
       }
-      mutationObserver.disconnect()
-    }
-  }, [tocItems, isMounted])
+      mutationObserver.disconnect();
+    };
+  }, [tocItems, isMounted]);
 
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
       if (autoScrollTimeoutRef.current) {
-        clearTimeout(autoScrollTimeoutRef.current)
+        clearTimeout(autoScrollTimeoutRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   const scrollToHeading = (id: string) => {
-    const element = document.getElementById(id)
+    const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({
         behavior: "smooth",
         block: "start",
-      })
-      window.location.hash = `#${id}`
+      });
+      window.location.hash = `#${id}`;
     }
-  }
+  };
 
   const toggleSection = (itemId: string) => {
     setCollapsedSections((prev) => {
-      const newSet = new Set(prev)
+      const newSet = new Set(prev);
       if (newSet.has(itemId)) {
-        newSet.delete(itemId)
+        newSet.delete(itemId);
       } else {
-        newSet.add(itemId)
+        newSet.add(itemId);
       }
-      return newSet
-    })
-  }
+      return newSet;
+    });
+  };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const element = e.currentTarget
-    checkScrollIndicators(element)
-    
-    setIsScrolling(true)
+    const element = e.currentTarget;
+    checkScrollIndicators(element);
+
+    setIsScrolling(true);
     if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current)
+      clearTimeout(scrollTimeoutRef.current);
     }
     scrollTimeoutRef.current = setTimeout(() => {
-      setIsScrolling(false)
-    }, 1000)
-  }
+      setIsScrolling(false);
+    }, 1000);
+  };
 
   const renderTocItems = (items: TocItem[], depth = 0) => {
     return items.map((item) => {
-      const hasChildren = item.children.length > 0
-      const isCollapsed = collapsedSections.has(item.id)
-      const shouldShowChildren = !showOnlyTopLevel || depth === 0 || !isCollapsed
+      const hasChildren = item.children.length > 0;
+      const isCollapsed = collapsedSections.has(item.id);
+      const shouldShowChildren =
+        !showOnlyTopLevel || depth === 0 || !isCollapsed;
 
       return (
-        <div key={item.id} className={`${depth > 0 ? "ml-4 border-l border-border pl-4" : ""}`}>
+        <div
+          key={item.id}
+          className={`${depth > 0 ? "ml-4 border-l border-border pl-4" : ""}`}
+        >
           <div className="flex items-center gap-1">
             {hasChildren && (
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => toggleSection(item.id)}>
-                {isCollapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0"
+                onClick={() => toggleSection(item.id)}
+              >
+                {isCollapsed ? (
+                  <ChevronRight className="h-3 w-3" />
+                ) : (
+                  <ChevronDown className="h-3 w-3" />
+                )}
               </Button>
             )}
             <button
               data-toc-id={item.id}
               onClick={() => scrollToHeading(item.id)}
               className={`
-                flex-1 text-left px-3 py-2 rounded-md text-sm transition-all duration-200
+                flex-1 text-left px-3 py-2 rounded-md transition-all duration-200
                 hover:bg-muted hover:text-foreground
                 ${
                   activeId === item.id
                     ? "bg-primary/10 text-primary font-medium border-l-2 border-primary"
                     : "text-muted-foreground hover:text-foreground"
                 }
-                ${depth === 0 ? "font-medium" : ""}
+                ${depth === 0 ? "text-sm font-medium" : "text-[13px] opacity-80"}
                 ${hasChildren ? "ml-0" : "ml-7"}
               `}
             >
@@ -334,24 +372,26 @@ export function TableOfContents({ content }: TableOfContentsProps) {
             </button>
           </div>
           {hasChildren && shouldShowChildren && !isCollapsed && (
-            <div className="mt-1 space-y-1">{renderTocItems(item.children, depth + 1)}</div>
+            <div className="mt-1 space-y-1">
+              {renderTocItems(item.children, depth + 1)}
+            </div>
           )}
         </div>
-      )
-    })
-  }
+      );
+    });
+  };
 
   const getTotalItemCount = () => {
     return tocItems.reduce((count, item) => {
-      return count + 1 + item.children.length
-    }, 0)
-  }
+      return count + 1 + item.children.length;
+    }, 0);
+  };
 
   if (tocItems.length === 0) {
-    return null
+    return null;
   }
 
-  const totalItems = getTotalItemCount()
+  const totalItems = getTotalItemCount();
 
   return (
     <>
@@ -367,7 +407,11 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                   {totalItems}
                 </Badge>
               </div>
-              {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              {isOpen ? (
+                <ChevronDown className="w-4 h-4" />
+              ) : (
+                <ChevronRight className="w-4 h-4" />
+              )}
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-4">
@@ -383,7 +427,11 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                         onClick={() => setShowOnlyTopLevel(!showOnlyTopLevel)}
                         className="h-7 px-2"
                       >
-                        {showOnlyTopLevel ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                        {showOnlyTopLevel ? (
+                          <Eye className="h-3 w-3" />
+                        ) : (
+                          <EyeOff className="h-3 w-3" />
+                        )}
                       </Button>
                     )}
                   </div>
@@ -397,25 +445,28 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                       <ChevronUp className="h-4 w-4 text-muted-foreground animate-bounce" />
                     </div>
                   )}
-                  
+
                   <div
                     ref={mobileScrollRef}
                     className={`toc-scroll-area overflow-y-auto overflow-x-hidden ${isScrolling ? "scrolling" : ""}`}
                     style={{ maxHeight: dynamicHeight }}
                     onScroll={handleScroll}
                   >
-                    <div className="space-y-1 pr-3 pb-2" style={{ minHeight: "100px" }}>
+                    <div
+                      className="space-y-1 pr-3 pb-2"
+                      style={{ minHeight: "100px" }}
+                    >
                       {renderTocItems(tocItems)}
                     </div>
                   </div>
-                  
+
                   {/* Scroll Down Indicator */}
                   {canScrollDown && (
                     <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-card via-card/80 to-transparent z-10 flex items-end justify-center pb-1 pointer-events-none">
                       <ChevronDown className="h-4 w-4 text-muted-foreground animate-bounce" />
                     </div>
                   )}
-                  
+
                   <div className="scroll-indicator" />
                 </div>
               </CardContent>
@@ -444,15 +495,25 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                       size="sm"
                       onClick={() => setShowOnlyTopLevel(!showOnlyTopLevel)}
                       className="h-7 w-7 p-0"
-                      title={showOnlyTopLevel ? "Show all sections" : "Show only main sections"}
+                      title={
+                        showOnlyTopLevel
+                          ? "Show all sections"
+                          : "Show only main sections"
+                      }
                     >
-                      {showOnlyTopLevel ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                      {showOnlyTopLevel ? (
+                        <Eye className="h-3 w-3" />
+                      ) : (
+                        <EyeOff className="h-3 w-3" />
+                      )}
                     </Button>
                   )}
                 </div>
               </div>
               {showOnlyTopLevel && (
-                <p className="text-xs text-muted-foreground">Showing main sections only. Click sections to expand.</p>
+                <p className="text-xs text-muted-foreground">
+                  Showing main sections only. Click sections to expand.
+                </p>
               )}
             </CardHeader>
             <CardContent className="pt-0 pb-4">
@@ -463,7 +524,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                     <ChevronUp className="h-4 w-4 text-muted-foreground animate-bounce" />
                   </div>
                 )}
-                
+
                 <div
                   ref={desktopScrollRef}
                   className={`toc-scroll-area overflow-y-auto overflow-x-hidden ${isScrolling ? "scrolling" : ""}`}
@@ -473,18 +534,21 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                   }}
                   onScroll={handleScroll}
                 >
-                  <div className="space-y-1 pr-3 pb-4" style={{ minHeight: "150px" }}>
+                  <div
+                    className="space-y-1 pr-3 pb-4"
+                    style={{ minHeight: "150px" }}
+                  >
                     {renderTocItems(tocItems)}
                   </div>
                 </div>
-                
+
                 {/* Scroll Down Indicator */}
                 {canScrollDown && (
                   <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-card via-card/80 to-transparent z-10 flex items-end justify-center pb-1 pointer-events-none">
                     <ChevronDown className="h-4 w-4 text-muted-foreground animate-bounce" />
                   </div>
                 )}
-                
+
                 <div className="scroll-indicator" />
               </div>
             </CardContent>
@@ -492,5 +556,5 @@ export function TableOfContents({ content }: TableOfContentsProps) {
         </div>
       </div>
     </>
-  )
+  );
 }

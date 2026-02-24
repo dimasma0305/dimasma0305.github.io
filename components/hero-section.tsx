@@ -341,7 +341,7 @@ export function HeroSection() {
                             className="h-full bg-green-500"
                             initial={{ width: "0%" }}
                             animate={{ width: "100%" }}
-                            transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                            transition={{ duration: 2, ease: "linear", repeat: Infinity, repeatType: "loop" }}
                           />
                         </div>
                       </div>

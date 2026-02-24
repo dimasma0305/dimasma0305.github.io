@@ -8,8 +8,8 @@ body {
 
 /* Fix for imprecise scrolling with sticky header */
 html {
-  scroll-padding-top: 5rem;
-  /* 80px - slightly more than header height (64px) for better spacing */
+  scroll-padding-top: 6rem;
+  /* 96px - to accommodate the sticky header height + some margin */
   scroll-behavior: smooth;
 }
 

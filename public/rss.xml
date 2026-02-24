@@ -8,15 +8,15 @@
     <language>en</language>
     <managingEditor>dimas@example.com (Dimas Maulana)</managingEditor>
     <webMaster>dimas@example.com (Dimas Maulana)</webMaster>
-    <lastBuildDate>Mon, 22 Dec 2025 05:08:32 GMT</lastBuildDate>
-    <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+    <lastBuildDate>Tue, 24 Feb 2026 04:56:59 GMT</lastBuildDate>
+    <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
     <generator>Custom RSS Generator</generator>
     <item>
       <title>Home - Dimas Maulana&apos;s Blog</title>
       <link>https://dimasma0305.github.io</link>
       <guid isPermaLink="true">https://dimasma0305.github.io</guid>
       <description>Welcome to my personal blog about technology, programming, cybersecurity, and CTF writeups.</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Static Page</category>
     </item>
@@ -25,7 +25,7 @@
       <link>https://dimasma0305.github.io/blog</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/blog</guid>
       <description>Browse all blog posts about cybersecurity, CTF writeups, web development, and programming.</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Static Page</category>
     </item>
@@ -34,7 +34,7 @@
       <link>https://dimasma0305.github.io/categories</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/categories</guid>
       <description>Browse blog posts organized by categories like CTF, Web Security, Programming, and more.</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Static Page</category>
     </item>
@@ -43,7 +43,7 @@
       <link>https://dimasma0305.github.io/search</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/search</guid>
       <description>Search through all blog posts and content on the site.</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Static Page</category>
     </item>
@@ -52,7 +52,7 @@
       <link>https://dimasma0305.github.io/tools</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/tools</guid>
       <description>Useful tools and utilities for developers and security researchers.</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Tools</category>
     </item>
@@ -61,7 +61,7 @@
       <link>https://dimasma0305.github.io/tools/ctf-calculator</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/tools/ctf-calculator</guid>
       <description>Calculate CTF points and scores for cybersecurity competitions.</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Tools</category>
     </item>
@@ -70,7 +70,7 @@
       <link>https://dimasma0305.github.io/categories/ctf</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/categories/ctf</guid>
       <description>Browse all posts in the CTF category (12 posts).</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Category Page</category>
       <category>CTF</category>
@@ -80,7 +80,7 @@
       <link>https://dimasma0305.github.io/categories/web</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/categories/web</guid>
       <description>Browse all posts in the Web category (8 posts).</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Category Page</category>
       <category>Web</category>
@@ -90,7 +90,7 @@
       <link>https://dimasma0305.github.io/categories/security</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/categories/security</guid>
       <description>Browse all posts in the Security category (6 posts).</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Category Page</category>
       <category>Security</category>
@@ -100,7 +100,7 @@
       <link>https://dimasma0305.github.io/categories/wordpress</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/categories/wordpress</guid>
       <description>Browse all posts in the wordpress category (3 posts).</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Category Page</category>
       <category>wordpress</category>
@@ -110,7 +110,7 @@
       <link>https://dimasma0305.github.io/categories/xss</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/categories/xss</guid>
       <description>Browse all posts in the XSS category (1 posts).</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Category Page</category>
       <category>XSS</category>
@@ -120,7 +120,7 @@
       <link>https://dimasma0305.github.io/categories/programming</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/categories/programming</guid>
       <description>Browse all posts in the Programming category (1 posts).</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Category Page</category>
       <category>Programming</category>
@@ -130,7 +130,7 @@
       <link>https://dimasma0305.github.io/categories/domclobering</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/categories/domclobering</guid>
       <description>Browse all posts in the Domclobering category (1 posts).</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Category Page</category>
       <category>Domclobering</category>
@@ -140,7 +140,7 @@
       <link>https://dimasma0305.github.io/categories/css%20leak</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/categories/css%20leak</guid>
       <description>Browse all posts in the CSS Leak category (1 posts).</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Category Page</category>
       <category>CSS Leak</category>
@@ -150,17 +150,26 @@
       <link>https://dimasma0305.github.io/categories/xxe</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/categories/xxe</guid>
       <description>Browse all posts in the XXE category (1 posts).</description>
-      <pubDate>Mon, 22 Dec 2025 05:08:32 GMT</pubDate>
+      <pubDate>Tue, 24 Feb 2026 04:56:59 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>Category Page</category>
       <category>XXE</category>
+    </item>
+    <item>
+      <title>Patchstack Aliance CTF S02E03 - WordCamp Europe</title>
+      <link>https://dimasma0305.github.io/posts/patchstack-aliance-ctf-s02e03-wordcamp-europe</link>
+      <guid isPermaLink="true">https://dimasma0305.github.io/posts/patchstack-aliance-ctf-s02e03-wordcamp-europe</guid>
+      <description>The endpoint /wp-json/ghostly/v1/login is a custom REST route in the WordPress backend. Here’s the kicker:Here’s the vulnerable PHP handler logic (as reverse-engineered from the behavior):This effecti...</description>
+      <pubDate>Wed, 24 Dec 2025 12:58:00 GMT</pubDate>
+      <author>dimas@example.com (Dimas Maulana)</author>
+      <category>CTF</category>
     </item>
     <item>
       <title>PatchStack CTF 2025: End-of-the-year Alliance Capture the Flag</title>
       <link>https://dimasma0305.github.io/posts/patchstack-ctf-2025-end-of-the-year-alliance-captu</link>
       <guid isPermaLink="true">https://dimasma0305.github.io/posts/patchstack-ctf-2025-end-of-the-year-alliance-captu</guid>
       <description>The challenge involves a WordPress plugin named &quot;AI Trust Score&quot; (located in wp-content/plugins/ai-badbots/ai-badbots.php). This plugin uses AI heuristics to assign a &quot;trust score&quot; to incoming request...</description>
-      <pubDate>Mon, 22 Dec 2025 04:41:00 GMT</pubDate>
+      <pubDate>Wed, 24 Dec 2025 12:58:00 GMT</pubDate>
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>wordpress</category>
       <category>CTF</category>
@@ -195,15 +204,6 @@ index.htmlThere are several steps to achieve RCE:Those are the steps required to
       <author>dimas@example.com (Dimas Maulana)</author>
       <category>CTF</category>
       <category>Web</category>
-    </item>
-    <item>
-      <title>Patchstack Aliance CTF S02E03 - WordCamp Europe</title>
-      <link>https://dimasma0305.github.io/posts/patchstack-aliance-ctf-s02e03-wordcamp-europe</link>
-      <guid isPermaLink="true">https://dimasma0305.github.io/posts/patchstack-aliance-ctf-s02e03-wordcamp-europe</guid>
-      <description>The endpoint /wp-json/ghostly/v1/login is a custom REST route in the WordPress backend. Here’s the kicker:Here’s the vulnerable PHP handler logic (as reverse-engineered from the behavior):This effecti...</description>
-      <pubDate>Sun, 08 Jun 2025 04:32:00 GMT</pubDate>
-      <author>dimas@example.com (Dimas Maulana)</author>
-      <category>CTF</category>
     </item>
     <item>
       <title>Patchstack Alliance CTF S01E01</title>
