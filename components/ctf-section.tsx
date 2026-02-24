@@ -1,14 +1,29 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Trophy, Users, Award, ChevronDown, Star, Zap, ExternalLink, Sparkles } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { useInView } from "react-intersection-observer"
+import { useState, useEffect, useRef } from "react";
+import {
+  Trophy,
+  Users,
+  Award,
+  ChevronDown,
+  Star,
+  Zap,
+  ExternalLink,
+  Sparkles,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useInView } from "react-intersection-observer";
 
-import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 
 const achievements = [
   {
@@ -117,7 +132,7 @@ const achievements = [
     points: 3500,
     difficulty: "Rare",
   },
-]
+];
 
 const teams = [
   {
@@ -127,62 +142,113 @@ const teams = [
     link: "https://ctftime.org/team/58979/",
     level: "80",
     members: "-",
-    specialties: ["Web Security", "Binary Exploitation", "Cryptography", "Forensics", "Reverse Engineering", "Blockchain", "OSINT", "Mobile Security"],
+    specialties: [
+      "Web Security",
+      "Binary Exploitation",
+      "Cryptography",
+      "Forensics",
+      "Reverse Engineering",
+      "Blockchain",
+      "OSINT",
+      "Mobile Security",
+    ],
   },
   {
     name: "Project Sekai",
     role: "Member",
-    description: "SEKAI{I5_A_CTF_t3Am_w/_38+_mbRs,_p4r71CiP4t1ng_in_164+_c0nt3Stz}",
+    description:
+      "SEKAI{I5_A_CTF_t3Am_w/_38+_mbRs,_p4r71CiP4t1ng_in_164+_c0nt3Stz}",
     link: "https://ctftime.org/team/58979/",
     level: "75",
     members: "-",
-    specialties: ["Web Security", "Binary Exploitation", "Cryptography", "Forensics", "Reverse Engineering", "Blockchain", "OSINT", "Mobile Security"],
+    specialties: [
+      "Web Security",
+      "Binary Exploitation",
+      "Cryptography",
+      "Forensics",
+      "Reverse Engineering",
+      "Blockchain",
+      "OSINT",
+      "Mobile Security",
+    ],
   },
   {
     name: "TCP1P",
     role: "Founder",
-    description: "TCP1P is Indonesian CTF community dedicated to organizing engaging Capture The Flag events and collaborating with local competitions. Our mission is to elevate the quality of CTF challenges in Indonesia and foster a thriving cybersecurity ecosystem through knowledge sharing.",
+    description:
+      "TCP1P is Indonesian CTF community dedicated to organizing engaging Capture The Flag events and collaborating with local competitions. Our mission is to elevate the quality of CTF challenges in Indonesia and foster a thriving cybersecurity ecosystem through knowledge sharing.",
     link: "https://github.com/TCP1P",
     level: "25",
     members: "-",
-    specialties: ["Web Security", "Binary Exploitation", "Cryptography", "Forensics", "Reverse Engineering", "Blockchain", "OSINT", "Mobile Security"],
+    specialties: [
+      "Web Security",
+      "Binary Exploitation",
+      "Cryptography",
+      "Forensics",
+      "Reverse Engineering",
+      "Blockchain",
+      "OSINT",
+      "Mobile Security",
+    ],
   },
   {
     name: "SKSD",
     role: "Member",
-    description: "Indonesian CTF Team that rarely participate in CTF competitions in 2025",
+    description:
+      "Indonesian CTF Team that rarely participate in CTF competitions in 2025",
     link: "https://ctftime.org/team/211952/",
     level: "70",
     members: "-",
-    specialties: ["Web Security", "Binary Exploitation", "Cryptography", "Forensics", "Reverse Engineering", "Blockchain", "OSINT", "Mobile Security"],
+    specialties: [
+      "Web Security",
+      "Binary Exploitation",
+      "Cryptography",
+      "Forensics",
+      "Reverse Engineering",
+      "Blockchain",
+      "OSINT",
+      "Mobile Security",
+    ],
   },
   {
     name: "HCS",
     role: "Member",
-    description: "CTF Team from ITS, often participate in CTF competitions on CTFTime",
+    description:
+      "CTF Team from ITS, often participate in CTF competitions on CTFTime",
     link: "https://ctftime.org/team/70159/",
     level: "40",
     members: "-",
-    specialties: ["Web Security", "Binary Exploitation", "Cryptography", "Forensics", "Reverse Engineering", "Blockchain", "OSINT", "Mobile Security"],
+    specialties: [
+      "Web Security",
+      "Binary Exploitation",
+      "Cryptography",
+      "Forensics",
+      "Reverse Engineering",
+      "Blockchain",
+      "OSINT",
+      "Mobile Security",
+    ],
   },
-]
+];
 
 export function CTFSection() {
-  const [selectedAchievement, setSelectedAchievement] = useState<number | null>(null)
-  const sectionRef = useRef(null)
+  const [selectedAchievement, setSelectedAchievement] = useState<number | null>(
+    null,
+  );
+  const sectionRef = useRef(null);
 
   const { ref: titleRef, inView: titleInView } = useInView({
     threshold: 0.5,
     triggerOnce: true,
-  })
+  });
 
   const handleAchievementClick = (index: number) => {
     if (selectedAchievement === index) {
-      setSelectedAchievement(null)
+      setSelectedAchievement(null);
     } else {
-      setSelectedAchievement(index)
+      setSelectedAchievement(index);
     }
-  }
+  };
 
   const difficultyColors = {
     Legendary: "text-yellow-500 bg-yellow-500/20",
@@ -190,7 +256,7 @@ export function CTFSection() {
     Rare: "text-blue-500 bg-blue-500/20",
     Uncommon: "text-green-500 bg-green-500/20",
     Common: "text-gray-500 bg-gray-500/20",
-  }
+  };
 
   return (
     <motion.section
@@ -215,15 +281,21 @@ export function CTFSection() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-pink-500">CTF Achievements</h2>
-            <p className="mt-4 text-lg sm:text-xl text-muted-foreground">Battle-tested in the digital arena</p>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gradient-neon">
+              CTF Achievements
+            </h2>
+            <p className="mt-4 text-lg sm:text-xl text-muted-foreground">
+              Battle-tested in the digital arena
+            </p>
           </motion.div>
 
           <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
             <div className="w-full">
               <div className="flex items-center gap-3 mb-6">
                 <Trophy className="w-6 h-6 text-primary" />
-                <h3 className="text-xl sm:text-2xl font-semibold">Achievement Board</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold">
+                  Achievement Board
+                </h3>
               </div>
 
               <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 w-full">
@@ -239,7 +311,9 @@ export function CTFSection() {
                     whileTap={{ scale: 0.99 }}
                     transition={{ type: "spring", stiffness: 300, damping: 24 }}
                   >
-                    <Card className={`relative overflow-hidden ${selectedAchievement === index ? "ring-2 ring-primary" : ""}`}>
+                    <Card
+                      className={`glass-card relative overflow-hidden transition-all duration-300 ${selectedAchievement === index ? "border-primary/50 shadow-[0_0_15px_rgba(var(--primary),0.3)]" : "border-white/5"}`}
+                    >
                       <CardHeader className="space-y-1 p-3">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -259,11 +333,15 @@ export function CTFSection() {
                       <CardContent className="p-3 pt-0">
                         <div className="space-y-1 text-sm">
                           <div className="truncate">
-                            <strong className="text-muted-foreground">Event:</strong>{" "}
+                            <strong className="text-muted-foreground">
+                              Event:
+                            </strong>{" "}
                             {achievement.event}
                           </div>
                           <div className="truncate">
-                            <strong className="text-muted-foreground">Team:</strong>{" "}
+                            <strong className="text-muted-foreground">
+                              Team:
+                            </strong>{" "}
                             {achievement.team}
                           </div>
                         </div>
@@ -280,12 +358,16 @@ export function CTFSection() {
                             >
                               <div className="space-y-1 text-sm">
                                 <div className="truncate">
-                                  <strong className="text-muted-foreground">Date:</strong>{" "}
+                                  <strong className="text-muted-foreground">
+                                    Date:
+                                  </strong>{" "}
                                   {achievement.date}
                                 </div>
                                 {achievement.issuer && (
                                   <div className="truncate">
-                                    <strong className="text-muted-foreground">Issued by:</strong>{" "}
+                                    <strong className="text-muted-foreground">
+                                      Issued by:
+                                    </strong>{" "}
                                     {achievement.issuer}
                                   </div>
                                 )}
@@ -315,7 +397,10 @@ export function CTFSection() {
                   </summary>
                   <div className="grid gap-3 mt-4 grid-cols-1 sm:grid-cols-2 w-full">
                     {achievements.slice(6).map((achievement, index) => (
-                      <Card key={index + 6} className="relative overflow-hidden">
+                      <Card
+                        key={index + 6}
+                        className="glass-card relative overflow-hidden transition-all duration-300 border border-white/5"
+                      >
                         <CardHeader className="space-y-1 p-3">
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -335,20 +420,28 @@ export function CTFSection() {
                         <CardContent className="p-3 pt-0">
                           <div className="space-y-1 text-sm">
                             <div className="truncate">
-                              <strong className="text-muted-foreground">Event:</strong>{" "}
+                              <strong className="text-muted-foreground">
+                                Event:
+                              </strong>{" "}
                               {achievement.event}
                             </div>
                             <div className="truncate">
-                              <strong className="text-muted-foreground">Team:</strong>{" "}
+                              <strong className="text-muted-foreground">
+                                Team:
+                              </strong>{" "}
                               {achievement.team}
                             </div>
                             <div className="truncate">
-                              <strong className="text-muted-foreground">Date:</strong>{" "}
+                              <strong className="text-muted-foreground">
+                                Date:
+                              </strong>{" "}
                               {achievement.date}
                             </div>
                             {achievement.issuer && (
                               <div className="truncate">
-                                <strong className="text-muted-foreground">Issued by:</strong>{" "}
+                                <strong className="text-muted-foreground">
+                                  Issued by:
+                                </strong>{" "}
                                 {achievement.issuer}
                               </div>
                             )}
@@ -370,7 +463,9 @@ export function CTFSection() {
             <div className="w-full">
               <div className="flex items-center gap-3 mb-6">
                 <Users className="w-6 h-6 text-primary" />
-                <h3 className="text-xl sm:text-2xl font-semibold">CTF Guilds</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold">
+                  CTF Guilds
+                </h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -385,7 +480,7 @@ export function CTFSection() {
                     whileTap={{ scale: 0.99 }}
                     transition={{ type: "spring", stiffness: 300, damping: 24 }}
                   >
-                    <Card className="relative overflow-hidden">
+                    <Card className="glass-card relative overflow-hidden transition-all duration-300 border border-white/5">
                       <CardHeader className="space-y-1 p-3">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -393,27 +488,43 @@ export function CTFSection() {
                               <Users className="w-5 h-5 text-primary" />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <CardTitle className="text-base sm:text-lg truncate">{team.name}</CardTitle>
-                              <CardDescription className="text-sm truncate">{team.role}</CardDescription>
+                              <CardTitle className="text-base sm:text-lg truncate">
+                                {team.name}
+                              </CardTitle>
+                              <CardDescription className="text-sm truncate">
+                                {team.role}
+                              </CardDescription>
                             </div>
                           </div>
                           <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-full bg-primary/20 shrink-0">
                             <Star className="w-4 h-4 text-yellow-500" />
-                            <span className="whitespace-nowrap">LVL {team.level}</span>
+                            <span className="whitespace-nowrap">
+                              LVL {team.level}
+                            </span>
                           </div>
                         </div>
                       </CardHeader>
                       <CardContent className="p-3 pt-0">
-                        <p className="text-sm line-clamp-2 mb-3">{team.description}</p>
+                        <p className="text-sm line-clamp-2 mb-3">
+                          {team.description}
+                        </p>
 
                         <div className="grid grid-cols-2 gap-2 mb-3">
                           <div className="p-2 text-center rounded-lg bg-muted/50">
-                            <div className="text-xs text-muted-foreground">Members</div>
-                            <div className="text-sm font-bold">{team.members}</div>
+                            <div className="text-xs text-muted-foreground">
+                              Members
+                            </div>
+                            <div className="text-sm font-bold">
+                              {team.members}
+                            </div>
                           </div>
                           <div className="p-2 text-center rounded-lg bg-muted/50">
-                            <div className="text-xs text-muted-foreground">Specialties</div>
-                            <div className="text-sm font-bold">{team.specialties.length}</div>
+                            <div className="text-xs text-muted-foreground">
+                              Specialties
+                            </div>
+                            <div className="text-sm font-bold">
+                              {team.specialties.length}
+                            </div>
                           </div>
                         </div>
 
@@ -428,11 +539,18 @@ export function CTFSection() {
                             </Badge>
                           ))}
                           {team.specialties.length > 6 && (
-                            <Badge variant="outline" className="text-xs">+{team.specialties.length - 6} more</Badge>
+                            <Badge variant="outline" className="text-xs">
+                              +{team.specialties.length - 6} more
+                            </Badge>
                           )}
                         </div>
 
-                        <a href={team.link} target="_blank" rel="noopener noreferrer" className="mt-3 block w-full">
+                        <a
+                          href={team.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-3 block w-full"
+                        >
                           <Button
                             variant="outline"
                             className="w-full gap-2 text-sm border-primary/50 hover:border-primary hover:bg-primary/10"
@@ -463,7 +581,7 @@ export function CTFSection() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.2 }}
                       >
-                        <Card className="relative overflow-hidden">
+                        <Card className="glass-card relative overflow-hidden transition-all duration-300 border border-white/5">
                           <CardHeader className="space-y-1 p-3">
                             <div className="flex items-center justify-between gap-2">
                               <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -471,27 +589,43 @@ export function CTFSection() {
                                   <Users className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <CardTitle className="text-base sm:text-lg truncate">{team.name}</CardTitle>
-                                  <CardDescription className="text-sm truncate">{team.role}</CardDescription>
+                                  <CardTitle className="text-base sm:text-lg truncate">
+                                    {team.name}
+                                  </CardTitle>
+                                  <CardDescription className="text-sm truncate">
+                                    {team.role}
+                                  </CardDescription>
                                 </div>
                               </div>
                               <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-full bg-primary/20 shrink-0">
                                 <Star className="w-4 h-4 text-yellow-500" />
-                                <span className="whitespace-nowrap">LVL {team.level}</span>
+                                <span className="whitespace-nowrap">
+                                  LVL {team.level}
+                                </span>
                               </div>
                             </div>
                           </CardHeader>
                           <CardContent className="p-3 pt-0">
-                            <p className="text-sm line-clamp-2 mb-3">{team.description}</p>
+                            <p className="text-sm line-clamp-2 mb-3">
+                              {team.description}
+                            </p>
 
                             <div className="grid grid-cols-2 gap-2 mb-3">
                               <div className="p-2 text-center rounded-lg bg-muted/50">
-                                <div className="text-xs text-muted-foreground">Members</div>
-                                <div className="text-sm font-bold">{team.members}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  Members
+                                </div>
+                                <div className="text-sm font-bold">
+                                  {team.members}
+                                </div>
                               </div>
                               <div className="p-2 text-center rounded-lg bg-muted/50">
-                                <div className="text-xs text-muted-foreground">Specialties</div>
-                                <div className="text-sm font-bold">{team.specialties.length}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  Specialties
+                                </div>
+                                <div className="text-sm font-bold">
+                                  {team.specialties.length}
+                                </div>
                               </div>
                             </div>
 
@@ -506,11 +640,18 @@ export function CTFSection() {
                                 </Badge>
                               ))}
                               {team.specialties.length > 6 && (
-                                <Badge variant="outline" className="text-xs">+{team.specialties.length - 6} more</Badge>
+                                <Badge variant="outline" className="text-xs">
+                                  +{team.specialties.length - 6} more
+                                </Badge>
                               )}
                             </div>
 
-                            <a href={team.link} target="_blank" rel="noopener noreferrer" className="mt-3 block w-full">
+                            <a
+                              href={team.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mt-3 block w-full"
+                            >
                               <Button
                                 variant="outline"
                                 className="w-full gap-2 text-sm border-primary/50 hover:border-primary hover:bg-primary/10"
@@ -537,7 +678,10 @@ export function CTFSection() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="relative max-w-md mx-auto">
-              <motion.div className="relative w-16 h-16 mx-auto mb-4" whileHover={{ rotate: 2, scale: 1.03 }}>
+              <motion.div
+                className="relative w-16 h-16 mx-auto mb-4"
+                whileHover={{ rotate: 2, scale: 1.03 }}
+              >
                 <Image
                   src="https://avatars.githubusercontent.com/u/92920739"
                   alt="Dimas Maulana Profile"
@@ -545,11 +689,17 @@ export function CTFSection() {
                   height={64}
                   className="w-16 h-16 rounded-full border-2 border-primary/50 shadow-lg"
                 />
-                <motion.div className="absolute -top-1 -right-1" animate={{ scale: [1, 1.15, 1] }} transition={{ repeat: Infinity, duration: 2 }}>
+                <motion.div
+                  className="absolute -top-1 -right-1"
+                  animate={{ scale: [1, 1.15, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                >
                   <Sparkles className="w-6 h-6 text-yellow-500" />
                 </motion.div>
               </motion.div>
-              <h3 className="mb-2 text-xl font-semibold">Join My CTF Adventure!</h3>
+              <h3 className="mb-2 text-xl font-semibold">
+                Join My CTF Adventure!
+              </h3>
               <p className="mb-4 text-sm text-muted-foreground">
                 I'm always looking for new friends and opportunities.
               </p>
@@ -561,6 +711,5 @@ export function CTFSection() {
         </div>
       </div>
     </motion.section>
-  )
+  );
 }
-

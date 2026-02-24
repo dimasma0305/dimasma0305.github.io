@@ -1,27 +1,36 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from "react"
-import { ArrowRight, Github, Linkedin, Mail, Twitter, Gamepad2, BookOpen, Shield } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import Image from "next/image"
-import dynamic from "next/dynamic"
-import { motion, AnimatePresence } from "framer-motion"
-import { TypeAnimation } from "react-type-animation"
+import { useState, useRef, useEffect } from "react";
+import {
+  ArrowRight,
+  Github,
+  Linkedin,
+  Mail,
+  Twitter,
+  Gamepad2,
+  BookOpen,
+  Shield,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import Image from "next/image";
+import dynamic from "next/dynamic";
+import { motion, AnimatePresence } from "framer-motion";
+import { TypeAnimation } from "react-type-animation";
 
-const Particles = dynamic(() => import("react-particles"), { ssr: false })
-import { loadSlim } from "tsparticles-slim"
-import type { Engine } from "tsparticles-engine"
-import { withBasePath } from "@/lib/utils"
+const Particles = dynamic(() => import("react-particles"), { ssr: false });
+import { loadSlim } from "tsparticles-slim";
+import type { Engine } from "tsparticles-engine";
+import { withBasePath } from "@/lib/utils";
 
 export function HeroSection() {
-  const [activeTab, setActiveTab] = useState("hacker")
-  const [isParticlesLoaded, setIsParticlesLoaded] = useState(false)
+  const [activeTab, setActiveTab] = useState("hacker");
+  const [isParticlesLoaded, setIsParticlesLoaded] = useState(false);
 
   const particlesInit = async (engine: Engine) => {
-    await loadSlim(engine)
-    setIsParticlesLoaded(true)
-  }
+    await loadSlim(engine);
+    setIsParticlesLoaded(true);
+  };
 
   const tabs = [
     {
@@ -29,23 +38,23 @@ export function HeroSection() {
       label: "Hacker",
       icon: <Shield className="w-5 h-5" />,
       color: "text-green-500",
-      borderColor: "border-green-500/50"
+      borderColor: "border-green-500/50",
     },
     {
       id: "gamer",
       label: "Gamer",
       icon: <Gamepad2 className="w-5 h-5" />,
       color: "text-blue-500",
-      borderColor: "border-blue-500/50"
+      borderColor: "border-blue-500/50",
     },
     {
       id: "manga",
       label: "Manga Reader",
       icon: <BookOpen className="w-5 h-5" />,
       color: "text-pink-500",
-      borderColor: "border-pink-500/50"
+      borderColor: "border-pink-500/50",
     },
-  ]
+  ];
 
   const tabContent = {
     hacker: {
@@ -81,23 +90,23 @@ export function HeroSection() {
         { label: "Favorite Series", value: "10+" },
       ],
     },
-  }
+  };
 
   // Animation variants
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-  }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
 
   const staggerContainer = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
   return (
     <section
@@ -150,14 +159,13 @@ export function HeroSection() {
             },
             detectRetina: true,
           }}
-          className={`absolute inset-0 transition-opacity duration-1000 ${isParticlesLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 transition-opacity duration-1000 ${isParticlesLoaded ? "opacity-100" : "opacity-0"}`}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-0 pointer-events-none" />
       </div>
 
       <div className="container relative z-10 px-4 mx-auto max-w-7xl">
         <div className="grid items-center gap-12 lg:grid-cols-2">
-
           {/* Left Content */}
           <motion.div
             initial="hidden"
@@ -173,10 +181,14 @@ export function HeroSection() {
                 </span>
                 <TypeAnimation
                   sequence={[
-                    "CTF Player", 1500,
-                    "Security Researcher", 1500,
-                    "Gamer", 1500,
-                    "Manga Reader", 1500
+                    "CTF Player",
+                    1500,
+                    "Security Researcher",
+                    1500,
+                    "Gamer",
+                    1500,
+                    "Manga Reader",
+                    1500,
                   ]}
                   wrapper="span"
                   speed={50}
@@ -186,7 +198,10 @@ export function HeroSection() {
               </div>
 
               <h1 className="text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
-                <span className="block" data-text="Dimas Maulana">
+                <span
+                  className="block text-gradient-neon"
+                  data-text="Dimas Maulana"
+                >
                   Dimas Maulana
                 </span>
               </h1>
@@ -218,77 +233,117 @@ export function HeroSection() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`
                     flex items-center gap-2 px-5 py-2.5 text-sm font-medium transition-all duration-300 rounded-full border
-                    ${activeTab === tab.id
-                      ? `${tab.borderColor} bg-background/80 shadow-lg`
-                      : "border-transparent bg-secondary/50 hover:bg-secondary hover:scale-105"
+                    ${
+                      activeTab === tab.id
+                        ? `${tab.borderColor} bg-background/80 shadow-lg`
+                        : "border-transparent bg-secondary/50 hover:bg-secondary hover:scale-105"
                     }
                   `}
                 >
-                  <span className={activeTab === tab.id ? tab.color : "text-muted-foreground"}>{tab.icon}</span>
+                  <span
+                    className={
+                      activeTab === tab.id ? tab.color : "text-muted-foreground"
+                    }
+                  >
+                    {tab.icon}
+                  </span>
                   <span>{tab.label}</span>
                 </button>
               ))}
             </motion.div>
 
             {/* Stats */}
-            <motion.div
-              variants={fadeIn}
-              className="grid grid-cols-3 gap-4"
-            >
+            <motion.div variants={fadeIn} className="grid grid-cols-3 gap-4">
               <AnimatePresence mode="wait">
-                {tabContent[activeTab as keyof typeof tabContent].stats.map((stat, index) => (
-                  <motion.div
-                    key={`${activeTab}-${index}`}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="glass p-4 rounded-xl text-center hover:bg-white/5 transition-colors"
-                  >
-                    <div className={`text-2xl font-bold mb-1 ${tabs.find(t => t.id === activeTab)?.color}`}>
-                      {stat.value}
-                    </div>
-                    <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                      {stat.label}
-                    </div>
-                  </motion.div>
-                ))}
+                {tabContent[activeTab as keyof typeof tabContent].stats.map(
+                  (stat, index) => (
+                    <motion.div
+                      key={`${activeTab}-${index}`}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="glass-card p-4 rounded-xl text-center"
+                    >
+                      <div
+                        className={`text-2xl font-bold mb-1 font-mono ${tabs.find((t) => t.id === activeTab)?.color}`}
+                      >
+                        {stat.value}
+                      </div>
+                      <div className="text-xs text-muted-foreground font-mono font-medium uppercase tracking-wider">
+                        {stat.label}
+                      </div>
+                    </motion.div>
+                  ),
+                )}
               </AnimatePresence>
             </motion.div>
 
-            <motion.div variants={fadeIn} className="flex flex-col sm:flex-row gap-4 pt-4">
+            <motion.div
+              variants={fadeIn}
+              className="flex flex-col sm:flex-row gap-4 pt-4"
+            >
               <Link href="#projects" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full gap-2 group bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(var(--primary),0.3)] hover:shadow-[0_0_30px_rgba(var(--primary),0.5)] transition-all">
+                <Button
+                  size="lg"
+                  className="w-full gap-2 group bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(var(--primary),0.3)] hover:shadow-[0_0_30px_rgba(var(--primary),0.5)] transition-all"
+                >
                   View Projects
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link href="/blog" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="w-full group glass hover:bg-white/10 border-white/20">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full group glass hover:bg-white/10 border-white/20"
+                >
                   Read My Blog
                   <BookOpen className="w-4 h-4 ml-2 group-hover:rotate-12 transition-transform" />
                 </Button>
               </Link>
             </motion.div>
 
-            <motion.div variants={fadeIn} className="flex items-center gap-4 text-muted-foreground">
+            <motion.div
+              variants={fadeIn}
+              className="flex items-center gap-4 text-muted-foreground"
+            >
               <Link href="https://github.com/dimasma0305" target="_blank">
-                <Button variant="ghost" size="icon" className="hover:text-white hover:bg-white/10 hover:scale-110 transition-all rounded-full">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-white hover:bg-white/10 hover:scale-110 transition-all rounded-full"
+                >
                   <Github className="w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="https://www.linkedin.com/in/solderet/" target="_blank">
-                <Button variant="ghost" size="icon" className="hover:text-blue-400 hover:bg-blue-400/10 hover:scale-110 transition-all rounded-full">
+              <Link
+                href="https://www.linkedin.com/in/solderet/"
+                target="_blank"
+              >
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-blue-400 hover:bg-blue-400/10 hover:scale-110 transition-all rounded-full"
+                >
                   <Linkedin className="w-5 h-5" />
                 </Button>
               </Link>
               <Link href="https://twitter.com/dimasma__" target="_blank">
-                <Button variant="ghost" size="icon" className="hover:text-sky-400 hover:bg-sky-400/10 hover:scale-110 transition-all rounded-full">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-sky-400 hover:bg-sky-400/10 hover:scale-110 transition-all rounded-full"
+                >
                   <Twitter className="w-5 h-5" />
                 </Button>
               </Link>
               <Link href="mailto:dimasmaulana0305@gmail.com">
-                <Button variant="ghost" size="icon" className="hover:text-red-400 hover:bg-red-400/10 hover:scale-110 transition-all rounded-full">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-red-400 hover:bg-red-400/10 hover:scale-110 transition-all rounded-full"
+                >
                   <Mail className="w-5 h-5" />
                 </Button>
               </Link>
@@ -303,13 +358,19 @@ export function HeroSection() {
                   key="hacker"
                   initial={{ opacity: 0, rotateY: 90 }}
                   animate={{ opacity: 1, rotateY: 0 }}
-                  exit={{ opacity: 0, rotateY: -90, transition: { duration: 0.3 } }}
+                  exit={{
+                    opacity: 0,
+                    rotateY: -90,
+                    transition: { duration: 0.3 },
+                  }}
                   transition={{ type: "spring", stiffness: 100, damping: 20 }}
                   className="absolute inset-0 flex items-center justify-center p-8"
                 >
                   <div className="w-full h-full retro-terminal scanlines rounded-xl shadow-2xl p-6 font-mono text-sm leading-relaxed overflow-hidden border border-green-500/30">
                     <div className="flex items-center justify-between mb-4 border-b border-green-500/30 pb-2">
-                      <span className="text-xs text-green-700">TERMINAL SESSION: ROOT</span>
+                      <span className="text-xs text-green-700">
+                        TERMINAL SESSION: ROOT
+                      </span>
                       <div className="flex gap-2">
                         <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
                         <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
@@ -317,13 +378,26 @@ export function HeroSection() {
                       </div>
                     </div>
                     <div className="h-full overflow-hidden">
-                      <p><span className="text-green-300">dimas@sys:~$</span> init_sequence --cyber-security</p>
-                      <p className="text-gray-500 my-1">[INFO] Loading modules...</p>
-                      <p className="text-gray-500">[INFO] Connecting to secure server...</p>
-                      <p className="my-1"><span className="text-green-300">dimas@sys:~$</span> whoami</p>
+                      <p>
+                        <span className="text-green-300">dimas@sys:~$</span>{" "}
+                        init_sequence --cyber-security
+                      </p>
+                      <p className="text-gray-500 my-1">
+                        [INFO] Loading modules...
+                      </p>
+                      <p className="text-gray-500">
+                        [INFO] Connecting to secure server...
+                      </p>
+                      <p className="my-1">
+                        <span className="text-green-300">dimas@sys:~$</span>{" "}
+                        whoami
+                      </p>
                       <p className="text-emerald-400 font-bold mb-4">root</p>
 
-                      <p><span className="text-green-300">dimas@sys:~$</span> cat talents.txt</p>
+                      <p>
+                        <span className="text-green-300">dimas@sys:~$</span> cat
+                        talents.txt
+                      </p>
                       <div className="pl-4 border-l-2 border-green-500/20 my-2 text-green-200/80">
                         <p>• Web Exploitation</p>
                         <p>• Reverse Engineering</p>
@@ -331,17 +405,29 @@ export function HeroSection() {
                         <p>• OSINT</p>
                       </div>
 
-                      <p className="mt-4"><span className="text-green-300">dimas@sys:~$</span> ./run_exploits.sh</p>
-                      <p className="text-yellow-400 animate-pulse">Running analysis on target...</p>
+                      <p className="mt-4">
+                        <span className="text-green-300">dimas@sys:~$</span>{" "}
+                        ./run_exploits.sh
+                      </p>
+                      <p className="text-yellow-400 animate-pulse">
+                        Running analysis on target...
+                      </p>
 
                       <div className="mt-8 p-4 border border-green-500/20 bg-green-500/5 rounded">
-                        <p className="text-xs text-green-600 mb-2">SYSTEM STATUS</p>
+                        <p className="text-xs text-green-600 mb-2">
+                          SYSTEM STATUS
+                        </p>
                         <div className="w-full bg-green-900/30 h-1.5 rounded-full overflow-hidden">
                           <motion.div
                             className="h-full bg-green-500"
                             initial={{ width: "0%" }}
                             animate={{ width: "100%" }}
-                            transition={{ duration: 2, ease: "linear", repeat: Infinity, repeatType: "loop" }}
+                            transition={{
+                              duration: 2,
+                              ease: "linear",
+                              repeat: Infinity,
+                              repeatType: "loop",
+                            }}
                           />
                         </div>
                       </div>
@@ -355,7 +441,12 @@ export function HeroSection() {
                   key="gamer"
                   initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
                   animate={{ opacity: 1, scale: 1, rotate: 2 }}
-                  exit={{ opacity: 0, scale: 0.8, rotate: 5, transition: { duration: 0.3 } }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.8,
+                    rotate: 5,
+                    transition: { duration: 0.3 },
+                  }}
                   transition={{ type: "spring", bounce: 0.4 }}
                   className="absolute inset-0 flex items-center justify-center"
                 >
@@ -376,7 +467,9 @@ export function HeroSection() {
                           />
                         </div>
                         <div>
-                          <h3 className="text-2xl font-bold text-white">DimasMa</h3>
+                          <h3 className="text-2xl font-bold text-white">
+                            DimasMa
+                          </h3>
                           <div className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-yellow-500 text-black">
                             LVL 99
                           </div>
@@ -418,7 +511,9 @@ export function HeroSection() {
                       <div className="grid grid-cols-2 gap-4 mt-8">
                         <div className="bg-white/5 rounded-lg p-3 text-center border border-white/10">
                           <div className="text-xs text-gray-400">Class</div>
-                          <div className="font-bold text-blue-300">Cyber Mage</div>
+                          <div className="font-bold text-blue-300">
+                            Cyber Mage
+                          </div>
                         </div>
                         <div className="bg-white/5 rounded-lg p-3 text-center border border-white/10">
                           <div className="text-xs text-gray-400">Guild</div>
@@ -449,10 +544,14 @@ export function HeroSection() {
 
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div className="h-32 bg-gray-200 border-2 border-black relative overflow-hidden group cursor-pointer">
-                        <div className="absolute inset-0 flex items-center justify-center font-bold text-xl uppercase opacity-20 group-hover:opacity-100 transition-opacity z-10">Action</div>
+                        <div className="absolute inset-0 flex items-center justify-center font-bold text-xl uppercase opacity-20 group-hover:opacity-100 transition-opacity z-10">
+                          Action
+                        </div>
                         <div className="absolute inset-0 bg-blue-500 mix-blend-multiply opacity-0 group-hover:opacity-40 transition-opacity"></div>
                         <Image
-                          src={withBasePath("/placeholder.svg?height=150&width=200&text=ACTION")}
+                          src={withBasePath(
+                            "/placeholder.svg?height=150&width=200&text=ACTION",
+                          )}
                           width={200}
                           height={150}
                           alt="Manga"
@@ -460,10 +559,14 @@ export function HeroSection() {
                         />
                       </div>
                       <div className="h-32 bg-gray-200 border-2 border-black relative overflow-hidden group cursor-pointer">
-                        <div className="absolute inset-0 flex items-center justify-center font-bold text-xl uppercase opacity-20 group-hover:opacity-100 transition-opacity z-10">Sci-Fi</div>
+                        <div className="absolute inset-0 flex items-center justify-center font-bold text-xl uppercase opacity-20 group-hover:opacity-100 transition-opacity z-10">
+                          Sci-Fi
+                        </div>
                         <div className="absolute inset-0 bg-purple-500 mix-blend-multiply opacity-0 group-hover:opacity-40 transition-opacity"></div>
                         <Image
-                          src={withBasePath("/placeholder.svg?height=150&width=200&text=SCI-FI")}
+                          src={withBasePath(
+                            "/placeholder.svg?height=150&width=200&text=SCI-FI",
+                          )}
                           width={200}
                           height={150}
                           alt="Manga"
@@ -473,7 +576,8 @@ export function HeroSection() {
                     </div>
 
                     <div className="bg-black text-white p-4 font-bold rounded-sm bubble relative">
-                      "I read over 100+ chapters a week! It's not an addiction, it's a lifestyle!"
+                      "I read over 100+ chapters a week! It's not an addiction,
+                      it's a lifestyle!"
                       <div className="absolute -bottom-4 left-8 w-0 h-0 border-l-[10px] border-l-transparent border-t-[15px] border-t-black border-r-[10px] border-r-transparent"></div>
                     </div>
                   </div>
@@ -496,7 +600,11 @@ export function HeroSection() {
               <div className="w-6 h-10 border-2 border-current rounded-full flex justify-center p-1">
                 <motion.div
                   animate={{ y: [0, 12, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                   className="w-1.5 h-1.5 bg-current rounded-full"
                 />
               </div>
@@ -505,5 +613,5 @@ export function HeroSection() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

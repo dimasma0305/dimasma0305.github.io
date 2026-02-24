@@ -1,10 +1,16 @@
-"use client"
+"use client";
 
-import { Calendar, MapPin, ExternalLink, Sparkles } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
-import { useState, useRef } from "react"
+import { Calendar, MapPin, ExternalLink, Sparkles } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { useState, useRef } from "react";
 
 const experiences = [
   {
@@ -12,7 +18,8 @@ const experiences = [
     company: "TCP1P",
     location: "Indonesia · Remote",
     period: "Aug 2022 - Present",
-    description: "Founded and lead TCP1P, a cybersecurity team focused on CTF competitions and security research.",
+    description:
+      "Founded and lead TCP1P, a cybersecurity team focused on CTF competitions and security research.",
     skills: ["Communication", "Leadership", "Team Management", "CTF"],
     link: "https://github.com/TCP1P",
     highlight: true,
@@ -22,7 +29,8 @@ const experiences = [
     company: "Information and Technology Festival (IntechFest)",
     location: "Remote",
     period: "Aug 2024 - Sep 2024",
-    description: "Created and designed CTF challenges for the Information and Technology Festival.",
+    description:
+      "Created and designed CTF challenges for the Information and Technology Festival.",
     skills: ["Web Security", "Challenge Design", "CTF"],
     type: "Freelance",
   },
@@ -40,7 +48,8 @@ const experiences = [
     company: "CTF IT Festival",
     location: "Remote",
     period: "Dec 2023",
-    description: "Created security challenges for the CTF IT Festival competition.",
+    description:
+      "Created security challenges for the CTF IT Festival competition.",
     skills: ["Web Security", "Challenge Design", "CTF"],
     type: "Freelance",
   },
@@ -49,21 +58,30 @@ const experiences = [
     company: "HOLOGY UB",
     location: "Remote",
     period: "Sep 2023",
-    description: "Designed and developed CTF challenges for HOLOGY 6.0 competition at Universitas Brawijaya.",
+    description:
+      "Designed and developed CTF challenges for HOLOGY 6.0 competition at Universitas Brawijaya.",
     skills: ["Web Security", "Challenge Design", "CTF", "Jury"],
     type: "Freelance",
   },
-]
+];
 
 export function ExperienceSection() {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="container px-4 py-16 mx-auto max-w-7xl" id="experience" ref={containerRef}>
+    <div
+      className="container px-4 py-16 mx-auto max-w-7xl"
+      id="experience"
+      ref={containerRef}
+    >
       <div className="mb-12 text-center">
-        <h2 className="text-5xl font-bold tracking-tight text-green-500">Professional Experience</h2>
-        <p className="mt-4 text-xl text-muted-foreground">My journey in the cybersecurity realm</p>
+        <h2 className="text-5xl font-bold tracking-tight text-gradient-neon">
+          Professional Experience
+        </h2>
+        <p className="mt-4 text-xl text-muted-foreground">
+          My journey in the cybersecurity realm
+        </p>
       </div>
 
       <div className="max-w-4xl mx-auto">
@@ -76,11 +94,15 @@ export function ExperienceSection() {
               onMouseLeave={() => setHoveredCard(null)}
             >
               <div className="absolute w-4 h-4 bg-primary rounded-full -left-[41px] top-1" />
-              <Card className={`transition-all duration-300 ${experience.highlight ? "border-primary/30" : ""}`}>
+              <Card
+                className={`glass-card transition-all duration-300 ${experience.highlight ? "border-primary/50 shadow-[0_0_15px_rgba(var(--primary),0.3)]" : "border-white/5"}`}
+              >
                 <CardHeader>
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <CardTitle className="text-xl">{experience.title}</CardTitle>
+                      <CardTitle className="text-xl">
+                        {experience.title}
+                      </CardTitle>
                       {experience.highlight && hoveredCard === index && (
                         <Sparkles className="w-4 h-4 text-yellow-500" />
                       )}
@@ -88,12 +110,23 @@ export function ExperienceSection() {
                     <div>
                       <CardDescription className="text-lg font-medium">
                         {experience.company}
-                        {experience.type && <span className="ml-2 text-sm">· {experience.type}</span>}
+                        {experience.type && (
+                          <span className="ml-2 text-sm">
+                            · {experience.type}
+                          </span>
+                        )}
                       </CardDescription>
                     </div>
                     {experience.link && (
-                      <Link href={experience.link} target="_blank" rel="noopener noreferrer">
-                        <Badge variant="outline" className="flex items-center gap-1">
+                      <Link
+                        href={experience.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Badge
+                          variant="outline"
+                          className="flex items-center gap-1"
+                        >
                           <ExternalLink className="w-3 h-3" />
                           Visit
                         </Badge>
@@ -117,7 +150,11 @@ export function ExperienceSection() {
 
                   <div className="flex flex-wrap gap-2 pt-2">
                     {experience.skills.map((skill) => (
-                      <Badge key={skill} variant="secondary" className="bg-primary/20 hover:bg-primary/30">
+                      <Badge
+                        key={skill}
+                        variant="secondary"
+                        className="bg-primary/20 hover:bg-primary/30"
+                      >
                         {skill}
                       </Badge>
                     ))}
@@ -129,5 +166,5 @@ export function ExperienceSection() {
         </div>
       </div>
     </div>
-  )
+  );
 }
