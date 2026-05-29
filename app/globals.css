@@ -843,7 +843,7 @@ pre.line-numbers > code {
 }
 
 .glass-card {
-  background: hsl(var(--card) / 0.7);
+  background: hsl(var(--card) / 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid hsl(var(--border));
@@ -885,9 +885,11 @@ pre.line-numbers > code {
   @apply py-16 sm:py-20 lg:py-24;
 }
 
-/* Subtle alternating surface to segment sections without hard borders. */
+/* Alternating surface to segment sections — perceptible on non-OLED displays,
+   with hairline edges so the boundary reads even where the fill is subtle. */
 .section-alt {
-  background-color: hsl(var(--card) / 0.35);
+  background-color: hsl(var(--card) / 0.6);
+  border-block: 1px solid hsl(var(--border) / 0.6);
 }
 
 /* Respect the user's reduced-motion preference everywhere. */

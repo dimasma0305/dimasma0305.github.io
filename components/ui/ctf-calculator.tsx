@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Calculator, RotateCcw, Star, HelpCircle, Copy, Check, AlertTriangle, Shield, Zap } from "lucide-react"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Calculator, RotateCcw, Star, HelpCircle, Copy, Check } from "lucide-react"
 
 interface RangeValues {
   [key: string]: number
@@ -17,13 +17,13 @@ interface CVSSMetrics {
   [key: string]: string
 }
 
-// CVSS-like severity levels
+// CVSS-like severity levels (ordered by ascending minimum score)
 const cvssSeverityLevels = [
-  { name: "None", min: 0, max: 0.1, color: "text-gray-500", bgColor: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200" },
-  { name: "Low", min: 0.1, max: 3.9, color: "text-blue-500", bgColor: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" },
-  { name: "Medium", min: 4.0, max: 6.9, color: "text-yellow-500", bgColor: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" },
-  { name: "High", min: 7.0, max: 8.9, color: "text-orange-500", bgColor: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200" },
-  { name: "Critical", min: 9.0, max: 10.0, color: "text-red-500", bgColor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" },
+  { name: "None", min: 0, bgColor: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200" },
+  { name: "Low", min: 0.1, bgColor: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" },
+  { name: "Medium", min: 4.0, bgColor: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" },
+  { name: "High", min: 7.0, bgColor: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200" },
+  { name: "Critical", min: 9.0, bgColor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" },
 ]
 
 const criteriaData = [
@@ -109,12 +109,13 @@ const criteriaData = [
   },
 ]
 
+// Distinct hue per tier so difficulty is not conveyed by position alone
 const difficulties = [
-  { name: "baby", color: "text-blue-400", bgColor: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" },
-  { name: "easy", color: "text-green-400", bgColor: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" },
-  { name: "medium", color: "text-yellow-400", bgColor: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" },
-  { name: "hard", color: "text-red-400", bgColor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" },
-  { name: "insane", color: "text-red-600", bgColor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" },
+  { name: "baby", bgColor: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200" },
+  { name: "easy", bgColor: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" },
+  { name: "medium", bgColor: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" },
+  { name: "hard", bgColor: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200" },
+  { name: "insane", bgColor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" },
 ]
 
 // CVSS-like scoring function
@@ -136,16 +137,16 @@ function calculateCVSSScore(rangeValues: RangeValues): number {
   return Math.min(10, Math.max(0, weightedSum))
 }
 
-// Get CVSS severity level
+// Get CVSS severity level: highest tier whose minimum the score meets/exceeds
 function getCVSSSeverity(score: number) {
-  return cvssSeverityLevels.find(level => score >= level.min && score <= level.max) || cvssSeverityLevels[0]
+  return [...cvssSeverityLevels].reverse().find(level => score >= level.min) || cvssSeverityLevels[0]
 }
 
 // Generate CVSS-like vector string
 function generateVectorString(rangeValues: RangeValues): string {
   const vectorParts = criteriaData.map(criteria => {
     const value = rangeValues[criteria.name] || 1
-    const level = value === 1 ? 'L' : value === 2 ? 'L' : value === 3 ? 'M' : value === 4 ? 'H' : 'C'
+    const level = value <= 2 ? 'L' : value === 3 ? 'M' : value === 4 ? 'H' : 'C'
     return `${criteria.shortName}:${level}`
   })
   
@@ -175,13 +176,13 @@ function RangeInput({
         <span className="font-medium">{label}</span>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-6 w-6">
-              <HelpCircle className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="h-6 w-6" aria-label={`Scoring guide for ${label}`}>
+              <HelpCircle className="h-4 w-4" aria-hidden="true" />
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Challenge Difficulty Criteria</DialogTitle>
+              <DialogTitle>{label}</DialogTitle>
             </DialogHeader>
             <div className="text-sm">{description}</div>
           </DialogContent>
@@ -195,6 +196,8 @@ function RangeInput({
           min={1}
           step={1}
           className="w-full"
+          aria-label={label}
+          aria-valuetext={`${value} of 5${difficulties[value - 1] ? ` — ${difficulties[value - 1].name}` : ""}`}
         />
         <div className="flex justify-between text-xs text-muted-foreground px-1">
           {[1, 2, 3, 4, 5].map((num) => (
@@ -213,9 +216,9 @@ function RangeInput({
 
 function renderStars(count: number) {
   return (
-    <div className="flex justify-center gap-1">
+    <div className="flex justify-center gap-1" role="img" aria-label={`${count} out of 5 stars`}>
       {Array.from({ length: count }).map((_, i) => (
-        <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+        <Star key={i} aria-hidden="true" className="w-6 h-6 fill-yellow-400 text-yellow-400" />
       ))}
     </div>
   )
@@ -223,9 +226,9 @@ function renderStars(count: number) {
 
 function renderSmallStars(count: number) {
   return (
-    <div className="flex justify-center gap-0.5">
+    <div className="flex justify-center gap-0.5" role="img" aria-label={`${count} out of 5 stars`}>
       {Array.from({ length: count }).map((_, i) => (
-        <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+        <Star key={i} aria-hidden="true" className="w-3 h-3 fill-yellow-400 text-yellow-400" />
       ))}
     </div>
   )
@@ -237,8 +240,12 @@ function ProgressCircle({ value }: { value: number }) {
   const strokeDashoffset = circumference - (value / 100) * circumference
 
   return (
-    <div className="relative w-48 h-48 flex items-center justify-center">
-      <svg className="w-48 h-48 transform -rotate-90" viewBox="0 0 100 100">
+    <div
+      className="relative w-48 h-48 flex items-center justify-center"
+      role="img"
+      aria-label={`Difficulty score ${Math.round(value)} percent`}
+    >
+      <svg className="w-48 h-48 transform -rotate-90" viewBox="0 0 100 100" aria-hidden="true">
         {/* Background circle */}
         <circle
           cx="50"
@@ -285,87 +292,60 @@ export function CTFCalculator() {
   // Parse vector parameter from URL
   const parseVectorFromURL = (vectorStr: string): RangeValues => {
     const parsedValues: RangeValues = {}
-    
+
     try {
-      // URL decode the vector string first
       const decodedVector = decodeURIComponent(vectorStr)
-      console.log('Decoded vector:', decodedVector)
-      
-      // Remove CTF:1.0/ prefix if present
       const cleanVector = decodedVector.replace(/^CTF:1\.0\//, '')
-      console.log('Clean vector:', cleanVector)
-      
-      // Split by / and parse each metric
       const metrics = cleanVector.split('/')
-      console.log('Metrics:', metrics)
-      
+
       metrics.forEach(metric => {
         const [shortName, level] = metric.split(':')
-        console.log('Parsing metric:', shortName, level)
-        
-        // Find the criteria by short name
         const criteria = criteriaData.find(c => c.shortName === shortName)
-        if (criteria) {
-          // Convert level back to 1-5 scale
-          let value = 1
-          switch (level) {
-            case 'L':
-              value = 1 // or 2, but we'll use 1 for Low
-              break
-            case 'M':
-              value = 3
-              break
-            case 'H':
-              value = 4
-              break
-            case 'C':
-              value = 5
-              break
-            default:
-              value = 1
-          }
-          parsedValues[criteria.name] = value
-          console.log('Set', criteria.name, 'to', value)
-        } else {
-          console.log('Criteria not found for shortName:', shortName)
+        if (!criteria) return
+
+        // Convert level back to the 1-5 scale
+        let value = 1
+        switch (level) {
+          case 'L':
+            value = 1
+            break
+          case 'M':
+            value = 3
+            break
+          case 'H':
+            value = 4
+            break
+          case 'C':
+            value = 5
+            break
+          default:
+            value = 1
         }
+        parsedValues[criteria.name] = value
       })
     } catch (error) {
       console.error('Error parsing vector string:', error)
     }
-    
-    console.log('Final parsed values:', parsedValues)
+
     return parsedValues
   }
 
-  // Initialize default values first
+  // Initialize from a URL ?vector= when present, otherwise default every criterion to 1.
+  // Single mount effect so defaults and URL values can't race each other.
   useEffect(() => {
     const initialValues: RangeValues = {}
     criteriaData.forEach(criteria => {
       initialValues[criteria.name] = 1
     })
-    setRangeValues(initialValues)
-  }, [])
 
-  // Then check for URL parameters after component mounts
-  useEffect(() => {
-    // Check if we're in the browser environment
-    if (typeof window === 'undefined') return
-
-    // Check for vector parameter in URL
-    const urlParams = new URLSearchParams(window.location.search)
-    const vectorParam = urlParams.get('vector')
-    console.log('Vector param from URL:', vectorParam)
-    
-    if (vectorParam) {
-      // Parse vector and set values
-      const parsedValues = parseVectorFromURL(vectorParam)
-      console.log('Parsed values:', parsedValues)
-      if (Object.keys(parsedValues).length > 0) {
-        console.log('Setting range values to:', parsedValues)
-        setRangeValues(parsedValues)
+    if (typeof window !== 'undefined') {
+      const vectorParam = new URLSearchParams(window.location.search).get('vector')
+      if (vectorParam) {
+        Object.assign(initialValues, parseVectorFromURL(vectorParam))
       }
     }
+
+    setRangeValues(initialValues)
   }, [])
 
   useEffect(() => {
@@ -552,14 +532,26 @@ Calculated using: https://dimasma0305.github.io/tools/ctf-calculator?vector=${en
                     {vectorString}
                   </div>
                 </div>
-                
+
+                {/* CVSS-like score */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-sm font-medium">CVSS-like Score:</div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-sm">{cvssScore.toFixed(1)}/10</span>
+                    <Badge className={cvssSeverity.bgColor}>{cvssSeverity.name}</Badge>
+                  </div>
+                </div>
+
                 {/* Criteria Table */}
                 <Table>
+                  <TableCaption className="sr-only">
+                    Per-criteria difficulty ratings out of 5
+                  </TableCaption>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Criteria</TableHead>
-                      <TableHead className="text-center">Rating</TableHead>
-                      <TableHead className="text-center">Stars</TableHead>
+                      <TableHead scope="col">Criteria</TableHead>
+                      <TableHead scope="col" className="text-center">Rating</TableHead>
+                      <TableHead scope="col" className="text-center">Stars</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

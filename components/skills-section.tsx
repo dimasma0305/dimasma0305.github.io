@@ -1,6 +1,7 @@
 "use client";
 
 import { Shield, Terminal, Server, Code, Database, Globe } from "lucide-react";
+import { SectionHeader } from "@/components/section-header";
 
 const skills = [
   {
@@ -43,7 +44,11 @@ const skills = [
 export function SkillsSection() {
   return (
     <div className="container px-4 section-y mx-auto max-w-7xl scroll-mt-20" id="skills">
-      <h2 className="mb-12 section-heading text-center">Skills &amp; Expertise</h2>
+      <SectionHeader
+        eyebrow="Toolkit"
+        title="Skills & Expertise"
+        subtitle="My toolkit across security, systems, and code."
+      />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {skills.map((skill, index) => (

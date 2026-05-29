@@ -15,7 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { withBasePath } from "@/lib/utils";
 
 export function HeroSection() {
   const [activeTab, setActiveTab] = useState("hacker");
@@ -46,7 +45,7 @@ export function HeroSection() {
       stats: [
         { label: "Games Completed", value: "30+" },
         { label: "Achievement Score", value: "300+" },
-        { label: "Gaming Hours", value: "IDK" },
+        { label: "Gaming Hours", value: "1k+" },
       ],
     },
     manga: {
@@ -85,11 +84,14 @@ export function HeroSection() {
                 <span className="text-foreground">{active.title}</span>
               </div>
 
-              <h1 className="text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
                 <span className="block text-gradient-neon">Dimas Maulana</span>
               </h1>
 
-              <p className="text-xl sm:text-2xl text-muted-foreground font-light">
+              <p
+                key={activeTab}
+                className="text-xl sm:text-2xl text-muted-foreground font-light animate-in fade-in duration-200"
+              >
                 {active.subtitle}
               </p>
             </div>
@@ -167,6 +169,17 @@ export function HeroSection() {
               </Link>
             </div>
 
+            <p className="text-sm text-muted-foreground">
+              Open to security research roles &amp; CTF collaborations —{" "}
+              <a
+                href="mailto:dimasmaulana0305@gmail.com"
+                className="font-medium text-primary hover:underline"
+              >
+                get in touch
+              </a>
+              .
+            </p>
+
             <div className="flex items-center gap-2 sm:gap-3 text-muted-foreground">
               <Link
                 href="https://github.com/dimasma0305"
@@ -223,8 +236,9 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right Content — persona visual (single active card, light CSS fade) */}
-          <div className="relative hidden lg:block h-[600px]">
+          {/* Right Content — persona visual (single active card, light CSS fade).
+              Shown on mobile too (below the left column) so the personas have a payoff. */}
+          <div className="relative h-[440px] sm:h-[520px] lg:h-[600px]">
             <div
               key={activeTab}
               className="absolute inset-0 flex items-center justify-center p-8 animate-in fade-in duration-200"
@@ -363,37 +377,15 @@ export function HeroSection() {
                     MY COLLECTION
                   </h3>
 
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="h-32 bg-muted border border-border rounded-md relative overflow-hidden group cursor-pointer">
-                      <div className="absolute inset-0 flex items-center justify-center font-bold text-xl uppercase text-foreground opacity-30 group-hover:opacity-100 transition-opacity z-10">
-                        Action
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    {["Action", "Sci-Fi", "Seinen", "Mystery"].map((genre) => (
+                      <div
+                        key={genre}
+                        className="flex h-16 items-center justify-center rounded-md border border-border bg-muted/60 text-sm font-bold uppercase tracking-wide text-foreground transition-colors hover:border-primary/40 hover:text-primary"
+                      >
+                        {genre}
                       </div>
-                      <div className="absolute inset-0 bg-primary mix-blend-overlay opacity-0 group-hover:opacity-40 transition-opacity"></div>
-                      <Image
-                        src={withBasePath(
-                          "/placeholder.svg?height=150&width=200&text=ACTION",
-                        )}
-                        width={200}
-                        height={150}
-                        alt="Manga"
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
-                      />
-                    </div>
-                    <div className="h-32 bg-muted border border-border rounded-md relative overflow-hidden group cursor-pointer">
-                      <div className="absolute inset-0 flex items-center justify-center font-bold text-xl uppercase text-foreground opacity-30 group-hover:opacity-100 transition-opacity z-10">
-                        Sci-Fi
-                      </div>
-                      <div className="absolute inset-0 bg-primary mix-blend-overlay opacity-0 group-hover:opacity-40 transition-opacity"></div>
-                      <Image
-                        src={withBasePath(
-                          "/placeholder.svg?height=150&width=200&text=SCI-FI",
-                        )}
-                        width={200}
-                        height={150}
-                        alt="Manga"
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
-                      />
-                    </div>
+                    ))}
                   </div>
 
                   <div className="bg-primary text-primary-foreground p-4 font-medium rounded-md relative">
@@ -410,7 +402,7 @@ export function HeroSection() {
         {/* Scroll hint — static (no perpetual animation) */}
         <Link
           href="#about"
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
           aria-label="Scroll to content"
         >
           <span className="text-xs uppercase tracking-widest">Scroll</span>

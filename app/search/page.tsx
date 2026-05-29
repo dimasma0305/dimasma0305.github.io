@@ -14,7 +14,7 @@ import { withBasePath } from "@/lib/utils"
 const PostCard = lazy(() => import("@/components/post-card"))
 const SearchBar = lazy(() => import("@/components/search-bar").then(m => ({ default: m.SearchBar })))
 
-export default function SearchPage() {
+function SearchPageContent() {
   const { posts, loading, error } = usePosts()
   const [searchQuery, setSearchQuery] = useState("")
   
@@ -185,5 +185,19 @@ export default function SearchPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container px-4 py-12 mx-auto max-w-7xl">
+          <LoadingSpinner />
+        </div>
+      }
+    >
+      <SearchPageContent />
+    </Suspense>
   )
 }

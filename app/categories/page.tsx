@@ -4,7 +4,7 @@ import { useEffect, useState, lazy, Suspense } from "react"
 import { fetchAllPosts } from "@/lib/posts-loader"
 import { getAllCategories, getPostsByCategory } from "@/lib/posts-client"
 import type { Post } from "@/lib/posts-client"
-import { LoadingSpinner } from "@/components/loading-spinner"
+import { CardSkeleton } from "@/components/card-skeleton"
 
 // Lazy load PostCard for better initial page load
 const PostCard = lazy(() => import("@/components/post-card"))
@@ -32,13 +32,16 @@ export default function CategoriesPage() {
 
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
-      <div className="flex items-center justify-between mb-8">
+      <div className="mb-8 space-y-1">
         <h1 className="text-3xl font-bold tracking-tight">Categories</h1>
+        <p className="text-sm text-muted-foreground">Browse posts by topic.</p>
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <LoadingSpinner />
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
         </div>
       ) : categories.length > 0 ? (
         <div className="space-y-12">
@@ -52,7 +55,7 @@ export default function CategoriesPage() {
                 </h2>
                 <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                   {categoryPosts.map((post) => (
-                    <Suspense key={post.id} fallback={<LoadingSpinner />}>
+                    <Suspense key={post.id} fallback={<CardSkeleton />}>
                       <PostCard post={post} />
                     </Suspense>
                   ))}

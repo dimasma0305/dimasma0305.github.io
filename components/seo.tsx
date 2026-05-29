@@ -99,7 +99,7 @@ export function generateBlogMetadata(): Metadata {
     description: "Explore cybersecurity research, CTF writeups, vulnerability analysis, and security tutorials by Dimas Maulana. Learn about web security, penetration testing, and ethical hacking.",
     keywords: "cybersecurity blog, CTF writeups, security research, penetration testing, web security, vulnerability analysis, ethical hacking, bug bounty, infosec",
     alternates: {
-      canonical: baseUrl,
+      canonical: `${baseUrl}/blog`,
     },
     openGraph: {
       type: 'website',
@@ -821,9 +821,11 @@ export function NoteStructuredData({ slug }: { slug: string }) {
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "@id": noteUrl,
-    headline: `Technical Note: ${slug}`,
+    headline: slug
+      .split("-")
+      .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
+      .join(" "),
     url: noteUrl,
-    datePublished: new Date().toISOString(),
     author: {
       "@type": "Person",
       "@id": `${baseUrl}/#person`,

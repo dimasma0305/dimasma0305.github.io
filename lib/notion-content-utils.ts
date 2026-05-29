@@ -230,11 +230,17 @@ export async function convertNotionBlockToHtml(block: NotionBlock, folder: strin
       if (block.content?.url) {
         const caption = processRichText(block.content?.caption || [])
         const safeUrl = sanitizeUrl(block.content.url)
-        const altText = caption || "Image"
+        // Build the alt from the raw caption text so escapeHtml runs exactly once
+        // (the figcaption uses the already-escaped HTML from processRichText).
+        const altText =
+          (block.content?.caption || [])
+            .map((rt: RichText) => rt.content || "")
+            .join("")
+            .trim() || "Image"
         return `<figure class="notion-image">
-          <img src="${safeUrl}" alt="${escapeHtml(altText)}" class="notion-image-content" loading="lazy" 
+          <img src="${safeUrl}" alt="${escapeHtml(altText)}" class="notion-image-content" loading="lazy"
                onerror="this.onerror=null;this.src='${withBasePath('/placeholder.svg?height=400&width=600&text=Image%20Not%20Found')}'">
-          ${caption ? `<figcaption class="notion-image-caption">${escapeHtml(caption)}</figcaption>` : ""}
+          ${caption ? `<figcaption class="notion-image-caption">${caption}</figcaption>` : ""}
         </figure>`
       }
       return ""
@@ -348,19 +354,22 @@ export async function convertNotionBlockToHtml(block: NotionBlock, folder: strin
         <summary class="notion-toggle-summary">${toggleText}</summary>
         <div class="notion-toggle-content">${toggleContent}</div>
       </details>`
-    case "link_preview":
+    case "link_preview": {
+      const previewUrl = sanitizeUrl(block.content?.url || "")
+      if (!previewUrl) return ""
       return `
-        <div key="${block.id}" className="mb-4 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+        <div class="mb-4 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
           <a
-            href="${block.content?.url}"
+            href="${previewUrl}"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            class="text-blue-600 dark:text-blue-400 hover:underline font-medium"
           >
-            ${block.content?.url}
+            ${escapeHtml(block.content?.url || "")}
           </a>
         </div>
       `
+    }
     default:
       // Generic fallback for any block type that has children but isn't explicitly handled
       if (block.children && Array.isArray(block.children)) {

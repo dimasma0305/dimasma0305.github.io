@@ -237,11 +237,13 @@ export function TableOfContents({ content }: TableOfContentsProps) {
     // Create new observer
     observerRef.current = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
+        // Pick the single most-visible heading to avoid active-state flicker
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible.length > 0) {
+          setActiveId(visible[0].target.id);
+        }
       },
       {
         rootMargin: "-10% 0% -10% 0%",
@@ -262,13 +264,16 @@ export function TableOfContents({ content }: TableOfContentsProps) {
     // Initial observation
     observeElements();
 
-    // Set up a MutationObserver to watch for DOM changes
+    // Re-observe headings when the (async/lazy) article content mounts.
+    // Scope to the content container rather than the whole document.body.
+    const contentRoot =
+      document.querySelector("article") ||
+      document.getElementById("main-content") ||
+      document.body;
     const mutationObserver = new MutationObserver(() => {
       observeElements();
     });
-
-    // Start observing the document body for changes
-    mutationObserver.observe(document.body, {
+    mutationObserver.observe(contentRoot, {
       childList: true,
       subtree: true,
     });
@@ -345,6 +350,8 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                 size="sm"
                 className="h-6 w-6 p-0"
                 onClick={() => toggleSection(item.id)}
+                aria-expanded={!isCollapsed}
+                aria-label={isCollapsed ? "Expand section" : "Collapse section"}
               >
                 {isCollapsed ? (
                   <ChevronRight className="h-3 w-3" />
@@ -359,6 +366,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
               className={`
                 flex-1 text-left px-3 py-2 rounded-md transition-all duration-200
                 hover:bg-muted hover:text-foreground
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
                 ${
                   activeId === item.id
                     ? "bg-primary/10 text-primary font-medium border-l-2 border-primary"

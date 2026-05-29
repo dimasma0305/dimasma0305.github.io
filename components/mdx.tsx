@@ -319,6 +319,14 @@ export function Mdx({ content }: MdxProps) {
 
           copyButton.onclick = () => {
             const code = pre.querySelector("code")?.textContent || "";
+            // Insecure contexts / old browsers: navigator.clipboard is undefined
+            if (!navigator.clipboard?.writeText) {
+              copyButton.innerHTML = `${copyIcon} <span>Press Ctrl+C</span>`;
+              setTimeout(() => {
+                copyButton.innerHTML = `${copyIcon} <span>Copy</span>`;
+              }, 2000);
+              return;
+            }
             navigator.clipboard.writeText(code).then(() => {
               copyButton.innerHTML = `${checkIcon} <span>Copied!</span>`;
               copyButton.classList.add("text-green-500", "border-green-500/30");
@@ -336,6 +344,12 @@ export function Mdx({ content }: MdxProps) {
                   "text-muted-foreground",
                   "border-white/10",
                 );
+              }, 2000);
+            }).catch(() => {
+              // Clipboard can reject (insecure context, permissions) — give feedback
+              copyButton.innerHTML = `${copyIcon} <span>Press Ctrl+C</span>`;
+              setTimeout(() => {
+                copyButton.innerHTML = `${copyIcon} <span>Copy</span>`;
               }, 2000);
             });
           };

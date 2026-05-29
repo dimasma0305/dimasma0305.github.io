@@ -214,7 +214,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                       <p className="font-medium truncate max-w-[150px]">
                         {post.owner.name}
                       </p>
-                      <p className="text-muted-foreground text-xs">Author</p>
+                      <p className="hidden sm:block text-muted-foreground text-xs">Author</p>
                     </div>
                   </div>
                 )}
@@ -234,7 +234,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                     >
                       {format(new Date(post.createdAt), "MMMM d, yyyy")}
                     </time>
-                    <p className="text-muted-foreground text-xs">Published</p>
+                    <p className="hidden sm:block text-muted-foreground text-xs">Published</p>
                   </div>
                 </div>
 
@@ -251,7 +251,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                         <p className="font-medium whitespace-nowrap">
                           {estimateReadingTime(post.content)} min read
                         </p>
-                        <p className="text-muted-foreground text-xs">
+                        <p className="hidden sm:block text-muted-foreground text-xs">
                           Reading time
                         </p>
                       </div>
@@ -272,7 +272,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                         <p className="font-medium whitespace-nowrap">
                           {post.categories.length} categories
                         </p>
-                        <p className="text-muted-foreground text-xs">
+                        <p className="hidden sm:block text-muted-foreground text-xs">
                           Topics covered
                         </p>
                       </div>

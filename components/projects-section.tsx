@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { SectionHeader } from "@/components/section-header";
 
 const projects = [
   {
@@ -181,12 +182,11 @@ export function ProjectsSection() {
   return (
     <section id="projects" className="section-y scroll-mt-20">
       <div className="container px-4 mx-auto max-w-7xl">
-        <div className="mb-12 text-center">
-          <h2 className="section-heading">Featured Projects</h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Open-source tools and projects I&apos;ve built
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="Work"
+          title="Featured Projects"
+          subtitle="Open-source tools and projects I've built."
+        />
 
         <div className="relative projects-slider">
           <div
@@ -219,14 +219,14 @@ export function ProjectsSection() {
                     <Card className="h-full overflow-hidden glass-card transition-all duration-300 ease-out flex flex-col">
                       <CardHeader className="relative pb-2 border-b border-muted flex-shrink-0">
                         <CardTitle className="text-xl">
-                          <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-2">
                             {project.title}
                             {hoveredCard === index && (
                               <span>
                                 <Sparkles className="w-4 h-4 text-yellow-500" />
                               </span>
                             )}
-                          </div>
+                          </span>
                         </CardTitle>
                         <CardDescription className="line-clamp-3">
                           {project.description}
@@ -295,57 +295,59 @@ export function ProjectsSection() {
             </div>
           </div>
 
-          {/* Navigation Buttons - Improved mobile positioning */}
-          {currentIndex > 0 && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute left-2 md:left-0 z-10 transform -translate-y-1/2 bg-background/80 top-1/2 hover:bg-background backdrop-blur-sm projects-nav-button transition-all duration-200 ease-out"
-              onClick={prevSlide}
-              aria-label="Previous project"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </Button>
-          )}
+          {/* Navigation arrows — always present; disabled (not hidden) at the bounds */}
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={currentIndex === 0}
+            className="absolute left-2 md:left-0 z-10 -translate-y-1/2 bg-background/80 top-1/2 hover:bg-background backdrop-blur-sm projects-nav-button transition-colors"
+            onClick={prevSlide}
+            aria-label="Previous project"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </Button>
 
-          {currentIndex < maxIndex && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-2 md:right-0 z-10 transform -translate-y-1/2 bg-background/80 top-1/2 hover:bg-background backdrop-blur-sm projects-nav-button transition-all duration-200 ease-out"
-              onClick={nextSlide}
-              aria-label="Next project"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={currentIndex >= maxIndex}
+            className="absolute right-2 md:right-0 z-10 -translate-y-1/2 bg-background/80 top-1/2 hover:bg-background backdrop-blur-sm projects-nav-button transition-colors"
+            onClick={nextSlide}
+            aria-label="Next project"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </Button>
         </div>
 
-        {/* Pagination Dots - Updated calculation */}
-        <div className="flex justify-center mt-8 gap-2">
+        {/* Pagination dots — desktop only (mobile uses swipe + arrows) */}
+        <div className="hidden sm:flex justify-center mt-8 gap-2">
           {Array.from({
             length: Math.ceil(projects.length / visibleProjects),
-          }).map((_, index) => (
-            <Button
-              key={index}
-              variant="ghost"
-              size="sm"
-              className={`w-2 h-2 md:w-3 md:h-3 p-0 rounded-full transition-all duration-300 ease-out projects-pagination-dot ${
-                index === Math.floor(currentIndex / visibleProjects)
-                  ? "bg-primary scale-110 shadow-lg shadow-primary/30"
-                  : "bg-muted hover:bg-primary/50 hover:scale-105"
-              }`}
-              onClick={() =>
-                setCurrentIndex(Math.min(index * visibleProjects, maxIndex))
-              }
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+          }).map((_, index) => {
+            const isActive = index === Math.floor(currentIndex / visibleProjects);
+            return (
+              <Button
+                key={index}
+                variant="ghost"
+                size="sm"
+                aria-current={isActive ? "true" : undefined}
+                className={`w-2 h-2 md:w-3 md:h-3 p-0 rounded-full transition-all duration-300 ease-out projects-pagination-dot ${
+                  isActive
+                    ? "bg-primary scale-110 shadow-lg shadow-primary/30"
+                    : "bg-muted-foreground/40 hover:bg-primary/60 hover:scale-105"
+                }`}
+                onClick={() =>
+                  setCurrentIndex(Math.min(index * visibleProjects, maxIndex))
+                }
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            );
+          })}
         </div>
 
         {/* Mobile swipe hint */}
-        <div className="mt-4 text-center md:hidden">
-          <p className="text-sm text-muted-foreground">Swipe to navigate</p>
+        <div className="mt-4 text-center sm:hidden">
+          <p className="text-sm text-muted-foreground">Swipe or use the arrows to navigate</p>
         </div>
 
         <div className="mt-12 text-center">

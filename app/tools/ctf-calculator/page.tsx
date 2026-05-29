@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Calculator, Star, Users, Clock } from 'lucide-react'
+import { Calculator } from 'lucide-react'
 import { CTFCalculator } from '@/components/ui/ctf-calculator'
 
 export const metadata: Metadata = {

@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { SectionHeader } from "@/components/section-header";
 
 const achievements = [
   {
@@ -242,11 +243,11 @@ export function CTFSection() {
   };
 
   const difficultyColors = {
-    Legendary: "text-yellow-500 bg-yellow-500/20",
-    Epic: "text-purple-500 bg-purple-500/20",
-    Rare: "text-blue-500 bg-blue-500/20",
-    Uncommon: "text-green-500 bg-green-500/20",
-    Common: "text-gray-500 bg-gray-500/20",
+    Legendary: "text-yellow-400 bg-yellow-500/20",
+    Epic: "text-purple-400 bg-purple-500/20",
+    Rare: "text-sky-400 bg-sky-500/20",
+    Uncommon: "text-green-400 bg-green-500/20",
+    Common: "text-gray-300 bg-gray-500/20",
   };
 
   return (
@@ -260,12 +261,11 @@ export function CTFSection() {
 
       <div className="max-w-7xl mx-auto">
         <div className="relative z-10 w-full px-4">
-          <div className="mb-12 text-center">
-            <h2 className="section-heading">CTF Achievements</h2>
-            <p className="mt-4 text-lg sm:text-xl text-muted-foreground">
-              Battle-tested in the digital arena
-            </p>
-          </div>
+          <SectionHeader
+            eyebrow="Competitions"
+            title="CTF Achievements"
+            subtitle="Battle-tested in the digital arena."
+          />
 
           <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
             <div className="w-full">
@@ -321,7 +321,7 @@ export function CTFSection() {
                         </div>
 
                         {selectedAchievement === index && (
-                          <div className="pt-2 mt-2 border-t border-muted">
+                          <div className="pt-2 mt-2 border-t border-muted animate-in fade-in slide-in-from-top-1 duration-200">
                             <div className="space-y-1 text-sm">
                                 <div className="truncate">
                                   <strong className="text-muted-foreground">
@@ -633,15 +633,21 @@ export function CTFSection() {
                   <Sparkles className="w-6 h-6 text-yellow-500" />
                 </div>
               </div>
-              <h3 className="mb-2 text-xl font-semibold">
-                Join My CTF Adventure!
-              </h3>
+              <h3 className="mb-2 text-xl font-semibold">Let&apos;s work together</h3>
               <p className="mb-4 text-sm text-muted-foreground">
-                I'm always looking for new friends and opportunities.
+                Open to CTF collaborations, challenge-authoring, and security
+                research.
               </p>
               <p className="text-sm text-muted-foreground">
-                Reach me on Discord{" "}
-                <span className="font-medium text-primary">@dimasmaulana</span>
+                <a
+                  href="mailto:dimasmaulana0305@gmail.com"
+                  className="font-medium text-primary hover:underline"
+                >
+                  dimasmaulana0305@gmail.com
+                </a>
+                <span className="mx-2 text-muted-foreground/50">·</span>
+                Discord{" "}
+                <span className="font-medium text-foreground">@dimasmaulana</span>
               </p>
             </div>
           </div>

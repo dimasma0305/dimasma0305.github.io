@@ -130,19 +130,14 @@ const EmptyState = memo(
 EmptyState.displayName = "EmptyState"
 
 // Memoized sidebar with lazy loaded components
-const Sidebar = memo(({ posts }: { posts: Post[] }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-
+const Sidebar = memo(() => {
   return (
     <div className="w-full lg:w-1/4 space-y-6">
       <Suspense fallback={<div className="h-32 bg-muted/20 rounded-lg animate-pulse" />}>
         <BlogStats />
       </Suspense>
       <Suspense fallback={<div className="h-48 bg-muted/20 rounded-lg animate-pulse" />}>
-        <BlogCategories 
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-        />
+        <BlogCategories />
       </Suspense>
     </div>
   )
@@ -261,7 +256,7 @@ function BlogPageClient() {
           )}
         </div>
 
-        <Sidebar posts={posts ? posts : []} />
+        <Sidebar />
       </div>
     </div>
   )

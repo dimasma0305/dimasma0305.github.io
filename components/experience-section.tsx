@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useState } from "react";
+import { SectionHeader } from "@/components/section-header";
 
 const experiences = [
   {
@@ -70,14 +71,14 @@ export function ExperienceSection() {
 
   return (
     <div className="container px-4 section-y mx-auto max-w-7xl scroll-mt-20" id="experience">
-      <div className="mb-12 text-center">
-        <h2 className="section-heading">Professional Experience</h2>
-        <p className="mt-4 text-xl text-muted-foreground">
-          My journey in the cybersecurity realm
-        </p>
-      </div>
-
       <div className="max-w-4xl mx-auto">
+        <div className="ml-4 pl-8">
+          <SectionHeader
+            eyebrow="Journey"
+            title="Professional Experience"
+            subtitle="My journey in the cybersecurity realm."
+          />
+        </div>
         <div className="relative border-l-2 border-muted pl-8 ml-4">
           {experiences.map((experience, index) => (
             <div

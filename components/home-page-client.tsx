@@ -6,6 +6,7 @@ import { usePosts } from "@/hooks/use-posts";
 import PostCard from "@/components/post-card";
 import { CardSkeleton } from "@/components/card-skeleton";
 import { FallbackImage } from "@/components/fallback-image";
+import { SectionHeader } from "@/components/section-header";
 
 // Lazy load heavy sections for better initial page load
 const HeroSection = lazy(() =>
@@ -36,7 +37,7 @@ const AboutSection = memo(() => (
     id="about"
     className="container px-4 section-y mx-auto max-w-7xl scroll-mt-20"
   >
-    <h2 className="mb-8 section-heading">About Me</h2>
+    <SectionHeader eyebrow="Introduction" title="About Me" />
     <div className="grid gap-8 md:grid-cols-2 glass-panel p-8 rounded-2xl">
       <div className="space-y-4">
         <p className="text-lg">
@@ -105,12 +106,15 @@ const BlogSection = memo(
       id="blog"
       className="container px-4 section-y mx-auto max-w-7xl scroll-mt-20"
     >
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="section-heading">Latest Blog Posts</h2>
-        <Link href="/blog" className="text-primary hover:underline">
-          View all posts →
-        </Link>
-      </div>
+      <SectionHeader
+        eyebrow="Writing"
+        title="Latest Blog Posts"
+        action={
+          <Link href="/blog" className="text-primary hover:underline">
+            View all posts →
+          </Link>
+        }
+      />
 
       {loading ? (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
