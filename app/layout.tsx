@@ -1,14 +1,7 @@
 import type React from "react";
 import "@/app/globals.css";
 import type { Metadata, Viewport } from "next";
-import {
-  Inter,
-  Roboto,
-  Merriweather,
-  Fira_Code,
-  JetBrains_Mono,
-} from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@/components/analytics";
@@ -21,7 +14,7 @@ const Footer = lazy(() =>
   import("@/components/footer").then((m) => ({ default: m.Footer })),
 );
 
-// Optimized font loading with preload
+// Two curated families: Inter for UI/body, JetBrains Mono for code.
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -30,48 +23,19 @@ const inter = Inter({
   fallback: ["system-ui", "arial"],
 });
 
-const roboto = Roboto({
-  weight: ["300", "400", "500", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-roboto",
-  preload: true,
-  fallback: ["system-ui", "arial"],
-});
-
-const merriweather = Merriweather({
-  weight: ["300", "400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-merriweather",
-  preload: false, // Only preload most critical fonts
-  fallback: ["Georgia", "serif"],
-});
-
-const firaCode = Fira_Code({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-fira-code",
-  preload: false,
-  fallback: ["Consolas", "Monaco", "monospace"],
-});
-
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-jetbrains-mono",
   preload: true,
-  fallback: ["monospace"],
+  fallback: ["ui-monospace", "monospace"],
 });
 
-// Optimized viewport configuration
+// Dark-only site: a single theme color.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
+  themeColor: "#080d1a",
 };
 
 const baseUrl =
@@ -154,7 +118,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -162,6 +126,7 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin=""
         />
+        <link rel="preconnect" href="https://avatars.githubusercontent.com" />
         <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
 
         {/* Favicon and icons */}
@@ -170,7 +135,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.webmanifest" />
 
         {/* Theme and PWA meta tags */}
-        <meta name="theme-color" content="#000000" />
+        <meta name="theme-color" content="#080d1a" />
         <meta name="application-name" content="Dimas Maulana" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
@@ -180,30 +145,31 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Dimas Maulana" />
       </head>
       <body
-        className={`${inter.variable} ${roboto.variable} ${merriweather.variable} ${firaCode.variable} ${jetbrainsMono.variable} font-roboto antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-3 focus:left-3 focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:shadow-lg focus:ring-2 focus:ring-ring"
         >
-          <div className="flex flex-col min-h-screen">
-            <Suspense fallback={null}>
-              <NavigationLoader />
-            </Suspense>
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Suspense fallback={null}>
-              <Footer />
-            </Suspense>
-          </div>
-          <Toaster />
+          Skip to content
+        </a>
+        <div className="flex flex-col min-h-screen">
           <Suspense fallback={null}>
-            <Analytics />
+            <NavigationLoader />
           </Suspense>
-          <BackgroundPreloader />
-        </ThemeProvider>
+          <Header />
+          <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
+            {children}
+          </main>
+          <Suspense fallback={null}>
+            <Footer />
+          </Suspense>
+        </div>
+        <Toaster />
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
+        <BackgroundPreloader />
       </body>
     </html>
   );

@@ -104,12 +104,15 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
 
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Category: {actualCategoryName}</h1>
-        <SearchBar 
+      <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-3xl font-bold tracking-tight break-words">
+          Category: {actualCategoryName}
+        </h1>
+        <SearchBar
           value={searchQuery}
           onChange={handleSearch}
           placeholder={`Search in ${actualCategoryName}...`}
+          className="w-full sm:w-64"
         />
       </div>
 

@@ -2,9 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { usePathname, useSearchParams } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
 
-// A small, professional top progress bar that reacts to internal navigations.
+// A small top progress bar that reacts to internal navigations.
+// Implemented with plain DOM + CSS transitions (no framer-motion) so the
+// root layout doesn't pull the animation library onto every route.
 export function NavigationLoader() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -14,7 +15,10 @@ export function NavigationLoader() {
   const timerRef = useRef<number | null>(null)
   const clickedRef = useRef(false)
 
-  const currentLocationKey = useMemo(() => `${pathname}?${searchParams?.toString() ?? ""}`,[pathname, searchParams])
+  const currentLocationKey = useMemo(
+    () => `${pathname}?${searchParams?.toString() ?? ""}`,
+    [pathname, searchParams],
+  )
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -24,7 +28,7 @@ export function NavigationLoader() {
       if (!anchor) return
 
       // Ignore modifier clicks/new tabs/external links/hash-only
-      const isModified = (e as MouseEvent).metaKey || (e as MouseEvent).ctrlKey || (e as MouseEvent).shiftKey || (e as MouseEvent).altKey
+      const isModified = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey
       if (isModified) return
       if (anchor.target === "_blank") return
       if (!anchor.href) return
@@ -75,36 +79,16 @@ export function NavigationLoader() {
   }, [currentLocationKey])
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-0 z-[100]">
-      <AnimatePresence>
-        {isActive && (
-          <motion.div
-            key="progress"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="relative h-0.5 w-full"
-          >
-            <motion.div
-              className="h-0.5 bg-primary"
-              animate={{ width: `${progress}%` }}
-              initial={{ width: 0 }}
-              transition={{ ease: "linear", duration: 0.12 }}
-            />
-            {/* Glow */}
-            <motion.div
-              className="absolute right-0 -top-[2px] h-1.5 w-16 rounded-full bg-primary/40 blur-sm"
-              animate={{ x: 0 }}
-              initial={{ x: -20 }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div
+      className="pointer-events-none fixed inset-x-0 top-0 z-[100]"
+      aria-hidden="true"
+    >
+      <div
+        className="h-0.5 bg-primary transition-[width,opacity] duration-150 ease-out"
+        style={{ width: `${progress}%`, opacity: isActive ? 1 : 0 }}
+      />
     </div>
   )
 }
 
 export default NavigationLoader
-
-

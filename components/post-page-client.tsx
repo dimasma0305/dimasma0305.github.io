@@ -308,6 +308,8 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
                 alt={post.title}
                 width={1200}
                 height={600}
+                priority
+                sizes="(max-width: 1024px) 100vw, 1152px"
                 className="object-cover w-full h-full"
               />
             </div>
@@ -329,7 +331,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
               )}
 
               {/* Article Body */}
-              <article className="prose prose-lg dark:prose-invert max-w-none prose-pre:overflow-x-auto prose-code:break-words prose-p:break-words prose-headings:break-words prose-h2:mt-14 prose-h3:mt-10 prose-h2:border-b prose-h2:pb-2 prose-h2:mb-6 prose-p:leading-relaxed">
+              <article className="prose prose-lg dark:prose-invert max-w-none prose-pre:overflow-x-auto prose-code:break-words prose-p:break-words prose-headings:break-words prose-h2:mt-14 prose-h3:mt-10 prose-h2:border-b prose-h2:pb-2 prose-h2:mb-6">
                 <div className="bg-card rounded-xl p-4 md:p-8 shadow-sm border overflow-hidden">
                   {post.content ? (
                     <Mdx content={post.content} />

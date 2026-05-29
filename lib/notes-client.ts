@@ -1,3 +1,5 @@
+import { withBasePath } from "@/lib/utils"
+
 interface RichText {
   type: string
   content: string
@@ -104,7 +106,7 @@ export interface NotesStats {
 
 export async function fetchNotes(): Promise<Note[]> {
   try {
-    const response = await fetch('/notes-index.json')
+    const response = await fetch(withBasePath('/notes-index.json'))
     if (!response.ok) {
       throw new Error('Failed to fetch notes')
     }
@@ -121,7 +123,7 @@ export async function fetchNotes(): Promise<Note[]> {
 
 export async function fetchNotesStats(): Promise<NotesStats> {
   try {
-    const response = await fetch('/notes-index.json')
+    const response = await fetch(withBasePath('/notes-index.json'))
     if (!response.ok) {
       throw new Error('Failed to fetch notes stats')
     }

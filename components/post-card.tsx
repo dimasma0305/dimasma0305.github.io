@@ -18,37 +18,19 @@ interface PostCardProps {
   post: Post
 }
 
-// Memoized Notion button with optimized click handling
-const NotionButton = memo(({ notionUrl }: { notionUrl: string }) => {
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }, [])
-
-  return (
-    <div className="absolute top-4 left-4" onClick={handleClick}>
-      <NotionLinkButton notionUrl={notionUrl} variant="badge" />
-    </div>
-  )
-})
-
-NotionButton.displayName = 'NotionButton'
-
 // Memoized cover image component
-const CoverImage = memo(({ 
-  coverImage, 
-  title, 
-  iconEmoji, 
-  notionUrl 
-}: { 
+const CoverImage = memo(({
+  coverImage,
+  title,
+  iconEmoji,
+}: {
   coverImage: string
   title: string
   iconEmoji?: string
-  notionUrl?: string | null
 }) => {
   // Only apply withBasePath to internal/relative paths, not external URLs
-  const imageSrc = coverImage?.startsWith('http') 
-    ? coverImage 
+  const imageSrc = coverImage?.startsWith('http')
+    ? coverImage
     : withBasePath(coverImage)
 
   return (
@@ -61,11 +43,10 @@ const CoverImage = memo(({
         fallbackSrc={withBasePath("/placeholder.svg?height=192&width=384")}
       />
       {iconEmoji && (
-        <div className="absolute flex items-center justify-center w-10 h-10 text-xl bg-white rounded-full dark:bg-gray-800 top-4 right-4 shadow-sm">
+        <div className="absolute flex items-center justify-center w-10 h-10 text-xl rounded-full bg-background/90 border border-border top-4 right-4 shadow-sm">
           {iconEmoji}
         </div>
       )}
-      {notionUrl && <NotionButton notionUrl={notionUrl} />}
     </div>
   )
 })
@@ -149,37 +130,48 @@ function PostCard({ post }: PostCardProps) {
   return (
     <div
       ref={cardRef}
-      className="group transform transition-transform duration-200 ease-out hover:-translate-y-1"
+      className="group relative transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1"
     >
-      <Link href={postUrl} onMouseEnter={prefetch}>
-        <Card className="overflow-hidden h-full transition-shadow duration-200 hover:shadow-lg">
-          {post.coverImage && (
-            <CoverImage
-              coverImage={post.coverImage}
-              title={post.title}
-              iconEmoji={post.iconEmoji}
-              notionUrl={post.notionUrl}
-            />
-          )}
-          
-          <CardHeader className="pb-2">
-            <h3 className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
-              {post.title}
-            </h3>
-          </CardHeader>
-          
-          <CardContent>
-            <p className="text-muted-foreground line-clamp-3 leading-relaxed">
-              {post.excerpt}
-            </p>
-          </CardContent>
-          
-          <PostFooter 
-            createdAt={post.createdAt} 
-            categories={post.categories as string[]} 
+      <Card className="overflow-hidden h-full transition-shadow duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover:shadow-[var(--elevation-2)]">
+        {post.coverImage && (
+          <CoverImage
+            coverImage={post.coverImage}
+            title={post.title}
+            iconEmoji={post.iconEmoji}
           />
-        </Card>
-      </Link>
+        )}
+
+        <CardHeader className="pb-2">
+          <h3 className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
+            {post.title}
+          </h3>
+        </CardHeader>
+
+        <CardContent>
+          <p className="text-muted-foreground line-clamp-3 leading-relaxed">
+            {post.excerpt}
+          </p>
+        </CardContent>
+
+        <PostFooter
+          createdAt={post.createdAt}
+          categories={post.categories as string[]}
+        />
+      </Card>
+
+      {/* Stretched primary link — covers the card without nesting other controls */}
+      <Link
+        href={postUrl}
+        onMouseEnter={prefetch}
+        aria-label={post.title}
+        className="absolute inset-0 z-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      />
+
+      {post.notionUrl && (
+        <div className="absolute top-4 left-4 z-10">
+          <NotionLinkButton notionUrl={post.notionUrl} variant="badge" />
+        </div>
+      )}
     </div>
   )
 }

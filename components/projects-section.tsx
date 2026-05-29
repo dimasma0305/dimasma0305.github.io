@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Github,
   ExternalLink,
@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { motion } from "framer-motion";
 
 const projects = [
   {
@@ -30,8 +29,6 @@ const projects = [
     github: "https://github.com/dimasma0305/CTF-XSS-BOT",
     demo: null,
     date: "Aug 2023 - Present",
-    level: 42,
-    xp: 8500,
   },
   {
     title: "VWA-Wazuh (Mini Lab SOC)",
@@ -41,8 +38,6 @@ const projects = [
     github: "https://github.com/dimasma0305/VWA-Wazuh",
     demo: null,
     date: "Mar 2023 - Present",
-    level: 38,
-    xp: 7600,
   },
   {
     title: "Dockerized Wordpress Debug Setup",
@@ -52,8 +47,6 @@ const projects = [
     github: "https://github.com/dimasma0305/dockerized-wordpress-debug-setup",
     demo: null,
     date: "Dec 2023 - Present",
-    level: 35,
-    xp: 7000,
   },
   {
     title: "CTF Challenge Difficulty Calculator",
@@ -64,8 +57,6 @@ const projects = [
       "https://github.com/dimasma0305/ctf-challenge-difficulty-calculator",
     demo: null,
     date: "Nov 2023 - Present",
-    level: 31,
-    xp: 6200,
   },
   {
     title: "CTFIFY",
@@ -75,8 +66,6 @@ const projects = [
     github: "https://github.com/dimasma0305/ctfify",
     demo: null,
     date: "Jan 2023 - Present",
-    level: 45,
-    xp: 9000,
   },
   {
     title: "CTF Assistant",
@@ -86,8 +75,6 @@ const projects = [
     github: "https://github.com/dimasma0305/ctf-assistant",
     demo: null,
     date: "Oct 2022 - Present",
-    level: 39,
-    xp: 7800,
   },
   {
     title: "Paradigmctf BlockChain Infra Extended",
@@ -98,8 +85,6 @@ const projects = [
     demo: null,
     date: "Nov 2023 - Present",
     team: "TCP1P",
-    level: 36,
-    xp: 7200,
   },
   {
     title: "TCP1P Theme",
@@ -110,8 +95,6 @@ const projects = [
     demo: null,
     date: "Nov 2023 - Present",
     team: "TCP1P",
-    level: 33,
-    xp: 6600,
   },
   {
     title: "Cyber-Security-Learning-Resources",
@@ -120,8 +103,6 @@ const projects = [
     github: "https://github.com/dimasma0305/Cyber-Security-Learning-Resources",
     demo: null,
     date: "Mar 2022 - Present",
-    level: 47,
-    xp: 9400,
   },
 ];
 
@@ -129,8 +110,6 @@ export function ProjectsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [visibleProjects, setVisibleProjects] = useState(1); // Start with 1 for mobile
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const sliderRef = useRef<HTMLDivElement>(null);
 
   // Touch/swipe handling
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -199,46 +178,14 @@ export function ProjectsSection() {
     setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
   };
 
-  // Auto-scroll carousel
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (hoveredCard === null) {
-        // Only auto-scroll if no card is being hovered
-        setCurrentIndex((prevIndex) => {
-          if (prevIndex >= maxIndex) {
-            return 0;
-          }
-          return prevIndex + 1;
-        });
-      }
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [maxIndex, hoveredCard]);
-
   return (
-    <motion.section
-      id="projects"
-      className="py-20 bg-gradient-to-b from-background to-black"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-    >
-      <div ref={carouselRef} className="container px-4 mx-auto max-w-7xl">
+    <section id="projects" className="section-y scroll-mt-20">
+      <div className="container px-4 mx-auto max-w-7xl">
         <div className="mb-12 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl font-bold tracking-tight text-gradient-neon">
-              Featured Projects
-            </h2>
-            <p className="mt-4 text-xl text-muted-foreground">
-              Level up your knowledge with my latest creations
-            </p>
-          </motion.div>
+          <h2 className="section-heading">Featured Projects</h2>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Open-source tools and projects I&apos;ve built
+          </p>
         </div>
 
         <div className="relative projects-slider">
@@ -249,7 +196,6 @@ export function ProjectsSection() {
             onTouchEnd={onTouchEnd}
           >
             <div
-              ref={sliderRef}
               className="flex projects-slider-container"
               style={{
                 transform: `translateX(-${currentIndex * (100 / visibleProjects)}%)`,
@@ -257,7 +203,7 @@ export function ProjectsSection() {
               }}
             >
               {projects.map((project, index) => (
-                <motion.div
+                <div
                   key={index}
                   className={`flex-shrink-0 px-3 projects-card ${
                     visibleProjects === 1
@@ -268,36 +214,17 @@ export function ProjectsSection() {
                   }`}
                   onMouseEnter={() => setHoveredCard(index)}
                   onMouseLeave={() => setHoveredCard(null)}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
                 >
-                  <motion.div
-                    whileHover={{ y: -8, scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 24 }}
-                    className="h-full"
-                  >
-                    <Card className="h-full overflow-hidden glass-card transition-all duration-300 ease-out flex flex-col font-mono text-sm">
+                  <div className="h-full">
+                    <Card className="h-full overflow-hidden glass-card transition-all duration-300 ease-out flex flex-col">
                       <CardHeader className="relative pb-2 border-b border-muted flex-shrink-0">
-                        <div className="absolute top-2 right-2 px-2 py-1 text-xs rounded-full bg-blue-500/20 text-blue-400 font-bold border border-blue-500/30">
-                          LVL {project.level}
-                        </div>
                         <CardTitle className="text-xl">
                           <div className="flex items-center gap-2">
                             {project.title}
                             {hoveredCard === index && (
-                              <motion.span
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{
-                                  type: "spring",
-                                  stiffness: 300,
-                                  damping: 20,
-                                }}
-                              >
+                              <span>
                                 <Sparkles className="w-4 h-4 text-yellow-500" />
-                              </motion.span>
+                              </span>
                             )}
                           </div>
                         </CardTitle>
@@ -306,35 +233,16 @@ export function ProjectsSection() {
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="pt-4 flex-grow flex flex-col justify-between">
-                        <div className="space-y-4">
-                          <div className="mb-4">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-xs">XP</span>
-                              <span className="text-xs">
-                                {project.xp} / 10000
-                              </span>
-                            </div>
-                            <div className="xp-bar">
-                              <div
-                                className="xp-bar-fill transition-all duration-700 ease-out"
-                                style={{
-                                  width: `${(project.xp / 10000) * 100}%`,
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {project.tags.map((tag) => (
-                              <Badge
-                                key={tag}
-                                variant="secondary"
-                                className="bg-primary/20 hover:bg-primary/30 transition-colors duration-200 text-xs"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {project.tags.map((tag) => (
+                            <Badge
+                              key={tag}
+                              variant="secondary"
+                              className="bg-primary/15 hover:bg-primary/25 transition-colors duration-200 text-xs"
+                            >
+                              {tag}
+                            </Badge>
+                          ))}
                         </div>
 
                         <div className="text-sm text-muted-foreground mt-auto">
@@ -381,8 +289,8 @@ export function ProjectsSection() {
                         )}
                       </CardFooter>
                     </Card>
-                  </motion.div>
-                </motion.div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -427,7 +335,9 @@ export function ProjectsSection() {
                   ? "bg-primary scale-110 shadow-lg shadow-primary/30"
                   : "bg-muted hover:bg-primary/50 hover:scale-105"
               }`}
-              onClick={() => setCurrentIndex(index * visibleProjects)}
+              onClick={() =>
+                setCurrentIndex(Math.min(index * visibleProjects, maxIndex))
+              }
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
@@ -435,9 +345,7 @@ export function ProjectsSection() {
 
         {/* Mobile swipe hint */}
         <div className="mt-4 text-center md:hidden">
-          <p className="text-sm text-muted-foreground">
-            Swipe left or right to navigate
-          </p>
+          <p className="text-sm text-muted-foreground">Swipe to navigate</p>
         </div>
 
         <div className="mt-12 text-center">
@@ -456,6 +364,6 @@ export function ProjectsSection() {
           </Link>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

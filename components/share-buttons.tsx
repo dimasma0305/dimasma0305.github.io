@@ -75,11 +75,11 @@ export function ShareButtons({ title, slug, excerpt, categories, type = "posts" 
     
     // Add categories section if available
     if (categories && categories.length > 0) {
-      shareText += `\n\n📂 Categories: ${categories.join(", ")}`
+      shareText += `\n\nCategories: ${categories.join(", ")}`
     }
-    
-    shareText += `\n\n👨‍💻 By ${siteConfig.author.name}`
-    shareText += `\n\n🔗 Read more: ${shareUrl}`
+
+    shareText += `\n\nBy ${siteConfig.author.name}`
+    shareText += `\n\nRead more: ${shareUrl}`
     shareText += `\n\n${generateHashtags()}`
     
     return shareText
@@ -194,10 +194,10 @@ export function ShareButtons({ title, slug, excerpt, categories, type = "posts" 
         </Button>
       </div>
       
-      <div className="text-xs text-muted-foreground bg-muted/30 p-2 rounded-md">
-        💡 <strong>Tip:</strong> For Facebook and LinkedIn, click the Copy button first, then use the social media buttons. 
-        Paste the copied content when the platform opens for a complete post with your profile mention and categories!
-      </div>
+      <p className="text-xs text-muted-foreground">
+        Tip: for Facebook and LinkedIn, use Copy first, then paste when the
+        platform opens.
+      </p>
     </div>
   )
 }

@@ -2,7 +2,6 @@
 
 import { ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 
 interface NotionLinkButtonProps {
   notionUrl: string
@@ -10,25 +9,30 @@ interface NotionLinkButtonProps {
   className?: string
 }
 
-export function NotionLinkButton({ 
-  notionUrl, 
+export function NotionLinkButton({
+  notionUrl,
   variant = "default",
-  className = "" 
+  className = ""
 }: NotionLinkButtonProps) {
   const handleClick = () => {
     window.open(notionUrl, '_blank', 'noopener,noreferrer')
   }
 
   if (variant === "badge") {
+    // A real, keyboard-focusable link. stopPropagation keeps it independent of
+    // any surrounding card link.
     return (
-      <Badge 
-        variant="secondary" 
-        className={`cursor-pointer hover:bg-primary/20 transition-colors ${className}`}
-        onClick={handleClick}
+      <a
+        href={notionUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="View on Notion"
+        onClick={(e) => e.stopPropagation()}
+        className={`inline-flex items-center rounded-full border border-border bg-secondary/80 backdrop-blur px-2.5 py-0.5 text-xs font-medium text-secondary-foreground transition-colors hover:bg-primary/20 ${className}`}
       >
         <ExternalLink className="w-3 h-3 mr-1" />
         Notion
-      </Badge>
+      </a>
     )
   }
 

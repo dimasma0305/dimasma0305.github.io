@@ -17,15 +17,21 @@ export function NoteNavigation({ currentSlug }: NoteNavigationProps) {
   const { notes } = useNotes()
 
   useEffect(() => {
-    if (notes.length > 0) {
-      const currentIndex = notes.findIndex(note => note.slug === currentSlug)
-      if (currentIndex > 0) {
-        setPrevNote(notes[currentIndex - 1])
-      }
-      if (currentIndex < notes.length - 1) {
-        setNextNote(notes[currentIndex + 1])
-      }
+    if (notes.length === 0) return
+
+    // Sort newest-first so prev/next are chronological (matches PostNavigation)
+    const sorted = [...notes].sort(
+      (a, b) => new Date(b.created_time).getTime() - new Date(a.created_time).getTime(),
+    )
+    const currentIndex = sorted.findIndex((note) => note.slug === currentSlug)
+    if (currentIndex === -1) {
+      setPrevNote(null)
+      setNextNote(null)
+      return
     }
+
+    setPrevNote(currentIndex > 0 ? sorted[currentIndex - 1] : null)
+    setNextNote(currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null)
   }, [notes, currentSlug])
 
   return (

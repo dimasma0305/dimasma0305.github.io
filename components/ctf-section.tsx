@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import {
   Trophy,
   Users,
@@ -20,10 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useInView } from "react-intersection-observer";
-
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 
 const achievements = [
   {
@@ -235,12 +232,6 @@ export function CTFSection() {
   const [selectedAchievement, setSelectedAchievement] = useState<number | null>(
     null,
   );
-  const sectionRef = useRef(null);
-
-  const { ref: titleRef, inView: titleInView } = useInView({
-    threshold: 0.5,
-    triggerOnce: true,
-  });
 
   const handleAchievementClick = (index: number) => {
     if (selectedAchievement === index) {
@@ -259,35 +250,22 @@ export function CTFSection() {
   };
 
   return (
-    <motion.section
+    <section
       id="ctf"
-      ref={sectionRef}
-      className="relative py-20 bg-gradient-to-b from-black to-background overflow-x-hidden"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      className="relative section-y overflow-x-hidden scroll-mt-20"
     >
       <div className="absolute inset-0 z-0 opacity-10">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIwLjEiPgogICAgICAgICAgICA8cGF0aCBkPSJNMzYgMzBoLTZsMyAxMHoiLz4KICAgICAgICAgICAgPHBhdGggZD0iTTMwIDMwaC02bDMgMTB6Ii8+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=')]"></div>
       </div>
 
-      <div className="max-w-[90rem] mx-auto">
-        <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="mb-16 text-center"
-            ref={titleRef}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gradient-neon">
-              CTF Achievements
-            </h2>
+      <div className="max-w-7xl mx-auto">
+        <div className="relative z-10 w-full px-4">
+          <div className="mb-12 text-center">
+            <h2 className="section-heading">CTF Achievements</h2>
             <p className="mt-4 text-lg sm:text-xl text-muted-foreground">
               Battle-tested in the digital arena
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
             <div className="w-full">
@@ -300,19 +278,15 @@ export function CTFSection() {
 
               <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 w-full">
                 {achievements.slice(0, 6).map((achievement, index) => (
-                  <motion.div
+                  <button
                     key={index}
+                    type="button"
                     onClick={() => handleAchievementClick(index)}
-                    className="cursor-pointer w-full"
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.99 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                    aria-expanded={selectedAchievement === index}
+                    className="cursor-pointer w-full text-left rounded-lg transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <Card
-                      className={`glass-card relative overflow-hidden transition-all duration-300 ${selectedAchievement === index ? "border-primary/50 shadow-[0_0_15px_rgba(var(--primary),0.3)]" : "border-white/5"}`}
+                      className={`glass-card relative overflow-hidden transition-all duration-300 ${selectedAchievement === index ? "border-primary/40 ring-1 ring-primary/30" : ""}`}
                     >
                       <CardHeader className="space-y-1 p-3">
                         <div className="flex items-center justify-between gap-2">
@@ -346,17 +320,9 @@ export function CTFSection() {
                           </div>
                         </div>
 
-                        <AnimatePresence initial={false}>
-                          {selectedAchievement === index && (
-                            <motion.div
-                              key="details"
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.25, ease: "easeOut" }}
-                              className="pt-2 mt-2 border-t border-muted overflow-hidden"
-                            >
-                              <div className="space-y-1 text-sm">
+                        {selectedAchievement === index && (
+                          <div className="pt-2 mt-2 border-t border-muted">
+                            <div className="space-y-1 text-sm">
                                 <div className="truncate">
                                   <strong className="text-muted-foreground">
                                     Date:
@@ -377,13 +343,12 @@ export function CTFSection() {
                                     {achievement.points} XP
                                   </span>
                                 </div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
-                  </motion.div>
+                  </button>
                 ))}
               </div>
 
@@ -399,7 +364,7 @@ export function CTFSection() {
                     {achievements.slice(6).map((achievement, index) => (
                       <Card
                         key={index + 6}
-                        className="glass-card relative overflow-hidden transition-all duration-300 border border-white/5"
+                        className="glass-card relative overflow-hidden transition-all duration-300"
                       >
                         <CardHeader className="space-y-1 p-3">
                           <div className="flex items-center justify-between gap-2">
@@ -463,24 +428,13 @@ export function CTFSection() {
             <div className="w-full">
               <div className="flex items-center gap-3 mb-6">
                 <Users className="w-6 h-6 text-primary" />
-                <h3 className="text-xl sm:text-2xl font-semibold">
-                  CTF Guilds
-                </h3>
+                <h3 className="text-xl sm:text-2xl font-semibold">CTF Teams</h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                 {teams.slice(0, 4).map((team, index) => (
-                  <motion.div
-                    key={index}
-                    className="w-full"
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.99 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 24 }}
-                  >
-                    <Card className="glass-card relative overflow-hidden transition-all duration-300 border border-white/5">
+                  <div key={index} className="w-full">
+                    <Card className="glass-card relative overflow-hidden transition-all duration-300">
                       <CardHeader className="space-y-1 p-3">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -555,33 +509,28 @@ export function CTFSection() {
                             variant="outline"
                             className="w-full gap-2 text-sm border-primary/50 hover:border-primary hover:bg-primary/10"
                           >
-                            View Guild
+                            Visit team
                             <ExternalLink className="w-4 h-4" />
                           </Button>
                         </a>
                       </CardContent>
                     </Card>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
 
               <div className="mt-4">
                 <details className="group">
                   <summary className="flex items-center gap-2 px-4 py-2 cursor-pointer text-primary hover:underline bg-primary/10 rounded-lg">
-                    <span>View more guilds</span>
+                    <span>View more teams</span>
                     <span className="transition-transform group-open:rotate-180">
                       <ChevronDown className="w-4 h-4" />
                     </span>
                   </summary>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mt-4">
                     {teams.slice(4).map((team, index) => (
-                      <motion.div
-                        key={index + 4}
-                        initial={{ opacity: 0, y: 24 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.2 }}
-                      >
-                        <Card className="glass-card relative overflow-hidden transition-all duration-300 border border-white/5">
+                      <div key={index + 4}>
+                        <Card className="glass-card relative overflow-hidden transition-all duration-300">
                           <CardHeader className="space-y-1 p-3">
                             <div className="flex items-center justify-between gap-2">
                               <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -656,13 +605,13 @@ export function CTFSection() {
                                 variant="outline"
                                 className="w-full gap-2 text-sm border-primary/50 hover:border-primary hover:bg-primary/10"
                               >
-                                View Guild
+                                Visit team
                                 <ExternalLink className="w-4 h-4" />
                               </Button>
                             </a>
                           </CardContent>
                         </Card>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 </details>
@@ -670,18 +619,9 @@ export function CTFSection() {
             </div>
           </div>
 
-          <motion.div
-            className="p-4 sm:p-6 mt-16 text-center rounded-lg bg-primary/5"
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <div className="p-4 sm:p-6 mt-16 text-center rounded-lg bg-primary/5">
             <div className="relative max-w-md mx-auto">
-              <motion.div
-                className="relative w-16 h-16 mx-auto mb-4"
-                whileHover={{ rotate: 2, scale: 1.03 }}
-              >
+              <div className="relative w-16 h-16 mx-auto mb-4">
                 <Image
                   src="https://avatars.githubusercontent.com/u/92920739"
                   alt="Dimas Maulana Profile"
@@ -689,27 +629,24 @@ export function CTFSection() {
                   height={64}
                   className="w-16 h-16 rounded-full border-2 border-primary/50 shadow-lg"
                 />
-                <motion.div
-                  className="absolute -top-1 -right-1"
-                  animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                >
+                <div className="absolute -top-1 -right-1">
                   <Sparkles className="w-6 h-6 text-yellow-500" />
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
               <h3 className="mb-2 text-xl font-semibold">
                 Join My CTF Adventure!
               </h3>
               <p className="mb-4 text-sm text-muted-foreground">
                 I'm always looking for new friends and opportunities.
               </p>
-              <a className="inline-flex items-center text-primary hover:underline text-sm">
-                Send a message to me on discord @dimasmaulana
-              </a>
+              <p className="text-sm text-muted-foreground">
+                Reach me on Discord{" "}
+                <span className="font-medium text-primary">@dimasmaulana</span>
+              </p>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

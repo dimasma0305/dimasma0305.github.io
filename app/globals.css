@@ -2,14 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-/* Fix for imprecise scrolling with sticky header */
+/* Smooth in-page anchor scrolling, offset for the fixed 4rem header */
 html {
-  scroll-padding-top: 6rem;
-  /* 96px - to accommodate the sticky header height + some margin */
+  scroll-padding-top: 5rem;
   scroll-behavior: smooth;
 }
 
@@ -48,75 +43,51 @@ html {
 }
 
 @layer base {
+  /* Single, dark-only palette. The site is locked to dark (html.dark), so the
+     tokens live in :root and `dark:` utilities still resolve via the html class. */
   :root {
-    --background: none;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 220 90% 56%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 220 90% 56%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 220 90% 56%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 220 90% 56%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222 47% 5%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 222 30% 11%;
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
+    --popover: 222 32% 10%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 7%;
+    --secondary: 217 33% 15%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
+    --muted: 217 33% 15%;
+    --muted-foreground: 215 18% 65%;
+    --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-    --chart-1: 220 70% 50%;
+    --border: 217 30% 17%;
+    --input: 217 30% 17%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
+    --radius: 0.625rem;
+    /* Elevation ramp — dark-canvas shadows that read as depth */
+    --elevation-1: 0 1px 2px 0 hsl(0 0% 0% / 0.4);
+    --elevation-2: 0 6px 16px -4px hsl(0 0% 0% / 0.5);
+    --elevation-3: 0 16px 40px -12px hsl(0 0% 0% / 0.6);
+    /* Motion tokens — one vocabulary: 150 / 250 / 400ms + expo-out */
+    --dur-fast: 150ms;
+    --dur-base: 250ms;
+    --dur-slow: 400ms;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --sidebar-background: 222 38% 7%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent: 217 33% 15%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-border: 217 30% 17%;
+    --sidebar-ring: 217 91% 60%;
   }
 }
 
@@ -126,7 +97,10 @@ html {
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 }
 
@@ -155,10 +129,6 @@ html {
 .notion-numbered-item {
   @apply mb-2 ml-6 text-foreground;
   list-style-type: decimal;
-}
-
-.notion-code-block {
-  @apply bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4 border;
 }
 
 .notion-code-block code {
@@ -358,6 +328,41 @@ html {
   @apply border-primary text-muted-foreground;
 }
 
+/* Reading measure: cap text at a comfortable ~72ch; media stays full-width. */
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  max-width: 72ch;
+}
+
+/* Explicit leading scale: airy body, tight headings. */
+.prose p,
+.prose li {
+  line-height: 1.7;
+}
+
+.prose p {
+  margin-bottom: 1.5rem;
+}
+
+.prose h1 {
+  line-height: 1.15;
+}
+
+.prose h2 {
+  line-height: 1.25;
+}
+
+.prose h3,
+.prose h4 {
+  line-height: 1.3;
+}
+
 /* List improvements for Notion content */
 ul.notion-list {
   @apply list-disc list-inside space-y-1 my-4;
@@ -405,15 +410,19 @@ pre[class*="language-"] {
   padding: 1rem;
   margin: 1rem 0;
   overflow: auto;
-  border-radius: 0.5rem;
+  border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted));
 }
 
-/* Inline code */
+/* Inline code (token-based) */
 :not(pre) > code[class*="language-"] {
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
   white-space: normal;
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
 }
 
 /* Line numbers support */
@@ -435,7 +444,7 @@ pre.line-numbers > code {
   left: -3.8em;
   width: 3em;
   letter-spacing: -1px;
-  border-right: 1px solid #44475a;
+  border-right: 1px solid hsl(var(--border));
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -449,7 +458,7 @@ pre.line-numbers > code {
 
 .line-numbers-rows > span:before {
   content: counter(linenumber);
-  color: #6272a4;
+  color: hsl(var(--muted-foreground));
   display: block;
   padding-right: 0.8em;
   text-align: right;
@@ -472,24 +481,12 @@ pre.line-numbers > code {
 /* Enhanced notion code block styling */
 .notion-code-block {
   @apply relative;
-  background: #282a36 !important;
-  border: 1px solid #44475a !important;
-  border-radius: 0.5rem !important;
+  background: hsl(var(--muted)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: var(--radius) !important;
   overflow-x: auto !important;
   margin: 1.5rem 0 !important;
   padding: 1rem !important;
-}
-
-.dark .notion-code-block {
-  background: #282a36 !important;
-  border-color: #44475a !important;
-}
-
-@media (prefers-color-scheme: light) {
-  .notion-code-block {
-    background: #fafafa !important;
-    border-color: #e1e4e8 !important;
-  }
 }
 
 .notion-code-block code {
@@ -507,7 +504,7 @@ pre.line-numbers > code {
   top: 0.5rem;
   right: 3rem;
   font-size: 0.75rem;
-  color: #6272a4;
+  color: hsl(var(--muted-foreground));
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -519,17 +516,17 @@ pre.line-numbers > code {
 }
 
 .notion-code-block::-webkit-scrollbar-track {
-  background: #44475a;
+  background: hsl(var(--border));
   border-radius: 4px;
 }
 
 .notion-code-block::-webkit-scrollbar-thumb {
-  background: #6272a4;
+  background: hsl(var(--muted-foreground));
   border-radius: 4px;
 }
 
 .notion-code-block::-webkit-scrollbar-thumb:hover {
-  background: #8be9fd;
+  background: hsl(var(--primary));
 }
 
 /* Table of Contents Scroll Styling */
@@ -725,108 +722,33 @@ pre.line-numbers > code {
   }
 }
 
-/* Enhanced XP bar animation */
-.xp-bar {
-  background: hsl(var(--muted));
-  border-radius: 9999px;
-  height: 8px;
-  overflow: hidden;
-  position: relative;
-}
-
-.xp-bar-fill {
-  background: linear-gradient(
-    90deg,
-    hsl(var(--primary)),
-    hsl(var(--primary) / 0.8)
-  );
-  height: 100%;
-  border-radius: 9999px;
-  position: relative;
-  overflow: hidden;
-}
-
-.xp-bar-fill::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-
-  100% {
-    left: 100%;
-  }
-}
-
-/* Game card enhancements */
-.game-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-.game-card:hover {
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Code block styles */
-pre[class*="language-"] {
-  @apply bg-zinc-950 text-zinc-100 p-4 rounded-lg overflow-x-auto;
-  font-size: 0.9em;
-}
-
-:not(pre) > code[class*="language-"] {
-  @apply bg-zinc-900 text-zinc-100 px-1.5 py-0.5 rounded-sm text-sm;
-}
-
-.line-numbers .line-numbers-rows {
-  @apply border-r border-zinc-700;
-  padding: 1em 0;
-}
-
-.line-numbers-rows > span:before {
-  @apply text-zinc-600;
-}
-
-/* Dark mode adjustments */
-.dark pre[class*="language-"] {
-  @apply bg-zinc-900;
-}
-
-.dark :not(pre) > code[class*="language-"] {
-  @apply bg-zinc-800;
-}
-
-/* Glassmorphism Utilities */
+/* Glassmorphism Utilities (token-based, single accent) */
 .glass {
-  @apply bg-background/60 backdrop-blur-lg border border-white/10 shadow-lg;
+  background: hsl(var(--card) / 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--elevation-1);
 }
 
 .glass-hover {
-  @apply transition-all duration-300 hover:bg-background/80 hover:border-white/20 hover:shadow-xl hover:-translate-y-1;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.glass-hover:hover {
+  background: hsl(var(--card) / 0.8);
+  border-color: hsl(var(--primary) / 0.35);
+  transform: translateY(-2px);
 }
 
 /* CRT / Retro Terminal Effects */
 .retro-terminal {
-  background-color: #0d1117;
-  color: #0f0;
-  border: 1px solid #0f0;
+  background-color: #0b1120;
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.25);
   position: relative;
   overflow: hidden;
 }
@@ -847,381 +769,13 @@ pre[class*="language-"] {
   background: linear-gradient(
     to bottom,
     rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.25) 50%
+    rgba(0, 0, 0, 0.12) 50%
   );
   background-size: 100% 4px;
   z-index: 2;
   pointer-events: none;
 }
 
-.scanlines::after {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: rgba(18, 16, 16, 0.1);
-  opacity: 0;
-  z-index: 2;
-  pointer-events: none;
-  animation: flicker 0.15s infinite;
-}
-
-@keyframes flicker {
-  0% {
-    opacity: 0.27861;
-  }
-
-  5% {
-    opacity: 0.34769;
-  }
-
-  10% {
-    opacity: 0.23604;
-  }
-
-  15% {
-    opacity: 0.90626;
-  }
-
-  20% {
-    opacity: 0.18128;
-  }
-
-  25% {
-    opacity: 0.83891;
-  }
-
-  30% {
-    opacity: 0.65583;
-  }
-
-  35% {
-    opacity: 0.67807;
-  }
-
-  40% {
-    opacity: 0.26559;
-  }
-
-  45% {
-    opacity: 0.84693;
-  }
-
-  50% {
-    opacity: 0.96019;
-  }
-
-  55% {
-    opacity: 0.08594;
-  }
-
-  60% {
-    opacity: 0.20313;
-  }
-
-  65% {
-    opacity: 0.71988;
-  }
-
-  70% {
-    opacity: 0.53455;
-  }
-
-  75% {
-    opacity: 0.37288;
-  }
-
-  80% {
-    opacity: 0.71428;
-  }
-
-  85% {
-    opacity: 0.70419;
-  }
-
-  90% {
-    opacity: 0.7003;
-  }
-
-  95% {
-    opacity: 0.36108;
-  }
-
-  100% {
-    opacity: 0.24387;
-  }
-}
-
-.cursor-blink {
-  animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
-}
-
-/* Glitch Effect */
-.glitch {
-  position: relative;
-}
-
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.glitch::before {
-  left: 2px;
-  text-shadow: -1px 0 red;
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim-1 5s infinite linear alternate-reverse;
-}
-
-.glitch::after {
-  left: -2px;
-  text-shadow: -1px 0 blue;
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim-2 5s infinite linear alternate-reverse;
-}
-
-@keyframes glitch-anim-1 {
-  0% {
-    clip: rect(30px, 9999px, 10px, 0);
-  }
-
-  5% {
-    clip: rect(70px, 9999px, 90px, 0);
-  }
-
-  10% {
-    clip: rect(40px, 9999px, 20px, 0);
-  }
-
-  15% {
-    clip: rect(80px, 9999px, 5px, 0);
-  }
-
-  20% {
-    clip: rect(10px, 9999px, 80px, 0);
-  }
-
-  25% {
-    clip: rect(10px, 9999px, 10px, 0);
-  }
-
-  30% {
-    clip: rect(90px, 9999px, 80px, 0);
-  }
-
-  35% {
-    clip: rect(30px, 9999px, 10px, 0);
-  }
-
-  40% {
-    clip: rect(50px, 9999px, 90px, 0);
-  }
-
-  45% {
-    clip: rect(10px, 9999px, 30px, 0);
-  }
-
-  50% {
-    clip: rect(60px, 9999px, 20px, 0);
-  }
-
-  55% {
-    clip: rect(20px, 9999px, 50px, 0);
-  }
-
-  60% {
-    clip: rect(70px, 9999px, 10px, 0);
-  }
-
-  65% {
-    clip: rect(50px, 9999px, 50px, 0);
-  }
-
-  70% {
-    clip: rect(10px, 9999px, 60px, 0);
-  }
-
-  75% {
-    clip: rect(80px, 9999px, 20px, 0);
-  }
-
-  80% {
-    clip: rect(40px, 9999px, 90px, 0);
-  }
-
-  85% {
-    clip: rect(30px, 9999px, 10px, 0);
-  }
-
-  90% {
-    clip: rect(20px, 9999px, 70px, 0);
-  }
-
-  95% {
-    clip: rect(60px, 9999px, 40px, 0);
-  }
-
-  100% {
-    clip: rect(10px, 9999px, 50px, 0);
-  }
-}
-
-@keyframes glitch-anim-2 {
-  0% {
-    clip: rect(60px, 9999px, 10px, 0);
-  }
-
-  5% {
-    clip: rect(10px, 9999px, 70px, 0);
-  }
-
-  10% {
-    clip: rect(40px, 9999px, 20px, 0);
-  }
-
-  15% {
-    clip: rect(90px, 9999px, 50px, 0);
-  }
-
-  20% {
-    clip: rect(20px, 9999px, 10px, 0);
-  }
-
-  25% {
-    clip: rect(50px, 9999px, 60px, 0);
-  }
-
-  30% {
-    clip: rect(10px, 9999px, 80px, 0);
-  }
-
-  35% {
-    clip: rect(70px, 9999px, 20px, 0);
-  }
-
-  40% {
-    clip: rect(30px, 9999px, 10px, 0);
-  }
-
-  45% {
-    clip: rect(80px, 9999px, 50px, 0);
-  }
-
-  50% {
-    clip: rect(20px, 9999px, 90px, 0);
-  }
-
-  55% {
-    clip: rect(40px, 9999px, 10px, 0);
-  }
-
-  60% {
-    clip: rect(10px, 9999px, 30px, 0);
-  }
-
-  65% {
-    clip: rect(90px, 9999px, 60px, 0);
-  }
-
-  70% {
-    clip: rect(30px, 9999px, 20px, 0);
-  }
-
-  75% {
-    clip: rect(50px, 9999px, 10px, 0);
-  }
-
-  80% {
-    clip: rect(20px, 9999px, 80px, 0);
-  }
-
-  85% {
-    clip: rect(60px, 9999px, 30px, 0);
-  }
-
-  90% {
-    clip: rect(10px, 9999px, 40px, 0);
-  }
-
-  95% {
-    clip: rect(70px, 9999px, 20px, 0);
-  }
-
-  100% {
-    clip: rect(30px, 9999px, 60px, 0);
-  }
-}
-
-/* Speech Bubble for Manga */
-.speech-bubble {
-  position: relative;
-  background: #ffffff;
-  border-radius: 0.4em;
-  padding: 1rem;
-  border: 2px solid #000;
-  box-shadow: 4px 4px 0 #000;
-}
-
-.speech-bubble:after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border: 10px solid transparent;
-  border-top-color: #000;
-  border-bottom: 0;
-  margin-left: -10px;
-  margin-bottom: -10px;
-}
-
-/* Manga Panel Effect */
-.manga-panel {
-  border: 4px solid #000;
-  background: #fff;
-  box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.5);
-  transition: transform 0.2s;
-}
-
-.manga-panel:hover {
-  transform: scale(1.02);
-}
-
-.pixel-divider {
-  height: 4px;
-  background-image: repeating-linear-gradient(
-    90deg,
-    #000 0,
-    #000 4px,
-    transparent 4px,
-    transparent 8px
-  );
-  margin: 1rem 0;
-}
-
-.dark .line-numbers-rows > span:before {
-  @apply text-zinc-500;
-}
 
 /* Token colors */
 .token.comment,
@@ -1279,40 +833,71 @@ pre[class*="language-"] {
   @apply text-red-400;
 }
 
-/* --- UI Overhaul Utilities --- */
-
-/* Glassmorphism base for containers/panels */
+/* --- Surface & accent utilities (token-based, single accent) --- */
 .glass-panel {
-  background: rgba(17, 24, 39, 0.6);
-  /* Tailwind gray-900 with opacity */
+  background: hsl(var(--card) / 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--elevation-1);
 }
 
-/* Interactive Glass Card for Skills/Projects */
 .glass-card {
-  background: rgba(31, 41, 55, 0.4);
-  /* Tailwind gray-800 with opacity */
+  background: hsl(var(--card) / 0.7);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--elevation-1);
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
 }
 
 .glass-card:hover {
-  background: rgba(31, 41, 55, 0.7);
-  border-color: rgba(56, 189, 248, 0.4);
-  /* Tailwind sky-400 hint */
-  box-shadow: 0 4px 20px -2px rgba(56, 189, 248, 0.15);
+  background: hsl(var(--card) / 0.85);
+  border-color: hsl(var(--primary) / 0.35);
+  box-shadow: var(--elevation-2);
   transform: translateY(-2px);
 }
 
-/* Neon Text Gradients */
+/* Restrained accent gradient — reserved for the hero name / rare emphasis. */
+.text-gradient-accent,
 .text-gradient-neon {
-  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+  background: linear-gradient(
+    120deg,
+    hsl(var(--foreground)) 0%,
+    hsl(var(--primary)) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   color: transparent;
+}
+
+/* Shared section-heading treatment: crisp, high-contrast, consistent scale. */
+.section-heading {
+  @apply text-3xl font-bold tracking-tight text-foreground sm:text-4xl;
+}
+
+/* Shared responsive section padding — one place to tune vertical rhythm. */
+.section-y {
+  @apply py-16 sm:py-20 lg:py-24;
+}
+
+/* Subtle alternating surface to segment sections without hard borders. */
+.section-alt {
+  background-color: hsl(var(--card) / 0.35);
+}
+
+/* Respect the user's reduced-motion preference everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

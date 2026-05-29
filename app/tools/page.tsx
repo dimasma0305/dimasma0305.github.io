@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { Metadata } from 'next'
 import { Calculator, Shield, Wrench } from 'lucide-react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 export const metadata: Metadata = {
   title: 'Tools',
@@ -26,59 +28,55 @@ const tools = [
 
 export default function ToolsPage() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 py-12 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4 flex items-center gap-2">
-          <Wrench className="w-8 h-8" />
+        <h1 className="text-3xl font-bold tracking-tight mb-4 flex items-center gap-3">
+          <Wrench className="w-7 h-7 text-primary" />
           Tools
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 text-lg">
+        <p className="text-muted-foreground text-lg">
           A collection of useful cybersecurity and CTF tools I&apos;ve built to help the community.
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         {tools.map((tool) => (
-          <Link
-            key={tool.href}
-            href={tool.href}
-            className="group block p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
-          >
-            <div className="flex items-start gap-4">
-              <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <tool.icon className="w-6 h-6" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-xl font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    {tool.title}
-                  </h3>
-                  <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs rounded-full">
-                    {tool.status}
-                  </span>
+          <Link key={tool.href} href={tool.href} className="group block">
+            <Card className="h-full p-6 transition-colors hover:border-primary/40">
+              <div className="flex items-start gap-4">
+                <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                  <tool.icon className="w-6 h-6" />
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 mb-2">
-                  {tool.description}
-                </p>
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {tool.category}
-                  </span>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h2 className="text-xl font-semibold transition-colors group-hover:text-primary">
+                      {tool.title}
+                    </h2>
+                    <Badge variant="secondary">{tool.status}</Badge>
+                  </div>
+                  <p className="text-muted-foreground mb-2">
+                    {tool.description}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      {tool.category}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Card>
           </Link>
         ))}
       </div>
 
-      <div className="mt-12 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
+      <Card className="mt-12 p-6 bg-muted/40">
         <h2 className="text-xl font-semibold mb-2">More Tools Coming Soon</h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          I&apos;m actively working on more tools to help the cybersecurity community. 
+        <p className="text-muted-foreground">
+          I&apos;m actively working on more tools to help the cybersecurity community.
           Check back regularly or follow me on social media for updates.
         </p>
-      </div>
+      </Card>
     </div>
   )
-} 
+}

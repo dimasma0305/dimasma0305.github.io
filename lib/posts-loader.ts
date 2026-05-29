@@ -121,7 +121,6 @@ function getCachedData<T>(cache: Map<string, CacheEntry<T>>, key: string): T | n
   }
 
   const now = Date.now()
-  console.log("expires:", entry.expires)
   if (now > entry.expires) {
     cache.delete(key)
     return null

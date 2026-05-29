@@ -42,16 +42,14 @@ const skills = [
 
 export function SkillsSection() {
   return (
-    <div className="container px-4 py-16 mx-auto max-w-7xl" id="skills">
-      <h2 className="mb-12 text-3xl font-bold tracking-tight text-center text-gradient-neon">
-        Skills & Expertise
-      </h2>
+    <div className="container px-4 section-y mx-auto max-w-7xl scroll-mt-20" id="skills">
+      <h2 className="mb-12 section-heading text-center">Skills &amp; Expertise</h2>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {skills.map((skill, index) => (
           <div
             key={index}
-            className="p-6 rounded-lg glass-card border border-white/5 shadow-2xl backdrop-blur-xl min-h-[200px]"
+            className="p-6 rounded-lg glass-card min-h-[200px]"
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 rounded-full bg-primary/10 text-primary">

@@ -206,7 +206,8 @@ export async function convertNotionBlockToHtml(block: NotionBlock, folder: strin
 
     case "quote":
       const quoteText = processRichText(block.content?.rich_text || [])
-      return quoteText ? `<blockquote class="notion-quote">${escapeHtml(quoteText)}</blockquote>` : ""
+      // processRichText already escapes text and emits formatting markup — do not re-escape.
+      return quoteText ? `<blockquote class="notion-quote">${quoteText}</blockquote>` : ""
 
     case "callout":
       const calloutText = processRichText(block.content?.rich_text || [])
@@ -216,7 +217,7 @@ export async function convertNotionBlockToHtml(block: NotionBlock, folder: strin
         ? `<div class="notion-callout">
              <span class="notion-callout-icon">${escapeHtml(icon)}</span>
              <div class="notion-callout-content">
-               ${calloutText ? escapeHtml(calloutText) : ""}
+               ${calloutText}
                ${calloutChildren}
              </div>
            </div>`

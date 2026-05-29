@@ -15,16 +15,16 @@ export const metadata: Metadata = {
 
 export default function CTFCalculatorPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-12">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 mb-4">
-          <Calculator className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-          <h1 className="text-3xl font-bold">CTF Challenge Difficulty Calculator</h1>
+        <div className="flex items-center gap-3 mb-4">
+          <Calculator className="w-7 h-7 text-primary" />
+          <h1 className="text-3xl font-bold tracking-tight">CTF Challenge Difficulty Calculator</h1>
         </div>
-        <p className="text-gray-600 dark:text-gray-400 text-lg mb-6">
-          Calculate the difficulty rating of CTF challenges based on various factors like solve rate, category, and complexity. 
-          This tool is used to rate all challenges in my <Link href="https://github.com/dimasma0305/My-CTF-Challenges" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">CTF challenge collection</Link>.
+        <p className="text-muted-foreground text-lg mb-6">
+          Calculate the difficulty rating of CTF challenges based on various factors like solve rate, category, and complexity.
+          This tool is used to rate all challenges in my <Link href="https://github.com/dimasma0305/My-CTF-Challenges" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">CTF challenge collection</Link>.
         </p>
       </div>
 

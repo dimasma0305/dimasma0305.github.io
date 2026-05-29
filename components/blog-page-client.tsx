@@ -7,6 +7,7 @@ import { SearchBar } from "@/components/search-bar"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"
+import Link from "next/link"
 import type { Post } from "@/lib/posts-client"
 
 // Lazy load sidebar components for better initial page load
@@ -205,24 +206,33 @@ function BlogPageClient() {
 
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold tracking-tight">Blog</h1>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={refresh}
-            disabled={refreshing}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
-            Refresh
-          </Button>
+      <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-1">
+          <div className="flex items-center gap-4">
+            <h1 className="text-3xl font-bold tracking-tight">Blog</h1>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={refresh}
+              disabled={refreshing}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            In-depth writeups, research, and tutorials.{" "}
+            <Link href="/notes" className="text-primary hover:underline">
+              Browse quick notes →
+            </Link>
+          </p>
         </div>
-        <SearchBar 
+        <SearchBar
           value={searchQuery}
           onChange={handleSearch}
           placeholder="Search posts..."
+          className="w-full sm:w-64"
         />
       </div>
 

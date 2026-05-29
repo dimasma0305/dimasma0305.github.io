@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 const experiences = [
   {
@@ -67,18 +67,11 @@ const experiences = [
 
 export function ExperienceSection() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div
-      className="container px-4 py-16 mx-auto max-w-7xl"
-      id="experience"
-      ref={containerRef}
-    >
+    <div className="container px-4 section-y mx-auto max-w-7xl scroll-mt-20" id="experience">
       <div className="mb-12 text-center">
-        <h2 className="text-5xl font-bold tracking-tight text-gradient-neon">
-          Professional Experience
-        </h2>
+        <h2 className="section-heading">Professional Experience</h2>
         <p className="mt-4 text-xl text-muted-foreground">
           My journey in the cybersecurity realm
         </p>
@@ -95,7 +88,7 @@ export function ExperienceSection() {
             >
               <div className="absolute w-4 h-4 bg-primary rounded-full -left-[41px] top-1" />
               <Card
-                className={`glass-card transition-all duration-300 ${experience.highlight ? "border-primary/50 shadow-[0_0_15px_rgba(var(--primary),0.3)]" : "border-white/5"}`}
+                className={`glass-card transition-all duration-300 ${experience.highlight ? "border-primary/40 ring-1 ring-primary/30" : ""}`}
               >
                 <CardHeader>
                   <div className="flex flex-wrap items-start justify-between gap-2">

@@ -16,9 +16,8 @@ interface NoteCardProps {
 
 export default function NoteCard({ note, className }: NoteCardProps) {
   return (
-    <Card className={cn("group overflow-hidden hover:shadow-lg transition-shadow", className)}>
-      <Link href={`/notes/${note.slug}`}>
-        <CardContent className="p-4 flex flex-col h-full">
+    <Card className={cn("group relative overflow-hidden transition-[transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1 hover:shadow-[var(--elevation-2)]", className)}>
+      <CardContent className="p-4 flex flex-col h-full">
           {/* Categories */}
           {note.categories && note.categories.length > 0 && (
             <div className="flex items-center gap-2 mb-4">
@@ -64,11 +63,19 @@ export default function NoteCard({ note, className }: NoteCardProps) {
             </div>
 
             {note.public_url && (
-              <NotionLinkButton notionUrl={note.public_url} variant="badge" />
+              <div className="relative z-10">
+                <NotionLinkButton notionUrl={note.public_url} variant="badge" />
+              </div>
             )}
           </div>
-        </CardContent>
-      </Link>
+      </CardContent>
+
+      {/* Stretched primary link — sits above the card but below the Notion badge */}
+      <Link
+        href={`/notes/${note.slug}`}
+        aria-label={note.title}
+        className="absolute inset-0 z-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      />
     </Card>
   )
 }

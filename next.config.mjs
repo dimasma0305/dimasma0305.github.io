@@ -35,8 +35,8 @@ const nextConfig = {
   
   // Experimental features for better performance
   experimental: {
-    // Optimize icon package imports
-    optimizePackageImports: ['lucide-react'],
+    // Optimize barrel imports for heavy packages
+    optimizePackageImports: ['lucide-react', 'date-fns'],
   },
   
   // Webpack configuration for better GitHub Pages compatibility

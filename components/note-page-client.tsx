@@ -5,6 +5,7 @@ import { format } from "date-fns"
 import { ArrowLeft, Calendar, Tag, Clock, Share2, Folder, BookOpen } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import dynamic from "next/dynamic"
 import { withBasePath } from "@/lib/utils"
 import { handleHashOnPageLoad } from "@/lib/scroll-utils"
 import { Separator } from "@/components/ui/separator"
@@ -12,14 +13,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Mdx } from "@/components/mdx"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { NotionLinkButton } from "@/components/notion-link-button"
 import { useLazyLoadingReady } from "@/hooks/use-lazy-loading-ready"
 import { convertNotionContentToHtml, type NotionBlock } from "@/lib/notion-content-utils"
 import { TableOfContents } from "@/components/table-of-contents"
 
-// Lazy load heavy components
+// Lazy load heavy components. Mdx pulls in Prism (+ language grammars), so keep
+// it out of the notes route's first load — content renders client-side anyway.
+const Mdx = dynamic(() => import("@/components/mdx").then((m) => m.Mdx), {
+  ssr: false,
+})
 const ShareButtons = lazy(() => import("@/components/share-buttons").then((m) => ({ default: m.ShareButtons })))
 const NoteNavigation = lazy(() => import("@/components/note-navigation").then((m) => ({ default: m.NoteNavigation })))
 
@@ -383,6 +387,8 @@ export default function NotePageClient({ slug }: { slug: string }) {
               alt={note.title}
               width={1200}
               height={600}
+              priority
+              sizes="(max-width: 1024px) 100vw, 1152px"
               className="object-cover w-full h-full"
             />
           </div>

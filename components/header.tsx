@@ -2,28 +2,30 @@
 
 import type React from "react"
 
-import { useState, useEffect, useRef, lazy, Suspense } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, Shield, BookOpen, Search, Wrench } from "lucide-react"
+import { Menu, X, Search } from "lucide-react"
 import { handleAnchorNavigation } from "@/lib/scroll-utils"
 
 import { Button } from "@/components/ui/button"
 
-// Lazy load ThemeToggle for better initial page load
-const ThemeToggle = lazy(() => import("@/components/theme-toggle").then((m) => ({ default: m.ThemeToggle })))
+type NavItem = { name: string; path: string }
 
-const navItems = [
-  { name: "Home", path: "/", icon: <Shield className="w-4 h-4" /> },
-  { name: "About", path: "/#about", icon: <BookOpen className="w-4 h-4" /> },
-  { name: "Skills", path: "/#skills", icon: <Shield className="w-4 h-4" /> },
-  { name: "Experience", path: "/#experience", icon: <Shield className="w-4 h-4" /> },
-  { name: "Projects", path: "/#projects", icon: <BookOpen className="w-4 h-4" /> },
-  { name: "CTF", path: "/#ctf", icon: <Shield className="w-4 h-4" /> },
-  { name: "Blog", path: "/blog", icon: <BookOpen className="w-4 h-4" /> },
-  { name: "Notes", path: "/notes", icon: <BookOpen className="w-4 h-4" /> },
-  { name: "Tools", path: "/tools", icon: <Wrench className="w-4 h-4" /> },
-  { name: "Search", path: "/search", icon: <Search className="w-4 h-4" /> },
+// In-page anchors — only meaningful on the homepage.
+const sectionItems: NavItem[] = [
+  { name: "About", path: "/#about" },
+  { name: "Skills", path: "/#skills" },
+  { name: "Experience", path: "/#experience" },
+  { name: "Projects", path: "/#projects" },
+  { name: "CTF", path: "/#ctf" },
+]
+
+// Site areas — always present.
+const routeItems: NavItem[] = [
+  { name: "Blog", path: "/blog" },
+  { name: "Notes", path: "/notes" },
+  { name: "Tools", path: "/tools" },
 ]
 
 export function Header() {
@@ -32,6 +34,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
   const observerRef = useRef<IntersectionObserver | null>(null)
+  const isHome = (pathname || "/") === "/"
 
   // Custom scroll handler for anchor links using centralized utility
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
@@ -154,80 +157,82 @@ export function Header() {
     setIsOpen(false)
   }, [pathname])
 
-  // Helper function to determine if a nav item should be active
-  const isNavItemActive = (item: { name: string; path: string }) => {
+  // Active state: section anchors light up via the observer on home; routes via path.
+  const isNavItemActive = (item: NavItem) => {
     const currentPath = pathname || "/"
 
-    if (currentPath !== "/") {
-      // For non-home pages, use the original logic
-      return currentPath === item.path || (item.path !== "/" && currentPath.startsWith(item.path))
-    }
-
-    // For home page, check section-based activation
-    if (item.path === "/") {
-      return activeSection === "" // Home is active when no section is active (at top)
-    }
-
     if (item.path.startsWith("/#")) {
-      const sectionId = item.path.substring(2) // Remove '/#'
-      return activeSection === sectionId
+      return isHome && activeSection === item.path.substring(2)
     }
 
-    return false
+    return currentPath === item.path || currentPath.startsWith(item.path + "/")
   }
+
+  const navButtonClass = (active: boolean) =>
+    `relative rounded-full px-4 transition-colors duration-200 ${
+      active
+        ? "text-primary-foreground bg-primary hover:bg-primary/90"
+        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+    }`
 
   return (
     <header
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled ? "bg-background/70 backdrop-blur-xl border-b border-white/5 shadow-lg" : "bg-transparent"
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled ? "bg-background/70 backdrop-blur-xl border-b border-border shadow-lg" : "bg-transparent"
         }`}
     >
       <div className="container flex items-center justify-between h-16 px-4 mx-auto max-w-7xl">
-        <Link href="/" className="flex items-center space-x-2 group">
-          <div className="relative">
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500 group-hover:to-purple-500 transition-all duration-300">
-              Dimas Maulana
-            </span>
-          </div>
+        <Link href="/" className="flex items-center group">
+          <span className="text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
+            Dimas Maulana
+          </span>
         </Link>
 
-        <div className="hidden lg:flex lg:items-center lg:space-x-1">
-          <nav className="flex items-center p-1 rounded-full bg-secondary/30 backdrop-blur-md border border-white/5">
-            {navItems.map((item) => (
-              <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`relative rounded-full px-4 transition-all duration-300 ${isNavItemActive(item)
-                    ? "text-primary-foreground bg-primary shadow-sm hover:bg-primary/90"
-                    : "text-muted-foreground hover:text-foreground hover:bg-white/5"
-                    }`}
-                >
-                  <span className="flex items-center gap-2">
-                    {item.icon}
+        <div className="hidden lg:flex lg:items-center lg:gap-2">
+          <nav className="flex items-center gap-1 p-1 rounded-full bg-secondary/30 backdrop-blur-md border border-border">
+            {isHome &&
+              sectionItems.map((item) => (
+                <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
+                  <Button variant="ghost" size="sm" className={navButtonClass(isNavItemActive(item))}>
                     {item.name}
-                  </span>
+                  </Button>
+                </Link>
+              ))}
+
+            {isHome && <span aria-hidden className="mx-1 h-5 w-px bg-border" />}
+
+            {routeItems.map((item) => (
+              <Link key={item.path} href={item.path}>
+                <Button variant="ghost" size="sm" className={navButtonClass(isNavItemActive(item))}>
+                  {item.name}
                 </Button>
               </Link>
             ))}
           </nav>
 
-          <div className="flex items-center space-x-2 ml-4">
-            <Suspense fallback={<div className="w-9 h-9" />}>
-              <ThemeToggle />
-            </Suspense>
-          </div>
+          <Link href="/search" aria-label="Search">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-11 w-11 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
+            >
+              <Search className="w-4 h-4" />
+            </Button>
+          </Link>
         </div>
 
         <div className="flex items-center lg:hidden">
-          <Suspense fallback={<div className="w-9 h-9" />}>
-            <ThemeToggle />
-          </Suspense>
+          <Link href="/search" aria-label="Search">
+            <Button variant="ghost" size="icon" className="h-11 w-11 text-muted-foreground hover:text-foreground">
+              <Search className="w-5 h-5" />
+            </Button>
+          </Link>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle Menu"
-            className="ml-2"
+            aria-expanded={isOpen}
+            className="h-11 w-11"
           >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
@@ -236,19 +241,30 @@ export function Header() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="lg:hidden absolute top-16 left-0 w-full bg-background/95 backdrop-blur-xl border-b border-white/10 shadow-xl animate-in slide-in-from-top-5">
+        <div className="lg:hidden absolute top-16 left-0 w-full bg-background/95 backdrop-blur-xl border-b border-border shadow-xl animate-in slide-in-from-top-5">
           <div className="container px-4 py-4 mx-auto">
-            <nav className="flex flex-col space-y-1">
-              {navItems.map((item) => (
-                <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
+            <nav className="flex flex-col space-y-1.5">
+              {isHome &&
+                sectionItems.map((item) => (
+                  <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
+                    <Button
+                      variant="ghost"
+                      className={`w-full justify-start h-12 text-base ${isNavItemActive(item) ? "bg-primary/15 text-primary border-l-2 border-primary" : ""}`}
+                    >
+                      {item.name}
+                    </Button>
+                  </Link>
+                ))}
+
+              {isHome && <span aria-hidden className="my-1 h-px w-full bg-border" />}
+
+              {routeItems.map((item) => (
+                <Link key={item.path} href={item.path}>
                   <Button
                     variant="ghost"
-                    className={`w-full justify-start ${isNavItemActive(item) ? "bg-primary/20 text-primary border-l-2 border-primary" : ""}`}
+                    className={`w-full justify-start h-12 text-base ${isNavItemActive(item) ? "bg-primary/15 text-primary border-l-2 border-primary" : ""}`}
                   >
-                    <span className="flex items-center gap-2">
-                      {item.icon}
-                      {item.name}
-                    </span>
+                    {item.name}
                   </Button>
                 </Link>
               ))}
