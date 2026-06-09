@@ -7,6 +7,7 @@ import { searchPosts } from "@/lib/posts-client"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { SectionHeader } from "@/components/section-header"
 import { ArrowLeft, Search } from "lucide-react"
 import { withBasePath } from "@/lib/utils"
 
@@ -113,18 +114,20 @@ function SearchPageContent() {
 
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-2">Search Posts</h1>
-          <p className="text-muted-foreground">Find articles by title, content, or category</p>
-        </div>
-        <Link href={"/blog"}>
-          <Button variant="outline">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Blog
-          </Button>
-        </Link>
-      </div>
+      <SectionHeader
+        titleAs="h1"
+        eyebrow="Find"
+        title="Search Posts"
+        subtitle="Find articles by title, content, or category."
+        action={
+          <Link href="/blog">
+            <Button variant="outline">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Blog
+            </Button>
+          </Link>
+        }
+      />
 
       <div className="mb-8">
         <div className="max-w-2xl">

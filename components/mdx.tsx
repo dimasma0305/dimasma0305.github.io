@@ -301,7 +301,7 @@ export function Mdx({ content }: MdxProps) {
               // Add language label
               const label = document.createElement("div");
               label.className =
-                "language-label px-2 py-1 text-[10px] font-bold tracking-widest uppercase bg-background/90 backdrop-blur-sm rounded border border-white/10 text-muted-foreground pointer-events-auto shadow-sm";
+                "language-label px-2 py-1 text-xs font-bold tracking-widest uppercase bg-background/90 rounded border border-white/10 text-muted-foreground pointer-events-auto shadow-sm";
               label.textContent = languageAliases[language] || language;
               headerContainer.appendChild(label);
             }

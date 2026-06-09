@@ -177,7 +177,9 @@ function HomePageClient() {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    // -mt-16 cancels the global main pt-16 so the hero sits under the
+    // transparent fixed header (the hero supplies its own top padding).
+    <div className="min-h-screen -mt-16">
       <Suspense fallback={<SectionFallback />}>
         <HeroSection />
       </Suspense>

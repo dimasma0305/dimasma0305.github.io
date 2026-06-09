@@ -75,7 +75,7 @@ export function HeroSection() {
       </div>
 
       <div className="container relative z-10 px-4 mx-auto max-w-7xl">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           {/* Left Content */}
           <div className="space-y-6 lg:space-y-8">
             <div className="space-y-4">
@@ -131,11 +131,11 @@ export function HeroSection() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
               {active.stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="glass-card p-3 sm:p-4 rounded-lg text-center last:col-span-2 sm:last:col-span-1"
+                  className="glass-card p-3 sm:p-4 rounded-lg text-center"
                 >
                   <div className="text-xl sm:text-2xl font-bold mb-1 font-mono text-foreground">
                     {stat.value}
@@ -297,14 +297,14 @@ export function HeroSection() {
               )}
 
               {activeTab === "gamer" && (
-                <div className="relative w-full max-w-md bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl p-1 border-2 border-blue-500/70 shadow-[0_0_40px_rgba(59,130,246,0.25)]">
-                  <div className="bg-slate-950 rounded-xl p-6 h-full relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                <div className="relative w-full max-w-md bg-card rounded-2xl p-1 border border-primary/30 shadow-[var(--elevation-2)]">
+                  <div className="bg-background rounded-xl p-6 h-full relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 text-primary opacity-10">
                       <Gamepad2 className="w-32 h-32" />
                     </div>
 
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-20 h-20 rounded-xl bg-blue-600 p-0.5 shadow-lg overflow-hidden">
+                      <div className="w-20 h-20 rounded-xl bg-primary p-0.5 shadow-lg overflow-hidden">
                         <Image
                           src="https://avatars.githubusercontent.com/u/92920739"
                           width={80}
@@ -314,8 +314,8 @@ export function HeroSection() {
                         />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-white">DimasMa</h3>
-                        <div className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-yellow-500 text-black">
+                        <h3 className="text-2xl font-bold text-foreground">DimasMa</h3>
+                        <div className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-primary/20 text-primary">
                           LVL 99
                         </div>
                       </div>
@@ -323,44 +323,44 @@ export function HeroSection() {
 
                     <div className="space-y-4">
                       <div>
-                        <div className="flex justify-between text-xs font-bold text-gray-400 mb-1">
+                        <div className="flex justify-between text-xs font-bold text-muted-foreground mb-1">
                           <span>HP</span>
                           <span>2500/2500</span>
                         </div>
-                        <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
-                          <div className="h-full bg-gradient-to-r from-red-500 to-orange-500 w-full" />
+                        <div className="w-full h-3 bg-muted rounded-full overflow-hidden border border-border">
+                          <div className="h-full bg-primary w-full" />
                         </div>
                       </div>
 
                       <div>
-                        <div className="flex justify-between text-xs font-bold text-gray-400 mb-1">
+                        <div className="flex justify-between text-xs font-bold text-muted-foreground mb-1">
                           <span>MP</span>
                           <span>850/850</span>
                         </div>
-                        <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
-                          <div className="h-full bg-gradient-to-r from-blue-400 to-cyan-400 w-[85%]" />
+                        <div className="w-full h-3 bg-muted rounded-full overflow-hidden border border-border">
+                          <div className="h-full bg-primary/70 w-[85%]" />
                         </div>
                       </div>
 
                       <div>
-                        <div className="flex justify-between text-xs font-bold text-gray-400 mb-1">
+                        <div className="flex justify-between text-xs font-bold text-muted-foreground mb-1">
                           <span>EXP</span>
                           <span>98.5%</span>
                         </div>
-                        <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
-                          <div className="h-full bg-gradient-to-r from-yellow-400 to-amber-400 w-[98.5%]" />
+                        <div className="w-full h-3 bg-muted rounded-full overflow-hidden border border-border">
+                          <div className="h-full bg-primary/50 w-[98.5%]" />
                         </div>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 mt-8">
-                      <div className="bg-white/5 rounded-lg p-3 text-center border border-white/10">
-                        <div className="text-xs text-gray-400">Class</div>
-                        <div className="font-bold text-blue-300">Cyber Mage</div>
+                      <div className="bg-muted/40 rounded-lg p-3 text-center border border-border">
+                        <div className="text-xs text-muted-foreground">Class</div>
+                        <div className="font-bold text-primary">Cyber Mage</div>
                       </div>
-                      <div className="bg-white/5 rounded-lg p-3 text-center border border-white/10">
-                        <div className="text-xs text-gray-400">Guild</div>
-                        <div className="font-bold text-purple-300">Sekai</div>
+                      <div className="bg-muted/40 rounded-lg p-3 text-center border border-border">
+                        <div className="text-xs text-muted-foreground">Guild</div>
+                        <div className="font-bold text-primary">Sekai</div>
                       </div>
                     </div>
                   </div>

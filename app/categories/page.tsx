@@ -5,6 +5,7 @@ import { fetchAllPosts } from "@/lib/posts-loader"
 import { getAllCategories, getPostsByCategory } from "@/lib/posts-client"
 import type { Post } from "@/lib/posts-client"
 import { CardSkeleton } from "@/components/card-skeleton"
+import { SectionHeader } from "@/components/section-header"
 
 // Lazy load PostCard for better initial page load
 const PostCard = lazy(() => import("@/components/post-card"))
@@ -32,10 +33,12 @@ export default function CategoriesPage() {
 
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
-      <div className="mb-8 space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight">Categories</h1>
-        <p className="text-sm text-muted-foreground">Browse posts by topic.</p>
-      </div>
+      <SectionHeader
+        titleAs="h1"
+        eyebrow="Browse"
+        title="Categories"
+        subtitle="Browse posts by topic."
+      />
 
       {loading ? (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">

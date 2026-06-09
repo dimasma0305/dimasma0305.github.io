@@ -158,7 +158,10 @@ export default function RootLayout({
             <NavigationLoader />
           </Suspense>
           <Header />
-          <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
+          {/* pt-16 clears the fixed header on every page. The homepage opts out
+              with -mt-16 (see home-page-client) so its hero sits under the
+              transparent header as designed. */}
+          <main id="main-content" tabIndex={-1} className="flex-1 outline-none pt-16">
             {children}
           </main>
           <Suspense fallback={null}>

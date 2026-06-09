@@ -111,7 +111,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
                 >
-                  <span className="inline-block w-2 h-2 rounded-full bg-secondary"></span>
+                  <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
                   Project Sekai CTF
                 </Link>
               </li>
@@ -122,7 +122,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
                 >
-                  <span className="inline-block w-2 h-2 rounded-full bg-accent"></span>
+                  <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
                   P1G SEKAI
                 </Link>
               </li>

@@ -660,7 +660,6 @@ pre.line-numbers > code {
   will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
-  perspective: 1000px;
 }
 
 /* Improve touch target size for mobile navigation */
@@ -724,9 +723,9 @@ pre.line-numbers > code {
 
 /* Glassmorphism Utilities (token-based, single accent) */
 .glass {
-  background: hsl(var(--card) / 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* No backdrop-filter: over the near-solid dark --background the blur is
+     imperceptible but re-rasterizes every scroll frame. Use an opaque surface. */
+  background: hsl(var(--card) / 0.85);
   border: 1px solid hsl(var(--border));
   box-shadow: var(--elevation-1);
 }
@@ -835,17 +834,16 @@ pre.line-numbers > code {
 
 /* --- Surface & accent utilities (token-based, single accent) --- */
 .glass-panel {
-  background: hsl(var(--card) / 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* See .glass — opaque surface instead of a per-frame backdrop blur. */
+  background: hsl(var(--card) / 0.85);
   border: 1px solid hsl(var(--border));
   box-shadow: var(--elevation-1);
 }
 
 .glass-card {
+  /* See .glass — no backdrop-filter; the card scrolls with its (near-solid)
+     backdrop, so the blur cost only buys an invisible effect. */
   background: hsl(var(--card) / 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border: 1px solid hsl(var(--border));
   box-shadow: var(--elevation-1);
   transition:

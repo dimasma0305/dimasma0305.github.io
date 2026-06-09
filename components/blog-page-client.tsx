@@ -6,7 +6,7 @@ import PostCard from "@/components/post-card"
 import { SearchBar } from "@/components/search-bar"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Button } from "@/components/ui/button"
-import { RefreshCw } from "lucide-react"
+import { SectionHeader } from "@/components/section-header"
 import Link from "next/link"
 import type { Post } from "@/lib/posts-client"
 
@@ -83,7 +83,7 @@ const PostsGrid = memo(({ posts }: { posts: Post[] }) => {
 
   return (
     <>
-      <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {displayedPosts.map((post) => (
           <PostCard key={post.id} post={post} />
         ))}
@@ -146,7 +146,7 @@ const Sidebar = memo(() => {
 Sidebar.displayName = "Sidebar"
 
 function BlogPageClient() {
-  const { posts, loading, refreshing, error, refresh } = usePosts()
+  const { posts, loading, error, refresh } = usePosts()
   const [searchQuery, setSearchQuery] = useState("")
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -201,35 +201,27 @@ function BlogPageClient() {
 
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
-      <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-4">
-            <h1 className="text-3xl font-bold tracking-tight">Blog</h1>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={refresh}
-              disabled={refreshing}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
-              Refresh
-            </Button>
-          </div>
-          <p className="text-sm text-muted-foreground">
+      <SectionHeader
+        titleAs="h1"
+        eyebrow="Writing"
+        title="Blog"
+        subtitle={
+          <>
             In-depth writeups, research, and tutorials.{" "}
             <Link href="/notes" className="text-primary hover:underline">
               Browse quick notes →
             </Link>
-          </p>
-        </div>
-        <SearchBar
-          value={searchQuery}
-          onChange={handleSearch}
-          placeholder="Search posts..."
-          className="w-full sm:w-64"
-        />
-      </div>
+          </>
+        }
+        action={
+          <SearchBar
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder="Search posts..."
+            className="w-full sm:w-64"
+          />
+        }
+      />
 
       {searchQuery && (
         <SearchResults

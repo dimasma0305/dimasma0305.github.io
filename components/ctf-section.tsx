@@ -242,12 +242,14 @@ export function CTFSection() {
     }
   };
 
+  // Single-accent rarity ramp: opacity encodes tier (the label text already
+  // names the tier, so colour is never the sole signal).
   const difficultyColors = {
-    Legendary: "text-yellow-400 bg-yellow-500/20",
-    Epic: "text-purple-400 bg-purple-500/20",
-    Rare: "text-sky-400 bg-sky-500/20",
-    Uncommon: "text-green-400 bg-green-500/20",
-    Common: "text-gray-300 bg-gray-500/20",
+    Legendary: "text-primary bg-primary/25",
+    Epic: "text-primary bg-primary/20",
+    Rare: "text-primary bg-primary/15",
+    Uncommon: "text-primary bg-primary/10",
+    Common: "text-muted-foreground bg-muted",
   };
 
   return (

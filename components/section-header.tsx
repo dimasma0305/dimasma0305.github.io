@@ -5,7 +5,9 @@ interface SectionHeaderProps {
   /** Small uppercase kicker above the title (accent-colored). */
   eyebrow?: string;
   title: string;
-  subtitle?: string;
+  /** Heading level for the title. Page-level headers should pass "h1". */
+  titleAs?: "h1" | "h2";
+  subtitle?: React.ReactNode;
   /** Optional right-aligned element (e.g. a "View all" link). */
   action?: React.ReactNode;
   className?: string;
@@ -19,6 +21,7 @@ interface SectionHeaderProps {
 export function SectionHeader({
   eyebrow,
   title,
+  titleAs: TitleTag = "h2",
   subtitle,
   action,
   className,
@@ -36,7 +39,7 @@ export function SectionHeader({
             {eyebrow}
           </p>
         )}
-        <h2 className="section-heading">{title}</h2>
+        <TitleTag className="section-heading">{title}</TitleTag>
         {subtitle && (
           <p className="max-w-2xl text-lg text-muted-foreground">{subtitle}</p>
         )}

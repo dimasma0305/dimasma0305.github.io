@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import { Metadata } from 'next'
-import { Calculator, Shield, Wrench } from 'lucide-react'
+import { Calculator, Shield } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { SectionHeader } from '@/components/section-header'
 
 export const metadata: Metadata = {
   title: 'Tools',
@@ -29,15 +30,12 @@ const tools = [
 export default function ToolsPage() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight mb-4 flex items-center gap-3">
-          <Wrench className="w-7 h-7 text-primary" />
-          Tools
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          A collection of useful cybersecurity and CTF tools I&apos;ve built to help the community.
-        </p>
-      </div>
+      <SectionHeader
+        titleAs="h1"
+        eyebrow="Toolbox"
+        title="Tools"
+        subtitle="A collection of useful cybersecurity and CTF tools I've built to help the community."
+      />
 
       <div className="grid gap-6 md:grid-cols-2">
         {tools.map((tool) => (

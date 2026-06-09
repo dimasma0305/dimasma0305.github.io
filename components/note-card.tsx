@@ -16,7 +16,7 @@ interface NoteCardProps {
 
 export default function NoteCard({ note, className }: NoteCardProps) {
   return (
-    <Card className={cn("group relative overflow-hidden transition-[transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1 hover:shadow-[var(--elevation-2)]", className)}>
+    <Card className={cn("group relative h-full overflow-hidden transition-[transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1 hover:shadow-[var(--elevation-2)]", className)}>
       <CardContent className="p-4 flex flex-col h-full">
           {/* Categories */}
           {note.categories && note.categories.length > 0 && (

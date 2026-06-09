@@ -48,7 +48,7 @@ export function Header() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
     }
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
@@ -62,34 +62,6 @@ export function Header() {
     // Clean up previous observer
     if (observerRef.current) {
       observerRef.current.disconnect()
-    }
-
-    // Fallback scroll handler for manual section detection
-    const handleScroll = () => {
-      const sections = ["about", "skills", "experience", "projects", "ctf", "blog"]
-      const scrollY = window.scrollY + 100 // Account for header height
-
-      // If at the very top, no section is active
-      if (window.scrollY < 200) {
-        setActiveSection("")
-        return
-      }
-
-      // Find which section is currently in view
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId)
-        if (element) {
-          const rect = element.getBoundingClientRect()
-          const elementTop = rect.top + window.scrollY
-          const elementBottom = elementTop + rect.height
-
-          // Check if the section is in the viewport
-          if (scrollY >= elementTop - 200 && scrollY < elementBottom - 200) {
-            setActiveSection(sectionId)
-            return
-          }
-        }
-      }
     }
 
     // Wait for components to be fully loaded (especially lazy-loaded ones)
@@ -138,9 +110,6 @@ export function Header() {
       sectionElements.forEach((element) => {
         observerRef.current?.observe(element)
       })
-
-      // Add scroll listener as fallback
-      window.addEventListener("scroll", handleScroll, { passive: true })
     }
 
     // Initial setup with delay to ensure lazy-loaded components are ready
@@ -148,7 +117,6 @@ export function Header() {
 
     return () => {
       observerRef.current?.disconnect()
-      window.removeEventListener("scroll", handleScroll)
     }
   }, [pathname])
 
@@ -177,7 +145,7 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled ? "bg-background/70 backdrop-blur-xl border-b border-border shadow-lg" : "bg-transparent"
+      className={`fixed top-0 z-50 w-full transition-[background-color,border-color,box-shadow] duration-300 ${scrolled ? "bg-background/80 backdrop-blur-md border-b border-border shadow-lg" : "bg-transparent"
         }`}
     >
       <div className="container flex items-center justify-between h-16 px-4 mx-auto max-w-7xl">
