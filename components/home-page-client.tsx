@@ -2,6 +2,7 @@
 
 import { memo, useMemo, Suspense, lazy, useEffect } from "react";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { usePosts } from "@/hooks/use-posts";
 import PostCard from "@/components/post-card";
 import { CardSkeleton } from "@/components/card-skeleton";
@@ -114,8 +115,12 @@ const BlogSection = memo(
         eyebrow="Writing"
         title="Latest Blog Posts"
         action={
-          <Link href="/blog" className="text-primary hover:underline">
-            View all posts →
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 rounded-md border border-primary/50 px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10"
+          >
+            View all posts
+            <ArrowRight className="w-4 h-4" />
           </Link>
         }
       />
@@ -148,7 +153,7 @@ BlogSection.displayName = "BlogSection";
 // Loading fallback for lazily-loaded sections
 const SectionFallback = memo(() => (
   <div className="container px-4 section-y mx-auto max-w-7xl">
-    <div className="h-72 rounded-2xl bg-muted/30 animate-pulse" />
+    <div className="h-72 rounded-2xl border border-border/50 bg-card/15 animate-pulse" />
   </div>
 ));
 
@@ -198,29 +203,23 @@ function HomePageClient() {
 
       <AboutSection />
 
-      <div className="section-alt">
-        <Suspense fallback={<SectionFallback />}>
-          <SkillsSection />
-        </Suspense>
-      </div>
+      <Suspense fallback={<SectionFallback />}>
+        <SkillsSection />
+      </Suspense>
 
       <Suspense fallback={<SectionFallback />}>
         <ExperienceSection />
       </Suspense>
 
-      <div className="section-alt">
-        <Suspense fallback={<SectionFallback />}>
-          <ProjectsSection />
-        </Suspense>
-      </div>
+      <Suspense fallback={<SectionFallback />}>
+        <ProjectsSection />
+      </Suspense>
 
       <Suspense fallback={<SectionFallback />}>
         <CTFSection />
       </Suspense>
 
-      <div className="section-alt">
-        <BlogSection posts={latestPosts} loading={loading} />
-      </div>
+      <BlogSection posts={latestPosts} loading={loading} />
     </div>
   );
 }

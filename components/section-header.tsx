@@ -35,7 +35,11 @@ export function SectionHeader({
     >
       <div className="space-y-2">
         {eyebrow && (
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+          /* Brighter step of the single blue accent: --primary (60% lightness)
+             is 3.8:1 on the midday sky top — below AA for 14px text. 72%
+             clears every sky phase and card surface; same hue/chroma, so it
+             reads as a lightness ramp, not a second accent. */
+          <p className="text-sm font-semibold uppercase tracking-widest text-[hsl(217_91%_72%)]">
             {eyebrow}
           </p>
         )}

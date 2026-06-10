@@ -11,6 +11,8 @@ import {
   BookOpen,
   Shield,
   ChevronDown,
+  Sunrise,
+  Moon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Parallax } from "@/components/parallax";
@@ -399,16 +401,23 @@ export function HeroSection() {
           </Parallax>
         </div>
 
-        {/* Scroll hint — static (no perpetual animation) */}
-        <Link
-          href="#about"
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
-          aria-label="Scroll to content"
-        >
-          <span className="text-xs uppercase tracking-widest">Scroll</span>
-          <ChevronDown className="w-5 h-5" />
-        </Link>
       </div>
+
+      {/* Scroll hint — seated above the hill silhouette; static, no
+          perpetual animation. Positioned against the full-height section so
+          it sits on the horizon instead of crowding the social icons. */}
+      <Link
+        href="#about"
+        className="group absolute bottom-[7vh] left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+        aria-label="Scroll to content"
+      >
+        <span className="flex items-center gap-2 text-xs uppercase tracking-widest">
+          <Sunrise aria-hidden className="h-3.5 w-3.5" />
+          Scroll through the day
+          <Moon aria-hidden className="h-3 w-3" />
+        </span>
+        <ChevronDown className="w-5 h-5 transition-transform duration-[var(--dur-base)] group-hover:translate-y-0.5" />
+      </Link>
     </section>
   );
 }

@@ -327,10 +327,8 @@ export function ScrollSky() {
         }}
       >
         <div
-          className="sky-day-anim h-full w-full rounded-full"
+          className="sky-day-anim sky-cloud-a h-full w-full rounded-full"
           style={{
-            background:
-              "radial-gradient(closest-side, hsl(214 45% 38% / 0.30), transparent)",
             animation: "sky-cloud-drift 26s ease-in-out infinite alternate",
           }}
         />
@@ -344,10 +342,8 @@ export function ScrollSky() {
         }}
       >
         <div
-          className="sky-day-anim h-full w-full rounded-full"
+          className="sky-day-anim sky-cloud-b h-full w-full rounded-full"
           style={{
-            background:
-              "radial-gradient(closest-side, hsl(214 45% 42% / 0.22), transparent)",
             animation:
               "sky-cloud-drift 34s ease-in-out infinite alternate-reverse",
           }}

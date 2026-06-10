@@ -3,8 +3,11 @@ import { Github, Twitter, Linkedin, Mail, MapPin, FileText, Wrench } from "lucid
 import { withBasePath } from "@/lib/utils"
 
 export function Footer() {
+  // Transparent on the homepage so the page ends in the night landscape
+  // (hills, fireflies, stars); on other routes the body background shows
+  // through identically to before, minus the slab.
   return (
-    <footer className="py-12 border-t border-border bg-background/50">
+    <footer className="py-12 border-t border-border/60 bg-transparent">
       <div className="container px-4 mx-auto max-w-7xl">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
@@ -130,7 +133,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 mt-8 text-center border-t border-border">
+        <div className="pt-8 mt-8 text-center border-t border-border/60">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Dimas Maulana. All rights reserved.
           </p>

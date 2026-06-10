@@ -621,7 +621,16 @@ export function CTFSection() {
             </div>
           </div>
 
-          <div className="p-4 sm:p-6 mt-16 text-center rounded-lg bg-primary/5">
+          {/* The page's night finale: a faint hearth-glow gathers the CTA
+              under the stars. Warm hue is ambient light only (the fireflies'
+              family) — the interactive layer stays blue. */}
+          <div
+            className="relative overflow-hidden p-6 sm:p-8 mt-16 text-center rounded-2xl border border-border/60"
+            style={{
+              background:
+                "radial-gradient(120% 90% at 50% 100%, hsl(32 70% 45% / 0.10), hsl(38 80% 55% / 0.04) 45%, transparent 70%), hsl(var(--card) / 0.5)",
+            }}
+          >
             <div className="relative max-w-md mx-auto">
               <div className="relative w-16 h-16 mx-auto mb-4">
                 <Image

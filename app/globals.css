@@ -57,7 +57,7 @@ html {
     --secondary: 217 33% 15%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217 33% 15%;
-    --muted-foreground: 215 18% 65%;
+    --muted-foreground: 215 18% 70%;
     --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 72% 51%;
@@ -727,7 +727,9 @@ pre.line-numbers > code {
      imperceptible but re-rasterizes every scroll frame. Use an opaque surface. */
   background: hsl(var(--card) / 0.85);
   border: 1px solid hsl(var(--border));
-  box-shadow: var(--elevation-1);
+  box-shadow:
+    inset 0 1px 0 0 hsl(210 40% 98% / 0.06),
+    var(--elevation-1);
 }
 
 .glass-hover {
@@ -837,7 +839,9 @@ pre.line-numbers > code {
   /* See .glass — opaque surface instead of a per-frame backdrop blur. */
   background: hsl(var(--card) / 0.85);
   border: 1px solid hsl(var(--border));
-  box-shadow: var(--elevation-1);
+  box-shadow:
+    inset 0 1px 0 0 hsl(210 40% 98% / 0.06),
+    var(--elevation-1);
 }
 
 .glass-card {
@@ -845,7 +849,9 @@ pre.line-numbers > code {
      backdrop, so the blur cost only buys an invisible effect. */
   background: hsl(var(--card) / 0.85);
   border: 1px solid hsl(var(--border));
-  box-shadow: var(--elevation-1);
+  box-shadow:
+    inset 0 1px 0 0 hsl(210 40% 98% / 0.06),
+    var(--elevation-1);
   transition:
     border-color var(--dur-base) var(--ease-out),
     box-shadow var(--dur-base) var(--ease-out),
@@ -855,7 +861,9 @@ pre.line-numbers > code {
 .glass-card:hover {
   background: hsl(var(--card) / 0.85);
   border-color: hsl(var(--primary) / 0.35);
-  box-shadow: var(--elevation-2);
+  box-shadow:
+    inset 0 1px 0 0 hsl(210 40% 98% / 0.09),
+    var(--elevation-2);
   transform: translateY(-2px);
 }
 
@@ -883,16 +891,30 @@ pre.line-numbers > code {
   @apply py-16 sm:py-20 lg:py-24;
 }
 
-/* Alternating surface to segment sections — perceptible on non-OLED displays,
-   with hairline edges so the boundary reads even where the fill is subtle. */
-.section-alt {
-  background-color: hsl(var(--card) / 0.6);
-  border-block: 1px solid hsl(var(--border) / 0.6);
-}
-
 /* --- ScrollSky ambient animations ---
    Compositor-only (transform/opacity on their own layers) so they never
    trigger layout or paint. The reduced-motion override below disables them. */
+
+/* Cloud fills: mobile-first boost — below lg the bright discs are replaced by
+   faint glows, so clouds carry the daytime story; at lg+ they return to the
+   original whisper. Same hue family as the sky, reads as haze. */
+.sky-cloud-a {
+  background: radial-gradient(closest-side, hsl(214 45% 38% / 0.45), transparent);
+}
+
+.sky-cloud-b {
+  background: radial-gradient(closest-side, hsl(214 45% 42% / 0.34), transparent);
+}
+
+@media (min-width: 1024px) {
+  .sky-cloud-a {
+    background: radial-gradient(closest-side, hsl(214 45% 38% / 0.30), transparent);
+  }
+
+  .sky-cloud-b {
+    background: radial-gradient(closest-side, hsl(214 45% 42% / 0.22), transparent);
+  }
+}
 /* Uneven multi-stop curve so the star field doesn't visibly "breathe" in
    unison — per-star variety comes from the gradient alphas. */
 @keyframes sky-twinkle {
