@@ -13,6 +13,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Parallax } from "@/components/parallax";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -64,16 +65,12 @@ export function HeroSection() {
   const active = tabContent[activeTab as keyof typeof tabContent];
 
   return (
+    // No own background: the fixed <ScrollSky /> behind the page provides the
+    // morning sky here (and turns to night as the visitor scrolls).
     <section
-      className="relative min-h-[auto] lg:min-h-screen flex items-start lg:items-center justify-center overflow-hidden bg-background pt-28 pb-16 lg:py-20"
+      className="relative min-h-[auto] lg:min-h-screen flex items-start lg:items-center justify-center overflow-hidden pt-28 pb-16 lg:py-20"
       id="home"
     >
-      {/* Static background — a subtle primary glow, no animation/canvas */}
-      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute inset-0 bg-[radial-gradient(60%_55%_at_50%_0%,hsl(var(--primary)/0.10),transparent_70%)]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-      </div>
-
       <div className="container relative z-10 px-4 mx-auto max-w-7xl">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           {/* Left Content */}
@@ -238,7 +235,10 @@ export function HeroSection() {
 
           {/* Right Content — persona visual (single active card, light CSS fade).
               Shown on mobile too (below the left column) so the personas have a payoff. */}
-          <div className="relative h-[440px] sm:h-[520px] lg:h-[600px]">
+          <Parallax
+            speed={0.12}
+            className="relative h-[440px] sm:h-[520px] lg:h-[600px]"
+          >
             <div
               key={activeTab}
               className="absolute inset-0 flex items-center justify-center p-8 animate-in fade-in duration-200"
@@ -396,7 +396,7 @@ export function HeroSection() {
                 </div>
               )}
             </div>
-          </div>
+          </Parallax>
         </div>
 
         {/* Scroll hint — static (no perpetual animation) */}

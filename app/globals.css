@@ -890,6 +890,81 @@ pre.line-numbers > code {
   border-block: 1px solid hsl(var(--border) / 0.6);
 }
 
+/* --- ScrollSky ambient animations ---
+   Compositor-only (transform/opacity on their own layers) so they never
+   trigger layout or paint. The reduced-motion override below disables them. */
+/* Uneven multi-stop curve so the star field doesn't visibly "breathe" in
+   unison — per-star variety comes from the gradient alphas. */
+@keyframes sky-twinkle {
+  0% {
+    opacity: 0.78;
+  }
+  35% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes sky-cloud-drift {
+  from {
+    transform: translate3d(-1.5vw, 0, 0);
+  }
+  to {
+    transform: translate3d(1.5vw, 0, 0);
+  }
+}
+
+/* One slow forward pass that fades at the ends (alternate would read as
+   birds flying backwards). */
+@keyframes sky-birds {
+  0% {
+    transform: translate3d(-2.5vw, 0.8vh, 0);
+    opacity: 0;
+  }
+  12%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(2.5vw, -0.8vh, 0);
+    opacity: 0;
+  }
+}
+
+/* ~1.2s streak every 22s — rare enough to stay special. */
+@keyframes sky-shooting-star {
+  0%,
+  94% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  95.5% {
+    opacity: 0.9;
+  }
+  99.5%,
+  100% {
+    transform: translate3d(-42vw, 30vh, 0);
+    opacity: 0;
+  }
+}
+
+/* Pause + drop the layers of ambient animations that are invisible in the
+   current sky phase (their opacity gates clamp to 0), so the compositor
+   isn't ticking transparent layers all session. play-state needs !important
+   because the inline `animation` shorthands reset it at style-attribute
+   precedence; paused (not display:none) preserves progress for a seamless
+   resume when scrolling back across dusk. */
+[data-sky-phase="day"] .sky-night-anim,
+[data-sky-phase="night"] .sky-day-anim {
+  visibility: hidden;
+  animation-play-state: paused !important;
+}
+
 /* Respect the user's reduced-motion preference everywhere. */
 @media (prefers-reduced-motion: reduce) {
   *,

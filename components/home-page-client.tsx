@@ -7,6 +7,8 @@ import PostCard from "@/components/post-card";
 import { CardSkeleton } from "@/components/card-skeleton";
 import { FallbackImage } from "@/components/fallback-image";
 import { SectionHeader } from "@/components/section-header";
+import { Parallax } from "@/components/parallax";
+import { ScrollSky } from "@/components/scroll-sky";
 
 // Lazy load heavy sections for better initial page load
 const HeroSection = lazy(() =>
@@ -82,16 +84,18 @@ const AboutSection = memo(() => (
         </p>
       </div>
       <div className="flex items-center justify-center">
-        <div className="relative w-64 h-64 overflow-hidden rounded-full border-4 border-primary/20 transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] hover:scale-[1.03]">
-          <FallbackImage
-            src="https://avatars.githubusercontent.com/u/92920739"
-            alt="Dimas Maulana"
-            width={256}
-            height={256}
-            className="object-cover rounded-full"
-            priority
-          />
-        </div>
+        <Parallax speed={0.1}>
+          <div className="relative w-64 h-64 overflow-hidden rounded-full border-4 border-primary/20 transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] hover:scale-[1.03]">
+            <FallbackImage
+              src="https://avatars.githubusercontent.com/u/92920739"
+              alt="Dimas Maulana"
+              width={256}
+              height={256}
+              className="object-cover rounded-full"
+              priority
+            />
+          </div>
+        </Parallax>
       </div>
     </div>
   </section>
@@ -169,7 +173,12 @@ function HomePageClient() {
             element.getBoundingClientRect().top + window.pageYOffset;
           window.scrollTo({
             top: elementPosition - headerOffset,
-            behavior: "smooth",
+            // An explicit "smooth" would override the reduced-motion CSS
+            // (scroll-behavior: auto !important) — honor the preference here.
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+              .matches
+              ? "auto"
+              : "smooth",
           });
         }
       }, 500);
@@ -180,6 +189,9 @@ function HomePageClient() {
     // -mt-16 cancels the global main pt-16 so the hero sits under the
     // transparent fixed header (the hero supplies its own top padding).
     <div className="min-h-screen -mt-16">
+      {/* Fixed day→night sky behind the whole page, driven by scroll */}
+      <ScrollSky />
+
       <Suspense fallback={<SectionFallback />}>
         <HeroSection />
       </Suspense>
