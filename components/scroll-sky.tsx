@@ -178,7 +178,19 @@ export function ScrollSky() {
           opacity: "calc(1 - var(--sky) * 2.2)",
           willChange: "opacity",
           background:
-            "linear-gradient(to bottom, hsl(214 52% 15%) 0%, hsl(219 45% 10%) 55%, hsl(24 38% 11%) 100%)",
+            "linear-gradient(to bottom, hsl(214 52% 15%) 0%, hsl(219 45% 10%) 55%, hsl(220 45% 7%) 100%)",
+        }}
+      />
+      {/* Warm dawn band at the horizon — its own layer so it burns off
+          before midday (the morning blues above linger longer); a lingering
+          warm bottom would read as orange in a midday sky. */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-[40vh]"
+        style={{
+          opacity: "calc(1 - var(--sky) * 3.2)",
+          willChange: "opacity",
+          background:
+            "linear-gradient(to top, hsl(24 45% 13% / 0.85), transparent 70%)",
         }}
       />
 
@@ -194,22 +206,23 @@ export function ScrollSky() {
         }}
       />
 
-      {/* Sun (lg+) — travels a true circular arc (115° of a wheel whose
-          radius is 100vh tall, squeezed to 62vh wide so it fits widescreens):
-          from its morning apex top-right, sweeping left across the sky, then
-          dipping behind the mountain ridge as dusk peaks. It stays bright the
-          whole way so the ridge occlusion reads as a real sunset. */}
-      {/* The anchor's px floor + an apex left of the nav pill keep the disc
-          and its glow clear of the transparent header's links on short
-          laptops; the x amplitude is capped by vw so portrait monitors can't
-          push the descent off the side edge — it always sets behind the
-          ridge. */}
+      {/* Sun (lg+) — travels a true circular arc (a wheel 100vh tall,
+          squeezed to <=62vh wide so it fits widescreens), parameterized by
+          the wheel angle 60° → −98°: it rises low in the east hugging the
+          right screen edge (the gutter beside the hero card — the one spot a
+          low morning sun isn't occluded), peaks just right of center at
+          midday, then descends left and slips behind the mountain ridge at
+          dusk, staying bright so the occlusion reads as a real sunset.
+          The anchor (= the noon apex) has a px floor so the disc clears the
+          fixed header on short laptops (the header is opaque by midday
+          scroll, so its glow can't wash the nav links); the x amplitude is
+          capped by vw so portrait monitors can't push the path off-screen. */}
       <div
-        className="hidden lg:block absolute left-[84%] top-[max(14vh,132px)] motion-reduce:!transform-none"
+        className="hidden lg:block absolute left-[64%] top-[max(14vh,132px)] motion-reduce:!transform-none"
         style={{
-          opacity: "calc((0.78 - var(--sky)) * 9)",
+          opacity: "calc((0.84 - var(--sky)) * 9)",
           transform:
-            "translate3d(calc(sin(var(--sky) * 115deg) * -1 * min(62vh, 58vw)), calc((1 - cos(var(--sky) * 115deg)) * 100vh), 0)",
+            "translate3d(calc(sin(60deg - var(--sky) * 158deg) * min(62vh, 58vw)), calc((1 - cos(60deg - var(--sky) * 158deg)) * 100vh), 0)",
         }}
       >
         <div
