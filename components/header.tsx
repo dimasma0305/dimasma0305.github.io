@@ -158,16 +158,15 @@ export function Header() {
 
         <div className="hidden lg:flex lg:items-center lg:gap-2">
           <nav className="flex items-center gap-1 p-1 rounded-full bg-secondary/30 backdrop-blur-md border border-border">
-            {isHome &&
-              sectionItems.map((item) => (
-                <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
-                  <Button variant="ghost" size="sm" className={navButtonClass(isNavItemActive(item))}>
-                    {item.name}
-                  </Button>
-                </Link>
-              ))}
+            {sectionItems.map((item) => (
+              <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
+                <Button variant="ghost" size="sm" className={navButtonClass(isNavItemActive(item))}>
+                  {item.name}
+                </Button>
+              </Link>
+            ))}
 
-            {isHome && <span aria-hidden className="mx-1 h-5 w-px bg-border" />}
+            <span aria-hidden className="mx-1 h-5 w-px bg-border" />
 
             {routeItems.map((item) => (
               <Link key={item.path} href={item.path}>
@@ -213,19 +212,18 @@ export function Header() {
         <div className="lg:hidden absolute top-16 left-0 w-full bg-background/95 backdrop-blur-xl border-b border-border shadow-xl animate-in slide-in-from-top-5">
           <div className="container px-4 py-4 mx-auto">
             <nav className="flex flex-col space-y-1.5">
-              {isHome &&
-                sectionItems.map((item) => (
-                  <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
-                    <Button
-                      variant="ghost"
-                      className={`w-full justify-start h-12 text-base ${isNavItemActive(item) ? "bg-primary/15 text-primary border-l-2 border-primary" : ""}`}
-                    >
-                      {item.name}
-                    </Button>
-                  </Link>
-                ))}
+              {sectionItems.map((item) => (
+                <Link key={item.path} href={item.path} onClick={(e) => handleAnchorClick(e, item.path)}>
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start h-12 text-base ${isNavItemActive(item) ? "bg-primary/15 text-primary border-l-2 border-primary" : ""}`}
+                  >
+                    {item.name}
+                  </Button>
+                </Link>
+              ))}
 
-              {isHome && <span aria-hidden className="my-1 h-px w-full bg-border" />}
+              <span aria-hidden className="my-1 h-px w-full bg-border" />
 
               {routeItems.map((item) => (
                 <Link key={item.path} href={item.path}>

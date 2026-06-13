@@ -7,6 +7,21 @@ interface SEOProps {
 }
 
 const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://dimasma0305.github.io') + (process.env.NEXT_PUBLIC_BASE_PATH || '')
+
+// Serialize JSON-LD safely for embedding inside a <script> element.
+// JSON.stringify does NOT escape "<", ">" or "/", so a value containing
+// "</script>" would otherwise break out of the ld+json block and allow
+// arbitrary markup/script execution. Escape the characters that are
+// significant in an HTML <script> context (plus U+2028/U+2029, which are
+// valid JSON but invalid raw in JS string literals / can break parsing).
+function safeJsonLd(data: unknown): string {
+  return JSON.stringify(data, null, 2)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029')
+}
 export function generatePostMetadata({ post }: SEOProps): Metadata {
   const postUrl = `${baseUrl}/posts/${post.slug}`
   const imageUrl = post.coverImage?.startsWith('http') 
@@ -427,7 +442,7 @@ export function PostStructuredData({ post }: SEOProps) {
         <script
           key={index}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(data, null, 2) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(data) }}
         />
       ))}
     </>
@@ -511,11 +526,11 @@ export function BlogStructuredData() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogStructuredData, null, 2) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(blogStructuredData) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteStructuredData, null, 2) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteStructuredData) }}
       />
     </>
   )
@@ -747,7 +762,7 @@ export function HomepageStructuredData() {
         <script
           key={index}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(data, null, 2) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(data) }}
         />
       ))}
     </>
@@ -808,7 +823,7 @@ export function NotesStructuredData() {
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(notesStructuredData),
+        __html: safeJsonLd(notesStructuredData),
       }}
     />
   )
@@ -895,7 +910,7 @@ export function NoteStructuredData({ slug }: { slug: string }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }}
     />
   )
 }

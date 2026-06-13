@@ -5,6 +5,7 @@ const path = require('path');
 const https = require('https');
 const http = require('http');
 const { URL } = require('url');
+const net = require('net');
 
 // Configuration
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
@@ -113,6 +114,58 @@ function getCleanFileExtension(url) {
   }
 }
 
+// SSRF guard for build-time image downloads.
+// Image URLs originate from Notion editor-controlled fields (cover/featured/
+// inline image external URLs) and are fetched from the CI runner, whose
+// responses are persisted into the public build output. Without restriction an
+// editor could point these at internal/link-local/loopback services and read
+// the response back from the deployed site. Enforce https-only, block private/
+// link-local/loopback IP literals, and require a known-good host.
+const ALLOWED_IMAGE_HOST_SUFFIXES = [
+  '.notion.so',
+  '.notion.site',
+  '.notion-static.com',
+  '.amazonaws.com', // prod-files-secure*.s3.amazonaws.com
+];
+
+function isBlockedIpLiteral(hostname) {
+  const ipVersion = net.isIP(hostname);
+  if (ipVersion === 0) return false; // not a bare IP literal
+  // IPv6: reject loopback/link-local/unique-local.
+  if (ipVersion === 6) {
+    const h = hostname.toLowerCase();
+    return h === '::1' || h === '::' || h.startsWith('fe80:') ||
+      h.startsWith('fc') || h.startsWith('fd') || h.startsWith('::ffff:');
+  }
+  const octets = hostname.split('.').map(Number);
+  const [a, b] = octets;
+  if (a === 10) return true;                        // 10.0.0.0/8
+  if (a === 127) return true;                       // loopback
+  if (a === 0) return true;                         // 0.0.0.0/8
+  if (a === 169 && b === 254) return true;          // link-local / cloud metadata
+  if (a === 172 && b >= 16 && b <= 31) return true; // 172.16.0.0/12
+  if (a === 192 && b === 168) return true;          // 192.168.0.0/16
+  if (a === 100 && b >= 64 && b <= 127) return true; // CGNAT 100.64.0.0/10
+  return false;
+}
+
+function assertAllowedDownloadUrl(parsedUrl) {
+  if (parsedUrl.protocol !== 'https:') {
+    throw new Error(`Refusing non-https image URL: ${parsedUrl.protocol}`);
+  }
+  const hostname = parsedUrl.hostname.toLowerCase();
+  if (isBlockedIpLiteral(hostname)) {
+    throw new Error(`Refusing private/loopback image host: ${hostname}`);
+  }
+  const allowed = ALLOWED_IMAGE_HOST_SUFFIXES.some(
+    (suffix) => hostname === suffix.slice(1) || hostname.endsWith(suffix)
+  );
+  if (!allowed) {
+    throw new Error(`Refusing image host not on allowlist: ${hostname}`);
+  }
+  return parsedUrl;
+}
+
 // Helper function to download image
 function downloadImage(urlString) {
   return new Promise((resolve, reject) => {
@@ -126,6 +179,12 @@ function downloadImage(urlString) {
         }
         // Handle relative redirects
         const finalUrl = new URL(redirectUrl, urlString);
+        try {
+          assertAllowedDownloadUrl(finalUrl);
+        } catch (err) {
+          reject(err);
+          return;
+        }
         const client = finalUrl.protocol === 'https:' ? https : http;
         client.get(finalUrl, handleResponse).on('error', reject);
         return;
@@ -144,6 +203,15 @@ function downloadImage(urlString) {
         if (match && match[1]) {
           contentTypeExt = match[1].split(';')[0].toLowerCase();
           if (contentTypeExt === 'jpeg') contentTypeExt = 'jpg';
+          // Reject anything that is not a known-good image extension.
+          // The Content-Type header is fully attacker-controlled, so without
+          // this allowlist a value like "../../../../tmp/pwned.html" would be
+          // concatenated into the output filename and escape the post dir
+          // (path traversal / arbitrary file write at build time).
+          const allowedImageExts = ['jpg', 'png', 'gif', 'webp', 'svg'];
+          if (!allowedImageExts.includes(contentTypeExt)) {
+            contentTypeExt = '';
+          }
         }
       }
 
@@ -159,7 +227,8 @@ function downloadImage(urlString) {
 
     try {
       const url = new URL(urlString);
-      const client = url.protocol === 'https:' ? https : http;
+      assertAllowedDownloadUrl(url);
+      const client = https;
       const options = {
         hostname: url.hostname,
         path: url.pathname + url.search,

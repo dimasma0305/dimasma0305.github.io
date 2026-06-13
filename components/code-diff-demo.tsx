@@ -6,10 +6,9 @@ import {
   Sparkles,
   ShieldAlert,
   ShieldCheck,
-  Bug,
   Wrench,
-  Timer,
-  Zap,
+  FileWarning,
+  Globe,
 } from "lucide-react";
 
 type Line = {
@@ -29,49 +28,63 @@ type Example = {
   lines: Line[];
 };
 
+// These are REAL findings from an AI scan of this very portfolio, each with the
+// fix that was applied. Distilled from the security report for display.
 const examples: Example[] = [
   {
-    file: "users.route.js",
-    bad: { label: "Vulnerable", icon: ShieldAlert, tone: "red" },
+    file: "components/seo.tsx",
+    bad: { label: "Stored XSS · High", icon: ShieldAlert, tone: "red" },
     good: { label: "Fixed by AI", icon: ShieldCheck },
-    caption: "Found an SQL injection here and rewrote it as a safe parameterized query.",
+    caption:
+      "A blog title from Notion could break out of the JSON-LD script tag and run code. Now the output is escaped.",
     lines: [
-      { sign: " ", text: 'app.get("/user", (req, res) => {' },
-      { sign: " ", text: "  const id = req.query.id" },
-      { sign: "-", text: "  const sql = `SELECT * FROM users WHERE id = ${id}`" },
-      { sign: "-", text: "  db.query(sql, (e, rows) => res.json(rows))" },
-      { sign: "+", text: '  const sql = "SELECT * FROM users WHERE id = ?"' },
-      { sign: "+", text: "  db.query(sql, [id], (e, rows) => res.json(rows))" },
-      { sign: " ", text: "})" },
+      { sign: " ", text: '<script type="application/ld+json"' },
+      { sign: "-", text: "  dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}" },
+      { sign: "+", text: "  dangerouslySetInnerHTML={{ __html: safeJsonLd(data) }}" },
+      { sign: " ", text: "/>" },
+      { sign: " ", text: "// safeJsonLd escapes < > & so a title can't" },
+      { sign: " ", text: "// close the tag and inject its own <script>" },
     ],
   },
   {
-    file: "permissions.js",
-    bad: { label: "Logic bug", icon: Bug, tone: "amber" },
+    file: "scripts/generate-blog-content.js",
+    bad: { label: "Path traversal · High", icon: FileWarning, tone: "red" },
+    good: { label: "Fixed by AI", icon: ShieldCheck },
+    caption:
+      "The saved image name came from a response header an attacker sets, so it could write files outside the posts folder. Locked to an allowlist.",
+    lines: [
+      { sign: " ", text: "let ext = contentType.split('/')[1]  // attacker-set header" },
+      { sign: "-", text: "save(`${slug}.${ext}`)   // ext = '../../etc/passwd'" },
+      { sign: "+", text: "const ok = ['jpg','png','gif','webp','svg']" },
+      { sign: "+", text: "if (!ok.includes(ext)) ext = ''" },
+      { sign: "+", text: "save(`${slug}.${ext}`)" },
+    ],
+  },
+  {
+    file: "lib/notion-content-utils.ts",
+    bad: { label: "Stored XSS · Med", icon: ShieldAlert, tone: "amber" },
     good: { label: "Fixed by AI", icon: Wrench },
-    caption: "This permission check was backwards and let the wrong people edit posts. Now it's fixed.",
+    caption:
+      "sanitizeUrl handed back the raw URL, so a crafted link could break out of an HTML attribute. Now it returns the encoded href.",
     lines: [
-      { sign: " ", text: "function canEdit(user, post) {" },
-      { sign: "-", text: "  if (user.id !== post.authorId || user.isAdmin) {" },
-      { sign: "+", text: "  if (user.id === post.authorId || user.isAdmin) {" },
-      { sign: " ", text: "    return true" },
-      { sign: " ", text: "  }" },
-      { sign: " ", text: "  return false" },
+      { sign: " ", text: "if (['http:','https:'].includes(parsedUrl.protocol)) {" },
+      { sign: "-", text: "  return url          // raw, breaks out of src=\"...\"" },
+      { sign: "+", text: "  return parsedUrl.href // percent-encodes \" < >" },
       { sign: " ", text: "}" },
     ],
   },
   {
-    file: "members.js",
-    bad: { label: "Slow · O(n²)", icon: Timer, tone: "amber" },
-    good: { label: "Optimized by AI", icon: Zap },
-    caption: "This loop got slow on big lists, so I swapped it for a Set lookup that stays fast.",
+    file: "scripts/generate-blog-content.js",
+    bad: { label: "SSRF · Med", icon: Globe, tone: "amber" },
+    good: { label: "Fixed by AI", icon: ShieldCheck },
+    caption:
+      "Build-time image fetches followed any URL, even internal ones. Added an https-only host allowlist and blocked private IPs.",
     lines: [
-      { sign: " ", text: "// hot path: runs on every render" },
-      { sign: " ", text: "function activeMembers(members, active) {" },
-      { sign: "-", text: "  return members.filter(m => active.includes(m.id))" },
-      { sign: "+", text: "  const ids = new Set(active)" },
-      { sign: "+", text: "  return members.filter(m => ids.has(m.id))" },
-      { sign: " ", text: "}" },
+      { sign: " ", text: "const url = new URL(urlString)" },
+      { sign: "-", text: "const client = url.protocol === 'https:' ? https : http" },
+      { sign: "+", text: "assertAllowedDownloadUrl(url)  // https + host allowlist" },
+      { sign: "+", text: "const client = https           // no private IPs" },
+      { sign: " ", text: "client.get(url, handleResponse)" },
     ],
   },
 ];

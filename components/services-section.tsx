@@ -1,9 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, MessageCircle, Check } from "lucide-react";
+import { Sparkles, MessageCircle, Check, FileText, FileCode2 } from "lucide-react";
 import { SectionHeader } from "@/components/section-header";
 import { CodeDiffDemo } from "@/components/code-diff-demo";
+import { withBasePath } from "@/lib/utils";
+
+// What every project ships with — a downloadable sample so clients see the
+// exact deliverable before they buy.
+const SAMPLE_PDF = withBasePath(
+  "/sample-report/source-code-pentest-sample-report.pdf",
+);
+const SAMPLE_MD = withBasePath(
+  "/sample-report/source-code-pentest-sample-report.md",
+);
 
 // Contact endpoints for the "Work with me" CTA.
 const WHATSAPP_URL = "https://wa.me/6285967149226";
@@ -73,10 +83,58 @@ export function ServicesSection() {
               </li>
             ))}
           </ul>
+
+          <div className="mt-7">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="text-3xl font-bold tracking-tight">$99</span>
+              <span className="text-lg text-muted-foreground line-through decoration-2">
+                $120
+              </span>
+              <span className="rounded-full bg-primary/15 px-2 py-0.5 text-xs font-semibold text-[hsl(217_91%_72%)]">
+                Save 17%
+              </span>
+            </div>
+            <p className="mt-1 text-muted-foreground">
+              or Rp 1.780.000{" "}
+              <span className="text-sm line-through">Rp 2.160.000</span>
+              <span className="ml-2 text-sm">· per project</span>
+            </p>
+          </div>
+
+          <div className="mt-7">
+            <p className="text-sm font-medium">
+              Every project ships as a full report — Markdown + PDF:
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Link
+                href={SAMPLE_PDF}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-md border border-primary/50 px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10"
+              >
+                <FileText className="h-4 w-4" />
+                View sample report (PDF)
+              </Link>
+              <Link
+                href={SAMPLE_MD}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
+              >
+                <FileCode2 className="h-4 w-4" />
+                Markdown
+              </Link>
+            </div>
+          </div>
         </div>
 
-        {/* Right: animated before/after diff */}
-        <CodeDiffDemo />
+        {/* Right: animated before/after diff (real findings from this site) */}
+        <div className="space-y-3">
+          <CodeDiffDemo />
+          <p className="text-center text-xs text-muted-foreground">
+            Real findings from an AI scan of this very site, already patched.
+          </p>
+        </div>
       </div>
 
       <div className="mt-12 flex flex-col items-center gap-3">

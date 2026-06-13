@@ -90,7 +90,12 @@ export function sanitizeUrl(url: string): string {
   try {
     const parsedUrl = new URL(url)
     if (['http:', 'https:'].includes(parsedUrl.protocol)) {
-      return url
+      // Return the normalized href, NOT the raw input. URL normalization
+      // percent-encodes characters such as " < > and spaces, preventing the
+      // URL from breaking out of the double-quoted HTML attribute it is later
+      // interpolated into (src="..."/href="..."), which would otherwise allow
+      // stored XSS via Notion-sourced block URLs.
+      return parsedUrl.href
     }
   } catch {
     // If URL parsing fails, return an empty string
