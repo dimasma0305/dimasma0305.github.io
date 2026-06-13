@@ -61,21 +61,10 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Dimas Maulana", url: baseUrl }],
   creator: "Dimas Maulana",
-  icons: {
-    icon: [
-      { url: baseUrl + "/favicon.svg", type: "image/svg+xml" },
-      { url: baseUrl + "/favicon-96.png", type: "image/png", sizes: "96x96" },
-      { url: baseUrl + "/favicon-32.png", type: "image/png", sizes: "32x32" },
-    ],
-    apple: baseUrl + "/apple-icon.png",
-    other: [
-      {
-        rel: "icon",
-        type: "image/svg+xml",
-        url: baseUrl + "/favicon.svg",
-      },
-    ],
-  },
+  // NOTE: icons are intentionally NOT set here. metadata.icons resolves URLs
+  // against metadataBase (the production origin), which makes the favicon load
+  // from the live site even in dev. Icons are declared as relative <link> tags
+  // in <head> below so they resolve against the current origin.
   manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
@@ -133,11 +122,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://avatars.githubusercontent.com" />
         <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
 
-        {/* Favicon and icons */}
-        <link rel="icon" type="image/svg+xml" href={baseUrl + "/favicon.svg"} />
-        <link rel="icon" type="image/png" sizes="96x96" href={baseUrl + "/favicon-96.png"} />
-        <link rel="icon" type="image/png" sizes="32x32" href={baseUrl + "/favicon-32.png"} />
-        <link rel="apple-touch-icon" sizes="180x180" href={baseUrl + "/apple-icon.png"} />
+        {/* Favicon and icons — relative so they resolve against the current
+            origin (localhost in dev, the site domain in prod), not a hardcoded
+            absolute URL. */}
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+        <link rel="icon" href="/favicon.ico" sizes="48x48" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
         <link rel="manifest" href="/manifest.webmanifest" />
 
         {/* Theme and PWA meta tags */}
