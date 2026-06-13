@@ -9,6 +9,7 @@ import { Menu, X, Search } from "lucide-react"
 import { handleAnchorNavigation } from "@/lib/scroll-utils"
 
 import { Button } from "@/components/ui/button"
+import { LogoMark } from "@/components/logo-mark"
 
 type NavItem = { name: string; path: string }
 
@@ -150,7 +151,8 @@ export function Header() {
         }`}
     >
       <div className="container flex items-center justify-between h-16 px-4 mx-auto max-w-7xl">
-        <Link href="/" className="flex items-center group">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <LogoMark variant="dark" size={32} className="shrink-0" />
           <span className="text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
             Dimas Maulana
           </span>

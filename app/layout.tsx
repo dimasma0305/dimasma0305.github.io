@@ -62,8 +62,12 @@ export const metadata: Metadata = {
   authors: [{ name: "Dimas Maulana", url: baseUrl }],
   creator: "Dimas Maulana",
   icons: {
-    icon: [{ url: baseUrl + "/favicon.svg", type: "image/svg+xml" }],
-    apple: baseUrl + "/apple-icon.svg",
+    icon: [
+      { url: baseUrl + "/favicon.svg", type: "image/svg+xml" },
+      { url: baseUrl + "/favicon-96.png", type: "image/png", sizes: "96x96" },
+      { url: baseUrl + "/favicon-32.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: baseUrl + "/apple-icon.png",
     other: [
       {
         rel: "icon",
@@ -131,7 +135,9 @@ export default function RootLayout({
 
         {/* Favicon and icons */}
         <link rel="icon" type="image/svg+xml" href={baseUrl + "/favicon.svg"} />
-        <link rel="apple-touch-icon" href={baseUrl + "/favicon.svg"} />
+        <link rel="icon" type="image/png" sizes="96x96" href={baseUrl + "/favicon-96.png"} />
+        <link rel="icon" type="image/png" sizes="32x32" href={baseUrl + "/favicon-32.png"} />
+        <link rel="apple-touch-icon" sizes="180x180" href={baseUrl + "/apple-icon.png"} />
         <link rel="manifest" href="/manifest.webmanifest" />
 
         {/* Theme and PWA meta tags */}
