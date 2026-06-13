@@ -35,7 +35,10 @@ export function Header() {
   const [activeSection, setActiveSection] = useState<string>("")
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
-  const observerRef = useRef<IntersectionObserver | null>(null)
+  // Briefly ignore scroll-spy after a nav click so the highlight doesn't
+  // flicker through intermediate sections while the smooth-scroll is running.
+  const spyLockRef = useRef(0)
+  const rafRef = useRef(0)
   const isHome = (pathname || "/") === "/"
 
   // Custom scroll handler for anchor links using centralized utility
@@ -44,6 +47,12 @@ export function Header() {
       headerOffset: 80,
       behavior: "smooth",
     })
+    if (path.startsWith("/#")) {
+      // Match the navbar to the click instantly, and let the scroll settle
+      // before the spy takes over again.
+      setActiveSection(path.slice(2))
+      spyLockRef.current = Date.now() + 1000
+    }
   }
 
   useEffect(() => {
@@ -54,73 +63,51 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Set up intersection observer for section detection on home page
+  // Scroll-spy (home only). The active section is the LAST one whose top has
+  // scrolled above the header line — i.e. the section currently sitting under
+  // the header. This is position-based and uses the same 80px offset the nav
+  // click scrolls to, so the highlight always matches where you land (the old
+  // IntersectionObserver picked "most visible by ratio", which let a short
+  // section win over the one you actually scrolled to).
   useEffect(() => {
-    if (pathname !== "/") {
+    if (!isHome) {
       setActiveSection("")
       return
     }
 
-    // Clean up previous observer
-    if (observerRef.current) {
-      observerRef.current.disconnect()
-    }
+    const ids = ["about", "skills", "experience", "projects", "ctf", "blog"]
+    const HEADER_LINE = 90 // header height (64) + a little slack past the 80px scroll offset
 
-    // Wait for components to be fully loaded (especially lazy-loaded ones)
-    const setupObserver = () => {
-      // Get all sections that correspond to navigation items
-      const sections = ["about", "skills", "experience", "projects", "ctf", "blog"]
-      const sectionElements: HTMLElement[] = []
-
-      sections.forEach((sectionId) => {
-        const element = document.getElementById(sectionId)
-        if (element) {
-          sectionElements.push(element)
-        }
-      })
-
-      if (sectionElements.length === 0) {
-        // Retry after a delay if sections aren't loaded yet
-        setTimeout(setupObserver, 500)
+    const compute = () => {
+      rafRef.current = 0
+      if (Date.now() < spyLockRef.current) return // a nav click is still settling
+      if (window.scrollY < 120) {
+        setActiveSection("")
         return
       }
-
-      observerRef.current = new IntersectionObserver(
-        (entries) => {
-          // Sort entries by intersection ratio to find the most visible section
-          const visibleEntries = entries
-            .filter((entry) => entry.isIntersecting)
-            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
-
-          if (visibleEntries.length > 0) {
-            const mostVisible = visibleEntries[0]
-            setActiveSection(mostVisible.target.id)
-          } else {
-            // If no section is intersecting, check scroll position
-            const scrollY = window.scrollY
-            if (scrollY < 200) {
-              setActiveSection("") // At top, no section active
-            }
-          }
-        },
-        {
-          rootMargin: "-10% 0% -50% 0%", // More lenient margins for better detection
-          threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0], // More threshold points for better accuracy
-        },
-      )
-
-      sectionElements.forEach((element) => {
-        observerRef.current?.observe(element)
-      })
+      let current = ""
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (el && el.getBoundingClientRect().top <= HEADER_LINE) current = id
+      }
+      setActiveSection(current)
     }
 
-    // Initial setup with delay to ensure lazy-loaded components are ready
-    setTimeout(setupObserver, 1000)
+    const onScroll = () => {
+      if (!rafRef.current) rafRef.current = requestAnimationFrame(compute)
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true })
+    // Recompute once now and again after lazy sections have settled.
+    const settle = setTimeout(compute, 1200)
+    compute()
 
     return () => {
-      observerRef.current?.disconnect()
+      window.removeEventListener("scroll", onScroll)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      clearTimeout(settle)
     }
-  }, [pathname])
+  }, [isHome])
 
   useEffect(() => {
     // Close mobile menu when route changes
