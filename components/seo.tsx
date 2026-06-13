@@ -674,7 +674,7 @@ export function HomepageStructuredData() {
   const professionalServiceStructuredData = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    "@id": `${baseUrl}/#service`,
+    "@id": `${baseUrl}/services#service`,
     name: "Cybersecurity Research & Consulting",
     description: "Cybersecurity research, penetration testing, vulnerability analysis, and CTF challenge creation services",
     provider: {
@@ -692,7 +692,7 @@ export function HomepageStructuredData() {
       "CTF Challenge Creation",
       "Security Consulting"
     ],
-    url: baseUrl
+    url: `${baseUrl}/services`
   }
 
   // Blog schema
