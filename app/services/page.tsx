@@ -11,14 +11,14 @@ const ogImage = `${baseUrl}${basePath}/og-image.jpg`;
 export const metadata: Metadata = {
   title: "Services | Source Code Security Review",
   description:
-    "AI-assisted source code security review by Dimas Maulana. I read your code line by line, find the bugs an attacker could use, and hand you back ready-to-merge fixes with a plain-English PDF and Markdown report. Starting at $99 per project.",
+    "AI-automated source code security review by Dimas Maulana. An AI agent reviews your codebase for potential vulnerabilities; I triage what's actually exploitable and hand back suggested, ready-to-merge fixes with a plain-English PDF and Markdown report. Starting at $99 per project.",
   alternates: {
     canonical: servicesUrl,
   },
   openGraph: {
     title: "Source Code Security Review | Dimas Maulana",
     description:
-      "Deep manual + AI source code review. Real exploitable bugs, ready-to-merge fixes, plain-English report. Starting at $99 per project.",
+      "AI-automated source code review. Potential vulnerabilities triaged for real exploitability, suggested ready-to-merge fixes, plain-English report. Starting at $99 per project.",
     type: "website",
     url: servicesUrl,
     images: [
@@ -39,7 +39,7 @@ export default function ServicesPage() {
         titleAs="h1"
         eyebrow="Services"
         title="Source Code Security Review"
-        subtitle="I read your code line by line, find the bugs an attacker could actually use, and hand you back working fixes."
+        subtitle="An AI agent reviews your code for potential vulnerabilities. I triage what's actually exploitable and hand you back suggested fixes."
       />
       <ServicesDetail />
     </div>

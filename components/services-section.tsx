@@ -7,9 +7,9 @@ import { CodeDiffDemo } from "@/components/code-diff-demo";
 
 // Compact teaser on the (CV-focused) homepage. Full details live on /services.
 const highlights = [
-  "Real, exploitable bugs, not scanner noise",
-  "Ready-to-merge fixes, not just a list",
-  "Plain-English report in PDF and Markdown",
+  "AI reviews your code, I triage what's real",
+  "Potential vulnerabilities, exploitable ones flagged",
+  "Suggested, ready-to-merge fixes in a plain report",
 ];
 
 export function ServicesSection() {
@@ -21,7 +21,7 @@ export function ServicesSection() {
       <SectionHeader
         eyebrow="Services"
         title="Source Code Security Review"
-        subtitle="I find the security bugs hiding in your code, then hand you back working fixes."
+        subtitle="An AI agent reviews your code for vulnerabilities. I triage what's real and hand you back suggested fixes."
         action={
           <Link
             href="/services"

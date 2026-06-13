@@ -40,9 +40,9 @@ function DiscordIcon({ className }: { className?: string }) {
 }
 
 const features = [
-  "I read through every line of your code",
-  "I find the bugs that can actually be exploited",
-  "You get working fixes, not just a list of problems",
+  "An AI agent reviews your whole codebase, fast",
+  "Potential vulnerabilities surfaced, with the exploitable ones flagged",
+  "A suggested, ready-to-merge fix for each finding",
   "Reports written in plain words you can act on",
 ];
 
@@ -50,46 +50,50 @@ const steps = [
   {
     icon: Send,
     title: "1. Share your code",
-    text: "Send a private GitHub or GitLab invite, or an encrypted archive. NDA on request.",
+    text: "Send a private GitHub or GitLab invite, or just zip it up and email it over. NDA on request.",
   },
   {
     icon: ScanSearch,
-    title: "2. Deep review",
-    text: "I read every security-relevant file line by line, AI-assisted, and confirm each bug is actually exploitable.",
+    title: "2. AI review",
+    text: "An AI agent reviews your codebase for potential vulnerabilities. I triage the results and flag the ones that are actually exploitable.",
   },
   {
     icon: FileCheck2,
     title: "3. Report and fixes",
-    text: "You get a plain-English report in PDF and Markdown, with a ready-to-merge patch for every finding.",
+    text: "You get a plain-English report in PDF and Markdown, with a suggested fix for every finding.",
   },
 ];
 
 const included = [
-  "Every security-relevant file reviewed, not skimmed",
-  "Only real, exploitable bugs, with the noise filtered out",
-  "A ready-to-merge fix for each finding",
+  "Your whole codebase reviewed by an AI agent",
+  "Potential vulnerabilities surfaced, with the genuinely exploitable ones flagged",
+  "A suggested, ready-to-merge fix for each finding",
   "One free re-test after you apply the fixes",
 ];
 
 const limits = [
   "Static source review, no live or infrastructure testing",
   "Languages: JavaScript and TypeScript, Python, PHP, Go, and most web backends",
-  "Turnaround is usually 2 to 5 days, depending on size",
+  "Turnaround is usually 1 to 2 days when I'm not busy",
   "Patches are provided as-is, so test before you deploy",
 ];
 
 const faqs = [
   {
+    q: "Is this just an automated scanner?",
+    a: "It is AI-driven, but I triage every finding by hand and tell you which are actually exploitable, which are only potential, and which are just hardening. You get a reviewed report, not a raw tool dump.",
+  },
+  {
     q: "What if you don't find anything?",
-    a: "You still get a report of everything I checked, plus hardening recommendations. No padding and no invented findings.",
+    a: "You still get a report of everything the review checked, plus hardening notes. I won't pad it with findings that are not real.",
   },
   {
     q: "Which languages do you cover?",
     a: "JavaScript and TypeScript, Python, PHP, Go, and most web backends. Ask if yours is not listed.",
   },
   {
-    q: "How do I send my code safely?",
-    a: "A private GitHub or GitLab invite, or an encrypted archive. Never over chat or as an email attachment.",
+    q: "How do I send my code?",
+    a: "A private GitHub or GitLab invite works best, but a plain zip over email is fine too. Whatever is easiest for you.",
   },
   {
     q: "How does payment work?",
@@ -109,18 +113,18 @@ export function ServicesDetail() {
         <div>
           <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-[hsl(217_91%_72%)]">
             <Sparkles className="w-3.5 h-3.5" />
-            Deep manual + AI review
+            AI-automated review
           </span>
 
           <p className="mt-4 text-sm text-muted-foreground">
-            By Dimas Maulana, CTF player and security researcher with TCP1P and
-            Project SEKAI.
+            By Dimas Maulana, CTF player and security researcher.
           </p>
 
           <p className="mt-4 max-w-xl text-lg text-muted-foreground leading-relaxed">
-            I go through your code the way a real attacker would, find the
-            security holes, and send you back the fixed code. You don&apos;t just
-            get a report, you get fixes that work.
+            An AI agent reviews your whole codebase for potential
+            vulnerabilities. I triage what it finds, flag the ones that are
+            actually exploitable, and send back suggested fixes. You don&apos;t
+            just get a list, you get patches you can merge.
           </p>
 
           <ul className="mt-6 space-y-3">
@@ -240,8 +244,9 @@ export function ServicesDetail() {
           <h2 className="font-semibold">Your code stays private</h2>
           <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
             I review your code in an isolated workspace, never share it, and
-            delete it after delivery on request. NDA available, and your code is
-            always sent over a private channel, never chat.
+            delete it after delivery on request. NDA available on request, and
+            you can send your code however is easiest, a repo invite or a zip
+            over email.
           </p>
         </div>
       </div>
@@ -276,8 +281,8 @@ export function ServicesDetail() {
       <div className="mt-12 flex flex-col items-center gap-3 text-center">
         <h2 className="text-xl font-semibold">Start a review</h2>
         <p className="max-w-md text-sm text-muted-foreground">
-          Message me to scope your project. I&apos;ll send a secure link to
-          upload your code, no source over chat.
+          Message me to scope your project, then share your code however is
+          easiest, a repo invite or a zip over email.
         </p>
         <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
           <Link
