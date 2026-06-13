@@ -379,7 +379,7 @@ export function HeroSection() {
                     MY COLLECTION
                   </h3>
 
-                  <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="grid grid-cols-2 gap-3">
                     {["Action", "Sci-Fi", "Seinen", "Mystery"].map((genre) => (
                       <div
                         key={genre}
@@ -388,12 +388,6 @@ export function HeroSection() {
                         {genre}
                       </div>
                     ))}
-                  </div>
-
-                  <div className="bg-primary text-primary-foreground p-4 font-medium rounded-md relative">
-                    "I read over 100+ chapters a week! It's not an addiction, it's
-                    a lifestyle!"
-                    <div className="absolute -bottom-4 left-8 w-0 h-0 border-l-[10px] border-l-transparent border-t-[15px] border-t-primary border-r-[10px] border-r-transparent"></div>
                   </div>
                 </div>
               )}
