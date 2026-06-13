@@ -33,6 +33,11 @@ const ExperienceSection = lazy(() =>
     default: m.ExperienceSection,
   })),
 );
+const ServicesSection = lazy(() =>
+  import("@/components/services-section").then((m) => ({
+    default: m.ServicesSection,
+  })),
+);
 
 // Memoized About section component
 const AboutSection = memo(() => (
@@ -205,6 +210,10 @@ function HomePageClient() {
 
       <Suspense fallback={<SectionFallback />}>
         <SkillsSection />
+      </Suspense>
+
+      <Suspense fallback={<SectionFallback />}>
+        <ServicesSection />
       </Suspense>
 
       <Suspense fallback={<SectionFallback />}>

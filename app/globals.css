@@ -987,6 +987,88 @@ pre.line-numbers > code {
   animation-play-state: paused !important;
 }
 
+/* --- Source-code-pentest diff demo ---------------------------------------
+   The static diff (red "-" / green "+" lines) already reads as before/after,
+   so every keyframe below ENDS on the "fixed" state. That way the global
+   reduced-motion reset (iteration-count:1, ~0 duration → jumps to 100%) lands
+   on a sensible, fully-resolved frame. Transforms/opacity only → GPU-cheap. */
+@keyframes diff-scan {
+  0% {
+    transform: translateY(-120%);
+    opacity: 0;
+  }
+  12%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(1400%);
+    opacity: 0;
+  }
+}
+
+@keyframes diff-status-vuln {
+  0%,
+  42% {
+    opacity: 1;
+  }
+  54%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes diff-status-fixed {
+  0%,
+  42% {
+    opacity: 0;
+  }
+  54%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* The "+" lines settle in once the AI "applies" the fix: hidden while the
+   vulnerable code shows, then revealed and held (100% = visible). */
+@keyframes diff-added-in {
+  0%,
+  42% {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  60%,
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Removed lines fade/strike as they're replaced; 100% keeps them dimmed but
+   present so the before/after contrast stays legible at rest. */
+@keyframes diff-removed-out {
+  0%,
+  42% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    opacity: 0.45;
+  }
+}
+
+/* Softens the swap when the demo rotates to the next example. */
+@keyframes diff-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Respect the user's reduced-motion preference everywhere. */
 @media (prefers-reduced-motion: reduce) {
   *,

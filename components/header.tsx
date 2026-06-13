@@ -16,6 +16,7 @@ type NavItem = { name: string; path: string }
 const sectionItems: NavItem[] = [
   { name: "About", path: "/#about" },
   { name: "Skills", path: "/#skills" },
+  { name: "Services", path: "/#services" },
   { name: "Experience", path: "/#experience" },
   { name: "Projects", path: "/#projects" },
   { name: "CTF", path: "/#ctf" },
@@ -67,7 +68,7 @@ export function Header() {
     // Wait for components to be fully loaded (especially lazy-loaded ones)
     const setupObserver = () => {
       // Get all sections that correspond to navigation items
-      const sections = ["about", "skills", "experience", "projects", "ctf", "blog"]
+      const sections = ["about", "skills", "services", "experience", "projects", "ctf", "blog"]
       const sectionElements: HTMLElement[] = []
 
       sections.forEach((sectionId) => {
