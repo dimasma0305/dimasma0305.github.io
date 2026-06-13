@@ -9,6 +9,7 @@ import { CodeDiffDemo } from "@/components/code-diff-demo";
 const highlights = [
   "AI reviews your code, I triage what's real",
   "Potential vulnerabilities, exploitable ones flagged",
+  "Dynamic checks that the program still works",
   "Suggested, ready-to-merge fixes in a plain report",
 ];
 
@@ -21,7 +22,7 @@ export function ServicesSection() {
       <SectionHeader
         eyebrow="Services"
         title="Source Code Security Review"
-        subtitle="An AI agent reviews your code for vulnerabilities. I triage what's real and hand you back suggested fixes."
+        subtitle="An AI agent reviews your code for vulnerabilities, I triage what's real, check the program still runs, and hand you back suggested fixes."
         action={
           <Link
             href="/services"

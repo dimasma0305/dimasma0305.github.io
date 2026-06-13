@@ -42,6 +42,7 @@ function DiscordIcon({ className }: { className?: string }) {
 const features = [
   "An AI agent reviews your whole codebase, fast",
   "Potential vulnerabilities surfaced, with the exploitable ones flagged",
+  "Dynamic checks that the program runs and works correctly",
   "A suggested, ready-to-merge fix for each finding",
   "Reports written in plain words you can act on",
 ];
@@ -54,8 +55,8 @@ const steps = [
   },
   {
     icon: ScanSearch,
-    title: "2. AI review",
-    text: "An AI agent reviews your codebase for potential vulnerabilities. I triage the results and flag the ones that are actually exploitable.",
+    title: "2. Review and run",
+    text: "An AI agent reviews your codebase for potential vulnerabilities, and I run the program to check it behaves correctly. I triage the results and flag the ones that are actually exploitable.",
   },
   {
     icon: FileCheck2,
@@ -67,12 +68,14 @@ const steps = [
 const included = [
   "Your whole codebase reviewed by an AI agent",
   "Potential vulnerabilities surfaced, with the genuinely exploitable ones flagged",
+  "Dynamic checks that the program runs and works correctly",
   "A suggested, ready-to-merge fix for each finding",
   "One free re-test after you apply the fixes",
 ];
 
 const limits = [
-  "Static source review, no live or infrastructure testing",
+  "Static code review plus dynamic checks that the program runs correctly",
+  "No live production or infrastructure penetration testing",
   "Languages: JavaScript and TypeScript, Python, PHP, Go, and most web backends",
   "Turnaround is usually 1 to 2 days when I'm not busy",
   "Patches are provided as-is, so test before you deploy",
@@ -123,8 +126,10 @@ export function ServicesDetail() {
           <p className="mt-4 max-w-xl text-lg text-muted-foreground leading-relaxed">
             An AI agent reviews your whole codebase for potential
             vulnerabilities. I triage what it finds, flag the ones that are
-            actually exploitable, and send back suggested fixes. You don&apos;t
-            just get a list, you get patches you can merge.
+            actually exploitable, and send back suggested fixes. I also run the
+            program to confirm it works correctly and that the fixes don&apos;t
+            break anything, so you don&apos;t just get a list, you get patches you
+            can merge with confidence.
           </p>
 
           <ul className="mt-6 space-y-3">
