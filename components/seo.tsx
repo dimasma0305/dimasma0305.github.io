@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import type { Post } from "@/lib/posts-client"
+import { faqs } from "@/lib/services-data"
 
 interface SEOProps {
   post: Post
@@ -670,31 +671,6 @@ export function HomepageStructuredData() {
     }
   }
 
-  // Professional Service schema
-  const professionalServiceStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    "@id": `${baseUrl}/services#service`,
-    name: "Cybersecurity Research & Consulting",
-    description: "Cybersecurity research, penetration testing, vulnerability analysis, and CTF challenge creation services",
-    provider: {
-      "@type": "Person",
-      "@id": `${baseUrl}/#person`
-    },
-    areaServed: {
-      "@type": "Country",
-      name: "Indonesia"
-    },
-    serviceType: [
-      "Cybersecurity Research",
-      "Penetration Testing",
-      "Vulnerability Analysis",
-      "CTF Challenge Creation",
-      "Security Consulting"
-    ],
-    url: `${baseUrl}/services`
-  }
-
   // Blog schema
   const blogStructuredData = {
     "@context": "https://schema.org",
@@ -751,7 +727,6 @@ export function HomepageStructuredData() {
     personStructuredData,
     websiteStructuredData,
     organizationStructuredData,
-    professionalServiceStructuredData,
     blogStructuredData,
     breadcrumbStructuredData
   ]
@@ -1027,4 +1002,75 @@ export async function generateNoteMetadata(slug: string): Promise<Metadata> {
       description: 'A technical note on various topics including cybersecurity, programming, and system architecture.'
     }
   }
+}
+
+// Structured data for the /services page: the Source Code Security Review as a
+// schema.org Service with an Offer (price), an FAQPage built from the same FAQ
+// the page renders, and a Home > Services breadcrumb. URLs use the trailing
+// slash form to match trailingSlash:true and the page canonical.
+export function ServicesStructuredData() {
+  const servicesUrl = `${baseUrl}/services/`
+
+  const serviceStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${servicesUrl}#service`,
+    serviceType: "Source code security review",
+    name: "AI-automated Source Code Security Review",
+    description:
+      "An AI agent reviews your whole codebase for potential vulnerabilities; findings are triaged by hand for real exploitability, the program is run to confirm it works, and you receive suggested ready-to-merge fixes with a plain-English PDF and Markdown report.",
+    url: servicesUrl,
+    provider: {
+      "@type": "Person",
+      "@id": `${baseUrl}/#person`,
+      name: "Dimas Maulana",
+      url: `${baseUrl}/`,
+    },
+    areaServed: "Worldwide",
+    offers: {
+      "@type": "Offer",
+      price: "99",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: servicesUrl,
+    },
+  }
+
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${servicesUrl}#faq`,
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  }
+
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${baseUrl}/` },
+      { "@type": "ListItem", position: 2, name: "Services", item: servicesUrl },
+    ],
+  }
+
+  const combined = [
+    serviceStructuredData,
+    faqStructuredData,
+    breadcrumbStructuredData,
+  ]
+
+  return (
+    <>
+      {combined.map((data, index) => (
+        <script
+          key={index}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(data) }}
+        />
+      ))}
+    </>
+  )
 }

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { CodeDiffDemo } from "@/components/code-diff-demo";
 import { withBasePath } from "@/lib/utils";
+import { faqs } from "@/lib/services-data";
 
 // Downloadable sample so clients see the exact deliverable before they buy.
 const SAMPLE_PDF = withBasePath(
@@ -79,29 +80,6 @@ const limits = [
   "Languages: JavaScript and TypeScript, Python, PHP, Go, and most web backends",
   "Turnaround is usually 1 to 2 days when I'm not busy",
   "Patches are provided as-is, so test before you deploy",
-];
-
-const faqs = [
-  {
-    q: "Is this just an automated scanner?",
-    a: "It is AI-driven, but I triage every finding by hand and tell you which are actually exploitable, which are only potential, and which are just hardening. You get a reviewed report, not a raw tool dump.",
-  },
-  {
-    q: "What if you don't find anything?",
-    a: "You still get a report of everything the review checked, plus hardening notes. I won't pad it with findings that are not real.",
-  },
-  {
-    q: "Which languages do you cover?",
-    a: "JavaScript and TypeScript, Python, PHP, Go, and most web backends. Ask if yours is not listed.",
-  },
-  {
-    q: "How do I send my code?",
-    a: "A private GitHub or GitLab invite works best, but a plain zip over email is fine too. Whatever is easiest for you.",
-  },
-  {
-    q: "How does payment work?",
-    a: "We agree on the scope and price first, then you pay by bank transfer or your preferred method before I start.",
-  },
 ];
 
 /**
