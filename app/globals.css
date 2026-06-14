@@ -204,19 +204,23 @@ html {
 }
 
 .notion-file {
-  @apply border rounded-lg p-4 mb-4 hover:bg-muted/50 transition-colors;
+  @apply rounded-xl border border-border bg-card/40 mb-4 transition-colors hover:border-primary/50 hover:bg-primary/5;
 }
 
 .notion-file-link {
-  @apply flex items-center gap-3 no-underline text-foreground;
+  @apply flex items-center gap-3 px-4 py-3 no-underline text-foreground;
 }
 
 .notion-file-icon {
-  @apply text-2xl;
+  @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary;
+}
+
+.notion-file-icon svg {
+  @apply h-5 w-5;
 }
 
 .notion-file-info {
-  @apply flex-1;
+  @apply flex min-w-0 flex-1 flex-col;
 }
 
 .notion-file-name {
@@ -225,6 +229,18 @@ html {
 
 .notion-file-size {
   @apply text-sm text-muted-foreground;
+}
+
+.notion-file-dl {
+  @apply shrink-0 text-muted-foreground/60 transition-colors;
+}
+
+.notion-file-link:hover .notion-file-dl {
+  @apply text-primary;
+}
+
+.notion-file-dl svg {
+  @apply h-4 w-4;
 }
 
 .notion-audio {
@@ -413,6 +429,15 @@ pre[class*="language-"] {
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
   background: hsl(var(--muted));
+}
+
+/* Long writeups have many code blocks. Let the browser skip rendering the
+   off-screen ones (no style/layout/paint until they scroll near the viewport)
+   so highlighting + a large token DOM doesn't stutter the whole page. The
+   intrinsic-size is a placeholder height to keep the scrollbar stable. */
+.mdx pre {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
 }
 
 /* Inline code (token-based) */

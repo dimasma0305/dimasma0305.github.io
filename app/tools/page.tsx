@@ -29,7 +29,7 @@ const tools = [
 
 export default function ToolsPage() {
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
+    <div className="container mx-auto px-4 py-12 max-w-7xl">
       <SectionHeader
         titleAs="h1"
         eyebrow="Toolbox"
@@ -37,7 +37,7 @@ export default function ToolsPage() {
         subtitle="A collection of useful cybersecurity and CTF tools I've built to help the community."
       />
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => (
           <Link key={tool.href} href={tool.href} className="group block">
             <Card className="h-full p-6 transition-colors hover:border-primary/40">

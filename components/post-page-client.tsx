@@ -4,7 +4,6 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import { format } from "date-fns";
 import { ArrowLeft, Calendar, Tag, Clock, Share2, Folder } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { withBasePath } from "@/lib/utils";
 import { handleHashOnPageLoad } from "@/lib/scroll-utils";
 
@@ -48,6 +47,9 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // If the cover image fails to load (e.g. an expired Notion URL), hide the
+  // whole banner rather than showing a broken box or a generic fallback.
+  const [coverError, setCoverError] = useState(false);
   const { posts } = usePosts();
 
   useEffect(() => {
@@ -299,25 +301,24 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
           </div>
         </div>
 
-        {/* Cover Image */}
-        {post.coverImage && (
+        {/* Cover Image — hidden entirely if it fails to load */}
+        {post.coverImage && !coverError && (
           <div className="container max-w-7xl mx-auto px-4 py-6 lg:py-8 overflow-x-hidden">
-            <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] xl:h-[600px] overflow-hidden rounded-xl shadow-2xl">
-              <Image
-                src={post.coverImage || "/placeholder.svg"}
+            <div className="relative w-full h-[220px] sm:h-[300px] md:h-[360px] lg:h-[420px] overflow-hidden rounded-2xl border border-border/70 shadow-xl bg-muted/30">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={post.coverImage}
                 alt={post.title}
-                width={1200}
-                height={600}
-                priority
-                sizes="(max-width: 1024px) 100vw, 1152px"
-                className="object-cover w-full h-full"
+                loading="eager"
+                onError={() => setCoverError(true)}
+                className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
           </div>
         )}
 
         {/* Main Content */}
-        <div className="container max-w-6xl mx-auto px-4 py-6 lg:py-8">
+        <div className="container max-w-7xl mx-auto px-4 py-6 lg:py-8">
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 relative">
             {/* Article Content */}
             <div className="lg:w-[70%] min-w-0 overflow-x-hidden">
@@ -331,8 +332,8 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
               )}
 
               {/* Article Body */}
-              <article className="prose prose-lg dark:prose-invert max-w-none prose-pre:overflow-x-auto prose-code:break-words prose-p:break-words prose-headings:break-words prose-h2:mt-14 prose-h3:mt-10 prose-h2:border-b prose-h2:pb-2 prose-h2:mb-6">
-                <div className="bg-card rounded-xl p-4 md:p-8 shadow-sm border overflow-hidden">
+              <article className="max-w-none break-words">
+                <div className="bg-card/60 rounded-2xl p-5 md:p-9 lg:p-10 shadow-sm border border-border/70 overflow-hidden">
                   {post.content ? (
                     <Mdx content={post.content} />
                   ) : (

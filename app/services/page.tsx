@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <div className="container mx-auto px-4 py-12 max-w-6xl">
+    <div className="container mx-auto px-4 py-12 max-w-7xl">
       <ServicesStructuredData />
       <SectionHeader
         titleAs="h1"

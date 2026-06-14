@@ -2,40 +2,49 @@
 
 import { withBasePath } from "@/lib/utils";
 import { useEffect, useRef } from "react";
-import { useLazyLoading } from "@/hooks/use-lazy-loading";
 import { initializeLazyLoadingTimer } from "@/lib/scroll-utils";
 
-// Import Prism.js for syntax highlighting
-import Prism from "prismjs";
-import "prismjs/themes/prism-tomorrow.css"; // Dark theme
+// Prism theme only (CSS is tiny — keep it eager so highlighted code is styled
+// the moment it paints). Prism core + the 20 language grammars are heavy, so we
+// load them LAZILY (off the initial post-route bundle) the first time a post
+// needs highlighting. Cached so the import happens once per session.
+import "prismjs/themes/prism-tomorrow.css";
 
-// Load core components first
-import "prismjs/components/prism-markup";
-import "prismjs/components/prism-css";
-import "prismjs/components/prism-clike";
-import "prismjs/components/prism-javascript";
-
-// Load language components in dependency order
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-python";
-import "prismjs/components/prism-bash";
-import "prismjs/components/prism-json";
-import "prismjs/components/prism-yaml";
-import "prismjs/components/prism-markdown";
-import "prismjs/components/prism-sql";
-import "prismjs/components/prism-java";
-import "prismjs/components/prism-c";
-import "prismjs/components/prism-cpp";
-import "prismjs/components/prism-go";
-import "prismjs/components/prism-rust";
-import "prismjs/components/prism-ruby";
-import "prismjs/components/prism-perl";
-import "prismjs/components/prism-diff";
-import "prismjs/components/prism-docker";
-
-// Load PHP last as it has complex dependencies
-import "prismjs/components/prism-markup-templating";
-import "prismjs/components/prism-php";
+let prismPromise: Promise<any> | null = null;
+function loadPrism(): Promise<any> {
+  if (!prismPromise) {
+    prismPromise = (async () => {
+      const mod: any = await import("prismjs");
+      const Prism = mod.default ?? mod;
+      // Core, then languages in dependency order.
+      await import("prismjs/components/prism-markup");
+      await import("prismjs/components/prism-css");
+      await import("prismjs/components/prism-clike");
+      await import("prismjs/components/prism-javascript");
+      await import("prismjs/components/prism-typescript");
+      await import("prismjs/components/prism-python");
+      await import("prismjs/components/prism-bash");
+      await import("prismjs/components/prism-json");
+      await import("prismjs/components/prism-yaml");
+      await import("prismjs/components/prism-markdown");
+      await import("prismjs/components/prism-sql");
+      await import("prismjs/components/prism-java");
+      await import("prismjs/components/prism-c");
+      await import("prismjs/components/prism-cpp");
+      await import("prismjs/components/prism-go");
+      await import("prismjs/components/prism-rust");
+      await import("prismjs/components/prism-ruby");
+      await import("prismjs/components/prism-perl");
+      await import("prismjs/components/prism-diff");
+      await import("prismjs/components/prism-docker");
+      // PHP last (complex deps on markup-templating).
+      await import("prismjs/components/prism-markup-templating");
+      await import("prismjs/components/prism-php");
+      return Prism;
+    })();
+  }
+  return prismPromise;
+}
 
 interface MdxProps {
   content: string;
@@ -43,17 +52,32 @@ interface MdxProps {
 
 export function Mdx({ content }: MdxProps) {
   const contentRef = useRef<HTMLDivElement>(null);
-  const { isDOMReady } = useLazyLoading({
-    delayAfterDOMLoaded: 250,
-  });
 
   useEffect(() => {
+    const root = contentRef.current;
+    if (!root) return;
+
     // Initialize the lazy loading timer for scroll utilities
     initializeLazyLoadingTimer(250);
 
-    if (contentRef.current && isDOMReady) {
+    // React owns this element's children via dangerouslySetInnerHTML and re-applies
+    // the (identical) innerHTML on some re-renders — observed ~0.7-0.85s after mount
+    // — which wipes every decoration and syntax-highlight token span we add. A fixed
+    // delay can't win that race reliably (that was the "color sometimes doesn't load"
+    // bug). So we decorate now AND re-decorate whenever React replaces the content.
+    // decorate() is idempotent — every mutation is guarded by an `.enhanced` class or
+    // an existing id — so re-running only does work after a real reset and never
+    // loops on our own descendant edits.
+    let cancelled = false;
+    let rescheduling = false;
+
+    const decorate = () => {
+      if (cancelled) return;
+      // Code blocks to syntax-highlight — collected here, highlighted in idle slices below.
+      const pendingHighlights: { code: Element; lang: string }[] = [];
+
       // Enhanced image handling with staged lazy loading (viewport first, then the rest)
-      const images = contentRef.current.querySelectorAll("img");
+      const images = root.querySelectorAll("img");
       type LazyEntry = {
         wrapper: HTMLDivElement;
         newImg: HTMLImageElement;
@@ -179,7 +203,7 @@ export function Mdx({ content }: MdxProps) {
       }
 
       // Enhanced heading styling and ID generation
-      const headings = contentRef.current.querySelectorAll(
+      const headings = root.querySelectorAll(
         "h1, h2, h3, h4, h5, h6",
       );
       headings.forEach((heading, index) => {
@@ -215,7 +239,7 @@ export function Mdx({ content }: MdxProps) {
       });
 
       // Enhanced code block styling
-      const codeBlocks = contentRef.current.querySelectorAll("pre");
+      const codeBlocks = root.querySelectorAll("pre");
       codeBlocks.forEach((pre) => {
         if (!pre.classList.contains("enhanced")) {
           pre.classList.add(
@@ -262,41 +286,10 @@ export function Mdx({ content }: MdxProps) {
 
               const actualLanguage = languageAliases[language] || language;
 
-              // Apply Prism.js syntax highlighting
-              try {
-                // Check if Prism is available and properly loaded
-                if (typeof Prism === "undefined" || !Prism.languages) {
-                  console.warn("Prism.js not properly loaded");
-                  code.classList.add(`language-${actualLanguage}`);
-                  return;
-                }
-
-                // Ensure the language is supported by Prism
-                if (Prism.languages[actualLanguage]) {
-                  const codeText = code.textContent || "";
-                  if (codeText.trim()) {
-                    const highlightedCode = Prism.highlight(
-                      codeText,
-                      Prism.languages[actualLanguage],
-                      actualLanguage,
-                    );
-                    code.innerHTML = highlightedCode;
-                  }
-                } else {
-                  // Fallback for unsupported languages - just add the language class
-                  console.warn(
-                    `Language '${actualLanguage}' not supported by Prism.js`,
-                  );
-                  code.classList.add(`language-${actualLanguage}`);
-                }
-              } catch (error) {
-                console.error(
-                  `Error highlighting code for language '${actualLanguage}':`,
-                  error,
-                );
-                // Fallback: just add the language class without highlighting
-                code.classList.add(`language-${actualLanguage}`);
-              }
+              // Defer the expensive Prism highlight to the idle, chunked pass
+              // below (avoids a long blocking task on posts with many blocks).
+              code.classList.add(`language-${actualLanguage}`);
+              pendingHighlights.push({ code, lang: actualLanguage });
 
               // Add language label
               const label = document.createElement("div");
@@ -367,28 +360,73 @@ export function Mdx({ content }: MdxProps) {
         }
       });
 
-      // Run Prism highlighting on any remaining code blocks that weren't manually processed
-      try {
-        // Only highlight code blocks that don't have the 'enhanced' class
-        const unprocessedCodeBlocks = contentRef.current.querySelectorAll(
-          "pre:not(.enhanced) code[class*='language-']",
-        );
-        unprocessedCodeBlocks.forEach((code) => {
-          const pre = code.closest("pre");
-          if (pre && !pre.classList.contains("enhanced")) {
-            try {
-              Prism.highlightElement(code as HTMLElement);
-            } catch (error) {
-              console.error("Error highlighting individual code block:", error);
-            }
+      // Highlight every code block, but spread the work across idle frames so it
+      // never runs as one long task. Syntax highlighting injects a <span> per
+      // token; doing every block in a single synchronous pass is what made the
+      // page (and the machine) stutter. An idle-time pass keeps the main thread
+      // responsive, and — unlike viewport-gated highlighting — it can't silently
+      // skip blocks when layout is deferred (the IntersectionObserver approach
+      // missed blocks on client-side navigation, where the post HTML is injected
+      // after layout settles and `content-visibility` blocks have no geometry
+      // yet). content-visibility on <pre> (globals.css) still defers the *paint*
+      // of off-screen blocks until they scroll into view, so highlighting them
+      // up front only builds DOM — it doesn't force layout/paint.
+      if (pendingHighlights.length > 0) {
+        const MAX_HIGHLIGHT_CHARS = 20000;
+        // Max code blocks highlighted per slice. Caps the longest single task so
+        // highlighting never freezes the main thread — important on the timeout
+        // (didTimeout) path, which would otherwise drain every remaining block in
+        // one synchronous burst and make the page (and navbar) briefly unclickable.
+        const SLICE_CAP = 5;
+
+        const highlightOne = (prism: any, code: Element, lang: string) => {
+          // A re-decorate (React reset the content) can detach the nodes a prior
+          // pump still holds; skip stale nodes so we only touch the live DOM.
+          if (!root.contains(code)) return;
+          const text = code.textContent || "";
+          if (!text.trim() || text.length > MAX_HIGHLIGHT_CHARS) return;
+          const grammar = prism.languages?.[lang];
+          if (!grammar) return;
+          try {
+            code.innerHTML = prism.highlight(text, grammar, lang);
+          } catch {
+            /* leave as plain text if highlighting fails */
           }
+        };
+
+        loadPrism().then((prism) => {
+          if (cancelled) return;
+          let idx = 0;
+
+          const pump = (deadline?: IdleDeadline) => {
+            if (cancelled) return;
+            let done = 0;
+            while (
+              idx < pendingHighlights.length &&
+              done < SLICE_CAP &&
+              (!deadline || deadline.timeRemaining() > 4 || deadline.didTimeout)
+            ) {
+              const item = pendingHighlights[idx++];
+              highlightOne(prism, item.code, item.lang);
+              done++;
+            }
+            if (idx < pendingHighlights.length) schedule();
+          };
+
+          const schedule = () => {
+            if (typeof window.requestIdleCallback === "function") {
+              window.requestIdleCallback(pump, { timeout: 2000 });
+            } else {
+              setTimeout(() => pump(), 16);
+            }
+          };
+
+          schedule();
         });
-      } catch (error) {
-        console.error("Error running Prism highlighting:", error);
       }
 
       // Enhanced blockquote styling
-      const blockquotes = contentRef.current.querySelectorAll("blockquote");
+      const blockquotes = root.querySelectorAll("blockquote");
       blockquotes.forEach((blockquote) => {
         if (!blockquote.classList.contains("enhanced")) {
           blockquote.classList.add(
@@ -403,7 +441,7 @@ export function Mdx({ content }: MdxProps) {
       });
 
       // Enhanced table styling
-      const tables = contentRef.current.querySelectorAll("table");
+      const tables = root.querySelectorAll("table");
       tables.forEach((table) => {
         if (!table.classList.contains("enhanced")) {
           table.classList.add("enhanced");
@@ -418,8 +456,32 @@ export function Mdx({ content }: MdxProps) {
           }
         }
       });
-    }
-  }, [content, isDOMReady]);
+
+    };
+
+    decorate();
+
+    // Re-decorate whenever React replaces the content (see note above). We watch
+    // only direct childList changes on the root: React's innerHTML reset swaps all
+    // direct children, while our own token/copy-button edits are deeper descendants
+    // and don't trigger this. The `pre:not(.enhanced)` check ignores the harmless
+    // direct-child mutations decorate() itself makes (wrapping tables/images).
+    const observer = new MutationObserver(() => {
+      if (cancelled || rescheduling) return;
+      if (!root.querySelector("pre:not(.enhanced)")) return;
+      rescheduling = true;
+      requestAnimationFrame(() => {
+        rescheduling = false;
+        decorate();
+      });
+    });
+    observer.observe(root, { childList: true });
+
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+    };
+  }, [content]);
 
   // Modify content to support Notion-style tables
   const processedContent = content.replace(
@@ -438,15 +500,23 @@ export function Mdx({ content }: MdxProps) {
   return (
     <div
       ref={contentRef}
-      className="mdx prose prose-lg dark:prose-invert max-w-none 
-        prose-headings:scroll-mt-24
-        prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-        prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-        prose-pre:bg-transparent prose-pre:p-0
-        prose-img:rounded-xl prose-img:shadow-lg
-        prose-blockquote:border-l-primary prose-blockquote:bg-muted/30
-        prose-th:bg-muted prose-th:font-semibold
-        prose-td:border-border prose-th:border-border"
+      className="mdx prose prose-lg dark:prose-invert max-w-none break-words
+        prose-headings:scroll-mt-24 prose-headings:font-semibold prose-headings:tracking-tight prose-headings:break-words
+        prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-5 prose-h2:pb-2 prose-h2:border-b prose-h2:border-border/70
+        prose-h3:text-xl prose-h3:mt-9 prose-h3:mb-3
+        prose-p:leading-[1.8] prose-p:text-foreground/90 prose-p:break-words
+        prose-li:leading-[1.75] prose-li:my-1.5 prose-li:marker:text-primary/70
+        prose-ul:my-5 prose-ol:my-5
+        prose-a:text-primary prose-a:font-medium prose-a:underline prose-a:decoration-primary/40 prose-a:underline-offset-2 prose-a:break-words hover:prose-a:decoration-primary
+        prose-strong:text-foreground prose-strong:font-semibold
+        prose-code:bg-primary/10 prose-code:text-primary prose-code:font-medium prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-[0.85em] prose-code:break-words prose-code:before:content-none prose-code:after:content-none
+        prose-pre:bg-transparent prose-pre:p-0 prose-pre:my-6 prose-pre:overflow-x-auto
+        prose-img:rounded-xl prose-img:shadow-lg prose-img:border prose-img:border-border
+        prose-blockquote:border-l-2 prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:rounded-r-lg prose-blockquote:px-4 prose-blockquote:py-1 prose-blockquote:not-italic prose-blockquote:text-muted-foreground prose-blockquote:font-normal
+        prose-hr:border-border
+        prose-table:text-sm
+        prose-th:bg-muted prose-th:font-semibold prose-th:text-foreground prose-th:border-border
+        prose-td:border-border"
       dangerouslySetInnerHTML={{ __html: processedContent }}
     />
   );

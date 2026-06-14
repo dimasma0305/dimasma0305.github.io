@@ -286,16 +286,19 @@ export async function convertNotionBlockToHtml(block: NotionBlock, folder: strin
     case "file":
     case "pdf":
       if (block.content?.url) {
-        const fileName = block.content?.name || "Download File"
+        const fileName = block.content?.name || "Download file"
         const safeUrl = sanitizeUrl(block.content.url)
-        const fileSize = block.content?.size ? ` (${formatFileSize(block.content.size)})` : ""
+        const fileSize = block.content?.size ? formatFileSize(block.content.size) : ""
+        const fileIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`
+        const dlIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>`
         return `<div class="notion-file">
           <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="notion-file-link">
-            <div class="notion-file-icon">📎</div>
-            <div class="notion-file-info">
-              <div class="notion-file-name">${escapeHtml(fileName)}</div>
-              <div class="notion-file-size">${escapeHtml(fileSize)}</div>
-            </div>
+            <span class="notion-file-icon">${fileIcon}</span>
+            <span class="notion-file-info">
+              <span class="notion-file-name">${escapeHtml(fileName)}</span>
+              ${fileSize ? `<span class="notion-file-size">${escapeHtml(fileSize)}</span>` : ""}
+            </span>
+            <span class="notion-file-dl">${dlIcon}</span>
           </a>
         </div>`
       }

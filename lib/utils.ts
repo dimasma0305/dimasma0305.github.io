@@ -6,7 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function withBasePath(path: string): string {
-  const basePath = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_BASE_PATH : ""
+  // `?? ""` guards against NEXT_PUBLIC_BASE_PATH being absent at build time: Next
+  // inlines an unset env var as the JS value `undefined`, and without this guard
+  // the template literal would stringify it into broken paths like
+  // "undefined/blog-index.json" (which 404, so posts fail to load).
+  const basePath = (process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_BASE_PATH : "") ?? ""
   return `${basePath}${path}`
 }
 
