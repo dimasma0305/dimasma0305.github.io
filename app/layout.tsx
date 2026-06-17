@@ -88,7 +88,7 @@ export const metadata: Metadata = {
     title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
     description:
       "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
-    creator: "dimasma__",
+    creator: "@dimasma__",
     images: [baseUrl + "/og-image.jpg"],
   },
   robots: {

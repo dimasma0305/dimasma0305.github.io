@@ -24,7 +24,7 @@ function safeJsonLd(data: unknown): string {
     .replace(/\u2029/g, '\\u2029')
 }
 export function generatePostMetadata({ post }: SEOProps): Metadata {
-  const postUrl = `${baseUrl}/posts/${post.slug}`
+  const postUrl = `${baseUrl}/posts/${post.slug}/`
   const imageUrl = post.coverImage?.startsWith('http') 
     ? post.coverImage 
     : `${baseUrl}${post.coverImage || '/og-image.jpg'}`
@@ -65,9 +65,11 @@ export function generatePostMetadata({ post }: SEOProps): Metadata {
     openGraph: {
       type: 'article',
       url: postUrl,
-      title: post.title,
+      // og/twitter titles do NOT inherit the metadata title.template, so the
+      // name is added explicitly — every share becomes a brand impression.
+      title: `${post.title} | Dimas Maulana`,
       description,
-      siteName: 'Dimas Maulana Blog',
+      siteName: 'Dimas Maulana',
       publishedTime: post.createdAt,
       modifiedTime: post.updatedAt,
       authors: [post.owner?.name || 'Dimas Maulana'],
@@ -83,7 +85,7 @@ export function generatePostMetadata({ post }: SEOProps): Metadata {
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.title,
+      title: `${post.title} | Dimas Maulana`,
       description,
       creator: '@dimasma__',
       images: [imageUrl],
@@ -122,7 +124,7 @@ export function generateBlogMetadata(): Metadata {
       url: `${baseUrl}/blog`,
       title: "Blog | Cybersecurity Research & CTF Writeups",
       description: "Explore cybersecurity research, CTF writeups, vulnerability analysis, and security tutorials by Dimas Maulana.",
-      siteName: 'Dimas Maulana Blog',
+      siteName: 'Dimas Maulana',
       images: [
         {
           url: `${baseUrl}/og-image.jpg`,
@@ -164,7 +166,7 @@ export function generateNotesMetadata(): Metadata {
       url: `${baseUrl}/notes`,
       title: "Notes | Technical Notes & Research",
       description: "Browse technical notes, research findings, and documentation on various topics including cybersecurity, programming, and system architecture.",
-      siteName: 'Dimas Maulana Notes',
+      siteName: 'Dimas Maulana',
       images: [
         {
           url: `${baseUrl}/og-image.jpg`,
@@ -197,7 +199,7 @@ export function generateNotesMetadata(): Metadata {
 
 // Enhanced JSON-LD Structured Data Component
 export function PostStructuredData({ post }: SEOProps) {
-  const postUrl = `${baseUrl}/posts/${post.slug}`
+  const postUrl = `${baseUrl}/posts/${post.slug}/`
   const imageUrl = post.coverImage?.startsWith('http') 
     ? post.coverImage 
     : `${baseUrl}${post.coverImage || '/og-image.jpg'}`
@@ -233,7 +235,7 @@ export function PostStructuredData({ post }: SEOProps) {
       url: baseUrl,
       image: {
         "@type": "ImageObject",
-        url: post.owner?.avatar_url || `${baseUrl}/avatar.jpg`,
+        url: post.owner?.avatar_url || "https://avatars.githubusercontent.com/u/92920739",
         caption: post.owner?.name || "Dimas Maulana"
       },
       sameAs: [
@@ -288,7 +290,7 @@ export function PostStructuredData({ post }: SEOProps) {
     about: post.categories?.map(category => ({
       "@type": "Thing",
       name: category,
-      sameAs: `${baseUrl}/categories/${encodeURIComponent(category.toLowerCase())}`
+      sameAs: `${baseUrl}/categories/${encodeURIComponent(category.toLowerCase())}/`
     })),
     mentions: post.categories?.map(category => ({
       "@type": "Thing",
@@ -344,7 +346,7 @@ export function PostStructuredData({ post }: SEOProps) {
     url: baseUrl,
     image: {
       "@type": "ImageObject",
-      url: post.owner?.avatar_url || `${baseUrl}/avatar.jpg`,
+      url: post.owner?.avatar_url || "https://avatars.githubusercontent.com/u/92920739",
       caption: "Dimas Maulana"
     },
     sameAs: [
@@ -365,10 +367,6 @@ export function PostStructuredData({ post }: SEOProps) {
     worksFor: {
       "@type": "Organization",
       name: "Independent"
-    },
-    alumniOf: {
-      "@type": "Organization",
-      name: "University"
     }
   }
 
@@ -381,19 +379,19 @@ export function PostStructuredData({ post }: SEOProps) {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: baseUrl
+        item: `${baseUrl}/`
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Blog",
-        item: `${baseUrl}/blog`
+        item: `${baseUrl}/blog/`
       },
       {
         "@type": "ListItem",
         position: 3,
         name: post.categories?.[0] || "Article",
-        item: post.categories?.[0] ? `${baseUrl}/categories/${encodeURIComponent(post.categories[0].toLowerCase())}` : `${baseUrl}/blog`
+        item: post.categories?.[0] ? `${baseUrl}/categories/${encodeURIComponent(post.categories[0].toLowerCase())}/` : `${baseUrl}/blog/`
       },
       {
         "@type": "ListItem",
@@ -404,37 +402,15 @@ export function PostStructuredData({ post }: SEOProps) {
     ]
   }
 
-  // FAQ structured data (if the post contains FAQ-like content)
-  const faqStructuredData = post.content?.includes('?') ? {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "What is this article about?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: post.excerpt || post.title
-        }
-      },
-      {
-        "@type": "Question",
-        name: "Who wrote this article?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `This article was written by ${post.owner?.name || "Dimas Maulana"}, a cybersecurity researcher.`
-        }
-      }
-    ]
-  } : null
-
-  // Combine all structured data
+  // Combine all structured data. (No synthetic FAQPage: emitting hardcoded Q&A
+  // that never appears on the page is structured-data spam and risks a manual
+  // action suppressing every post from rich results. The real FAQ lives on
+  // /services.)
   const combinedStructuredData = [
     articleStructuredData,
     websiteStructuredData,
     personStructuredData,
     breadcrumbStructuredData,
-    ...(faqStructuredData ? [faqStructuredData] : [])
   ]
 
   return (
@@ -823,7 +799,7 @@ export function NoteStructuredData({ slug }: { slug: string }) {
       url: baseUrl,
       image: {
         "@type": "ImageObject",
-        url: `${baseUrl}/avatar.jpg`,
+        url: "https://avatars.githubusercontent.com/u/92920739",
         caption: "Dimas Maulana"
       },
       sameAs: [
@@ -953,9 +929,9 @@ export async function generateNoteMetadata(slug: string): Promise<Metadata> {
       openGraph: {
         type: 'article',
         url: noteUrl,
-        title: note.title,
+        title: `${note.title} | Dimas Maulana`,
         description,
-        siteName: 'Dimas Maulana Notes',
+        siteName: 'Dimas Maulana',
         publishedTime: note.created_time,
         modifiedTime: note.last_edited_time,
         authors: [note.properties?.author || 'Dimas Maulana'],
@@ -971,7 +947,7 @@ export async function generateNoteMetadata(slug: string): Promise<Metadata> {
       },
       twitter: {
         card: 'summary_large_image',
-        title: note.title,
+        title: `${note.title} | Dimas Maulana`,
         description,
         creator: '@dimasma__',
         images: [imageUrl],

@@ -1,14 +1,19 @@
 const fs = require('fs')
 const path = require('path')
 
-// Site configuration
+// Site configuration. NOTE: this script runs inside `refresh-content`, BEFORE the
+// build step sets NEXT_PUBLIC_BASE_URL, so the canonical domain must be the
+// default here (env is honored if present). Pointing the feed at github.io sent
+// all syndication/link equity to the redirect host.
 const siteConfig = {
   name: "Dimas Maulana's Blog",
-  description: "Personal blog about technology, programming, and insights",
-  url: "https://dimasma0305.github.io",
+  description: "Cybersecurity research, CTF writeups, and security tutorials by Dimas Maulana.",
+  url: process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf",
   author: {
     name: "Dimas Maulana",
-    email: "dimas@example.com"
+    // Domain address rather than a personal inbox (avoids publishing a personal
+    // email in a public feed). Change if you prefer a real contact address.
+    email: "noreply@dimasc.tf"
   }
 }
 
@@ -30,63 +35,9 @@ function generateRssFeed() {
     const baseUrl = siteConfig.url
     const allItems = []
 
-    // Static pages with descriptions
-    const staticPages = [
-      {
-        title: 'Home - Dimas Maulana\'s Blog',
-        url: baseUrl,
-        description: 'Welcome to my personal blog about technology, programming, cybersecurity, and CTF writeups.',
-        pubDate: currentDate,
-        category: 'Static Page'
-      },
-      {
-        title: 'Blog - All Posts',
-        url: `${baseUrl}/blog`,
-        description: 'Browse all blog posts about cybersecurity, CTF writeups, web development, and programming.',
-        pubDate: currentDate,
-        category: 'Static Page'
-      },
-
-      {
-        title: 'Categories - Browse by Topic',
-        url: `${baseUrl}/categories`,
-        description: 'Browse blog posts organized by categories like CTF, Web Security, Programming, and more.',
-        pubDate: currentDate,
-        category: 'Static Page'
-      },
-      {
-        title: 'Search - Find Content',
-        url: `${baseUrl}/search`,
-        description: 'Search through all blog posts and content on the site.',
-        pubDate: currentDate,
-        category: 'Static Page'
-      },
-      {
-        title: 'Tools - Utilities',
-        url: `${baseUrl}/tools`,
-        description: 'Useful tools and utilities for developers and security researchers.',
-        pubDate: currentDate,
-        category: 'Tools'
-      },
-      {
-        title: 'CTF Calculator - Points Calculator',
-        url: `${baseUrl}/tools/ctf-calculator`,
-        description: 'Calculate CTF points and scores for cybersecurity competitions.',
-        pubDate: currentDate,
-        category: 'Tools'
-      }
-    ]
-
-    // Add static pages to items
-    staticPages.forEach(page => {
-      allItems.push({
-        title: page.title,
-        url: page.url,
-        description: page.description,
-        pubDate: page.pubDate,
-        categories: [page.category]
-      })
-    })
+    // A feed should contain real content only. Nav/utility pages (Home, Blog
+    // index, Categories, Search, Tools) as feed items get the feed
+    // deprioritized by aggregators, so they are intentionally excluded.
 
     // Read the blog index for dynamic content
     const indexPath = path.join(process.cwd(), 'public', 'blog-index.json')
@@ -100,26 +51,14 @@ function generateRssFeed() {
         .filter(post => post.properties?.published)
         .sort((a, b) => new Date(b.last_edited_time || b.created_time) - new Date(a.last_edited_time || a.created_time))
 
-      // Add blog posts to items
+      // Add blog posts to items (trailing slash matches the served URL)
       publishedPosts.forEach(post => {
         allItems.push({
           title: post.title,
-          url: `${baseUrl}/posts/${post.slug}`,
+          url: `${baseUrl}/posts/${post.slug}/`,
           description: post.excerpt || '',
           pubDate: new Date(post.last_edited_time || post.created_time).toUTCString(),
           categories: post.categories || []
-        })
-      })
-
-      // Get categories and add category pages
-      const taxonomyCategories = blogIndex.taxonomy?.categories || []
-      taxonomyCategories.forEach(category => {
-        allItems.push({
-          title: `${category.name} - Category`,
-          url: `${baseUrl}/categories/${encodeURIComponent(category.name.toLowerCase())}`,
-          description: `Browse all posts in the ${category.name} category (${category.count} posts).`,
-          pubDate: currentDate,
-          categories: ['Category Page', category.name]
         })
       })
     }
@@ -171,20 +110,7 @@ function generateRssFeed() {
     const rssPath = path.join(process.cwd(), 'public', 'rss.xml')
     fs.writeFileSync(rssPath, rssXml, 'utf8')
     
-    console.log(`✅ RSS feed generated successfully with ${allItems.length} items`)
-    console.log(`📊 Breakdown:`)
-    console.log(`   - Static pages: ${staticPages.length}`)
-    
-    if (fs.existsSync(indexPath)) {
-      const indexContent = fs.readFileSync(indexPath, 'utf8')
-      const blogIndex = JSON.parse(indexContent)
-      const publishedPosts = (blogIndex.posts?.published || []).filter(post => post.properties?.published)
-      const categories = blogIndex.taxonomy?.categories || []
-      
-      console.log(`   - Blog posts: ${publishedPosts.length}`)
-      console.log(`   - Category pages: ${categories.length}`)
-    }
-    
+    console.log(`✅ RSS feed generated successfully with ${allItems.length} posts`)
     console.log(`📄 RSS file saved to: ${rssPath}`)
     
   } catch (error) {

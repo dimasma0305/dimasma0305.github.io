@@ -133,7 +133,9 @@ export default async function PostPage({ params }: PostPageProps) {
         owner: {
           id: "author",
           name: "Dimas Maulana",
-          avatar_url: "/avatar.jpg",
+          // Real, stable avatar. /avatar.jpg does not exist, so this previously
+          // emitted a 404 image into the Article/Person JSON-LD.
+          avatar_url: "https://avatars.githubusercontent.com/u/92920739",
           type: "person",
         },
       }
