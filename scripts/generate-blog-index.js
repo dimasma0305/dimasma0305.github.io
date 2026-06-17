@@ -59,36 +59,47 @@ function estimateReadingTime(content) {
   return Math.ceil(wordCount / 200)
 }
 
+// Public URL base ("/posts" or "/notes") derived from POSTS_DIR (this script is
+// reused for notes); hardcoding "/posts" mis-pathed every notes thumbnail.
+const PUBLIC_MEDIA_BASE =
+  '/' +
+  String(POSTS_DIR)
+    .replace(/\\/g, '/')
+    .replace(/^\.?\/?public\/?/, '')
+    .replace(/^\/+|\/+$/g, '');
+
 // Helper function to get the correct image path
 function getImagePath(folderName, imageName) {
   const basePath = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_BASE_PATH || '' : '';
-  return `${basePath}/posts/${folderName}/${imageName}`;
+  return `${basePath}${PUBLIC_MEDIA_BASE}/${folderName}/${imageName}`;
 }
 
-// Helper function to extract featured image
-function extractFeaturedImage(post) {
-  if (post.featured_image) {
-    return post.featured_image;
-  }
+function isLocalPath(u) {
+  return typeof u === 'string' && u.startsWith('/') && !u.startsWith('//');
+}
 
-  // Check if there's a featured image in properties
-  if (post.properties && post.properties.featured_image && post.properties.featured_image.length > 0) {
-    return post.properties.featured_image[0].url;
-  }
+// Pick a card thumbnail that will NOT break. Notion cover/property/content URLs
+// are signed S3 links that expire ~1h after the build, so this never returns a
+// remote URL: it prefers paths the content generator already localized, then
+// any cover/featured/og file that actually exists on disk, then the first
+// localized inline image, and finally null (the UI shows a placeholder).
+function extractFeaturedImage(post, folder) {
+  if (isLocalPath(post.featured_image)) return post.featured_image;
+  if (isLocalPath(post.og_image)) return post.og_image;
 
-  // Check cover image
-  if (post.cover) {
-    if (post.cover.type === "external") {
-      return post.cover.external.url;
-    } else if (post.cover.type === "file") {
-      return post.cover.file.url;
+  if (folder) {
+    for (const base of ['cover', 'featured-image', 'og-image']) {
+      for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'gif']) {
+        if (fs.existsSync(path.join(POSTS_DIR, folder, `${base}.${ext}`))) {
+          return getImagePath(folder, `${base}.${ext}`);
+        }
+      }
     }
   }
 
-  // Look for first image in content
-  if (post.content && Array.isArray(post.content)) {
+  if (Array.isArray(post.content)) {
     for (const block of post.content) {
-      if (block.type === "image" && block.content && block.content.url) {
+      if (block.type === 'image' && isLocalPath(block.content && block.content.url)) {
         return block.content.url;
       }
     }
@@ -285,7 +296,7 @@ async function generateBlogIndex() {
         slug: postData.meta.slug || folder,
         folder: folder,
         excerpt: extractExcerpt(post.content),
-        featured_image: extractFeaturedImage(post),
+        featured_image: extractFeaturedImage(post, folder),
         created_time: post.created_time,
         last_edited_time: post.last_edited_time,
         reading_time: estimateReadingTime(post.content),
