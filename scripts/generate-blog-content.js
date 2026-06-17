@@ -6,6 +6,11 @@ const https = require('https');
 const http = require('http');
 const { URL } = require('url');
 const net = require('net');
+const dns = require('dns').promises;
+
+// Hard cap on a single image download to keep a hostile/huge response from
+// exhausting CI runner memory (applies to cover and inline images alike).
+const MAX_DOWNLOAD_BYTES = 25 * 1024 * 1024; // 25 MB
 
 // Configuration
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
@@ -83,10 +88,21 @@ function createSlug(title) {
     .substring(0, 50);
 }
 
+// Public URL base ("/posts" or "/notes") derived from OUTPUT_DIR. This script is
+// reused for notes (POSTS_DIR=public/notes); hardcoding "/posts" previously
+// mis-pathed every notes image to a non-existent /posts/<folder>/... URL, so
+// notes images 404'd even after being downloaded.
+const PUBLIC_MEDIA_BASE =
+  '/' +
+  String(OUTPUT_DIR)
+    .replace(/\\/g, '/')
+    .replace(/^\.?\/?public\/?/, '')
+    .replace(/^\/+|\/+$/g, '');
+
 // Helper function to get the correct image path
 function getImagePath(folderName, imageName) {
   const basePath = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_BASE_PATH || '' : '';
-  return `${basePath}/posts/${folderName}/${imageName}`;
+  return `${basePath}${PUBLIC_MEDIA_BASE}/${folderName}/${imageName}`;
 }
 
 // Helper function to get clean file extension from URL or filename
@@ -129,6 +145,10 @@ const ALLOWED_IMAGE_HOST_SUFFIXES = [
 ];
 
 function isBlockedIpLiteral(hostname) {
+  // URL.hostname wraps IPv6 literals in brackets ("[::1]"); strip them so
+  // net.isIP and the checks below see the bare address (otherwise "[::1]"
+  // parses as non-IP and slips past the loopback/link-local block).
+  hostname = hostname.replace(/^\[|\]$/g, '');
   const ipVersion = net.isIP(hostname);
   if (ipVersion === 0) return false; // not a bare IP literal
   // IPv6: reject loopback/link-local/unique-local.
@@ -166,8 +186,59 @@ function assertAllowedDownloadUrl(parsedUrl) {
   return parsedUrl;
 }
 
-// Helper function to download image
-function downloadImage(urlString) {
+// Looser guard for INLINE content images. Notion stores inline media either as
+// expiring S3 signed URLs (the main cause of "images stopped rendering") or as
+// external URLs the author pasted (imgur/github/cdnjs/etc. that hotlink-break).
+// To make every image render we mirror both, so we cannot require the host
+// allowlist. We still enforce the SSRF controls that matter for a build-time
+// fetch whose bytes are published: https-only and a block on private / loopback
+// / link-local / CGNAT IP literals (cloud metadata + intranet). The IP-literal
+// block is the load-bearing control here.
+function assertSafeInlineDownloadUrl(parsedUrl) {
+  if (parsedUrl.protocol !== 'https:') {
+    throw new Error(`Refusing non-https image URL: ${parsedUrl.protocol}`);
+  }
+  const hostname = parsedUrl.hostname.toLowerCase();
+  if (isBlockedIpLiteral(hostname)) {
+    throw new Error(`Refusing private/loopback image host: ${hostname}`);
+  }
+  return parsedUrl;
+}
+
+// The inline guard dropped the host allowlist, so a hostname could resolve to a
+// private/internal IP (DNS-rebind / SSRF). Resolve every A/AAAA record and block
+// if any is private. (Residual TOCTOU between this lookup and connect is accepted
+// for a build-time fetch of the owner's own content; the allowlisted cover path
+// is unaffected.)
+async function assertResolvedHostPublic(hostname) {
+  const records = await dns.lookup(hostname, { all: true });
+  for (const { address } of records) {
+    if (isBlockedIpLiteral(address)) {
+      throw new Error(`Refusing host resolving to private IP: ${hostname} -> ${address}`);
+    }
+  }
+}
+
+// Identify a buffer by magic bytes. Only true raster images are localized; an
+// SVG/HTML/script payload (which would become same-origin stored XSS once
+// rehosted on dimasc.tf, and which a lying Content-Type/extension could smuggle
+// past a name-based check) returns null and is left as an external hotlink.
+function sniffRasterImageExt(buf) {
+  if (!buf || buf.length < 12) return null;
+  if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47) return 'png';
+  if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return 'jpg';
+  if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46) return 'gif'; // GIF8
+  if (
+    buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 && // RIFF
+    buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50 // WEBP
+  ) return 'webp';
+  return null;
+}
+
+// Helper function to download image. `assertFn` selects the guard: cover/featured
+// images use the strict host allowlist; inline content images use the looser
+// (still anti-SSRF) inline guard.
+function downloadImage(urlString, assertFn = assertAllowedDownloadUrl) {
   return new Promise((resolve, reject) => {
     const handleResponse = (response) => {
       // Handle redirects
@@ -180,7 +251,7 @@ function downloadImage(urlString) {
         // Handle relative redirects
         const finalUrl = new URL(redirectUrl, urlString);
         try {
-          assertAllowedDownloadUrl(finalUrl);
+          assertFn(finalUrl);
         } catch (err) {
           reject(err);
           return;
@@ -216,7 +287,16 @@ function downloadImage(urlString) {
       }
 
       const chunks = [];
-      response.on('data', (chunk) => chunks.push(chunk));
+      let received = 0;
+      response.on('data', (chunk) => {
+        received += chunk.length;
+        if (received > MAX_DOWNLOAD_BYTES) {
+          response.destroy();
+          reject(new Error(`Image exceeds ${MAX_DOWNLOAD_BYTES} byte limit`));
+          return;
+        }
+        chunks.push(chunk);
+      });
       response.on('end', () => {
         const buffer = Buffer.concat(chunks);
         // Return both the buffer and the content type extension
@@ -227,7 +307,7 @@ function downloadImage(urlString) {
 
     try {
       const url = new URL(urlString);
-      assertAllowedDownloadUrl(url);
+      assertFn(url);
       const client = https;
       const options = {
         hostname: url.hostname,
@@ -241,6 +321,54 @@ function downloadImage(urlString) {
       reject(new Error(`Invalid URL: ${error.message}`));
     }
   });
+}
+
+// Download every inline image block to the post directory and rewrite its URL
+// to the local copy, so a published page never depends on an expiring Notion
+// signed URL (or a fragile external hotlink). Recurses into child blocks
+// (callouts, toggles, list items can all nest images). Filenames are keyed on
+// the stable Notion block id so rebuilds are deterministic (no churn). On any
+// download failure the original URL is left in place so the page can still try.
+async function localizeImagesInBlocks(blocks, postDir, folderName) {
+  if (!Array.isArray(blocks)) return;
+
+  for (const block of blocks) {
+    if (
+      block &&
+      block.type === 'image' &&
+      block.content &&
+      typeof block.content.url === 'string' &&
+      /^https:\/\//i.test(block.content.url)
+    ) {
+      const srcUrl = block.content.url;
+      try {
+        await assertResolvedHostPublic(new URL(srcUrl).hostname.toLowerCase());
+        const { buffer } = await downloadImage(srcUrl, assertSafeInlineDownloadUrl);
+        // Determine the type from the bytes, not the URL/Content-Type. Anything
+        // that is not a real raster image (e.g. SVG, which would execute scripts
+        // same-origin if opened directly) is left as its external URL.
+        const ext = sniffRasterImageExt(buffer);
+        if (!ext) {
+          console.log(`↪︎  Kept external (not a raster image): ${srcUrl}`);
+          continue;
+        }
+        const safeId = String(block.id || '').replace(/[^a-zA-Z0-9]/g, '') || 'img';
+        const filename = `media-${safeId}.${ext}`;
+        fs.writeFileSync(path.join(postDir, filename), buffer);
+        block.content.url = getImagePath(folderName, filename);
+        // The expiry no longer applies to a local copy.
+        delete block.content.expiry_time;
+        console.log(`🖼️  Localized inline image: ${folderName}/${filename}`);
+      } catch (error) {
+        console.error(`⚠️  Could not localize inline image (${block.id}): ${error.message}`);
+        // Leave the original URL so the browser still attempts to load it.
+      }
+    }
+
+    if (block && Array.isArray(block.children) && block.children.length) {
+      await localizeImagesInBlocks(block.children, postDir, folderName);
+    }
+  }
 }
 
 // Function to process different block types
@@ -671,7 +799,7 @@ async function processSinglePage(page, pageIndex, totalPages) {
         console.log(`📸 Saved featured image: ${imagePath}`);
 
         // Update the featured image path in the post metadata
-        blogPost.featured_image = `/posts/${folderName}/featured-image.${imageExtension}`;
+        blogPost.featured_image = getImagePath(folderName, `featured-image.${imageExtension}`);
         blogPost.og_image = blogPost.featured_image;
       } catch (error) {
         console.error(`❌ Failed to save featured image for ${folderName}:`, error.message);
@@ -697,7 +825,7 @@ async function processSinglePage(page, pageIndex, totalPages) {
           console.log(`📸 Saved OG image: ${imagePath}`);
 
           // Add the image path to the post metadata
-          blogPost.og_image = `/posts/${folderName}/og-image.${imageExtension}`;
+          blogPost.og_image = getImagePath(folderName, `og-image.${imageExtension}`);
           if (!blogPost.featured_image) {
             blogPost.featured_image = blogPost.og_image;
           }
@@ -706,6 +834,11 @@ async function processSinglePage(page, pageIndex, totalPages) {
         }
       }
     }
+
+    // Download inline content images and rewrite their URLs to local copies so
+    // the published page never references an expiring Notion signed URL. Runs
+    // after the cover/OG handling above (which still fetches from the live URL).
+    await localizeImagesInBlocks(blogPost.content, postDir, folderName);
 
     // Save individual post JSON
     const postFile = path.join(postDir, 'post.json');

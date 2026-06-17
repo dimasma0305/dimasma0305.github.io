@@ -87,6 +87,16 @@ export function formatFileSize(bytes: number): string {
 
 // Utility function to sanitize URLs
 export function sanitizeUrl(url: string): string {
+  if (!url) return ''
+  // Allow root-relative paths. Build-time image localization rewrites Notion
+  // media to local copies under /posts/... or /notes/..., and those would
+  // otherwise fail `new URL()` (no origin) and be blanked to "". Permit a
+  // SINGLE leading slash only — reject protocol-relative "//host" and the
+  // backslash variant browsers may treat as "//" — and forbid characters that
+  // could break out of the double-quoted src/href attribute (stored XSS).
+  if (/^\/(?![/\\])[^"'<>\s]*$/.test(url)) {
+    return url
+  }
   try {
     const parsedUrl = new URL(url)
     if (['http:', 'https:'].includes(parsedUrl.protocol)) {
