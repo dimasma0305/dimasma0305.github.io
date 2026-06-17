@@ -34,12 +34,20 @@ const CoverImage = memo(({
     : withBasePath(coverImage)
 
   return (
-    <div className="relative w-full h-48 overflow-hidden">
+    <div className="relative w-full h-48 overflow-hidden bg-muted">
+      {/* A blurred, zoomed copy of the cover fills the box so there are no empty
+          bars; the real cover sits on top with object-contain, fully visible and
+          never cropped. The backdrop is decorative (the foreground carries alt). */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 scale-110 bg-cover bg-center blur-2xl opacity-60 transition-transform duration-300 group-hover:scale-125"
+        style={{ backgroundImage: `url("${imageSrc}")` }}
+      />
       <FallbackImage
         src={imageSrc}
         alt={title}
         fill
-        className="object-cover transition-transform duration-300 group-hover:scale-105"
+        className="object-contain transition-transform duration-300 group-hover:scale-105"
         fallbackSrc={withBasePath("/placeholder.svg?height=192&width=384")}
       />
       {iconEmoji && (
