@@ -223,7 +223,7 @@ export function ProjectsSection() {
                             {project.title}
                             {hoveredCard === index && (
                               <span>
-                                <Sparkles className="w-4 h-4 text-yellow-500" />
+                                <Sparkles className="w-4 h-4 text-primary" />
                               </span>
                             )}
                           </span>

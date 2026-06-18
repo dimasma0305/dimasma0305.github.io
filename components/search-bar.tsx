@@ -32,22 +32,32 @@ export function SearchBar({ value = "", onChange, placeholder = "Search...", cla
 
   return (
     <div className={cn("relative", className)}>
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Search
+        aria-hidden
+        className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
+      />
       <Input
         type="search"
         placeholder={placeholder}
         value={localValue}
         onChange={(e) => handleChange(e.target.value)}
-        className="pl-10 pr-10"
+        onKeyDown={(e) => {
+          if (e.key === "Escape" && localValue) {
+            e.preventDefault()
+            handleClear()
+          }
+        }}
+        className="pl-10 pr-10 [&::-webkit-search-cancel-button]:appearance-none"
       />
       {localValue && (
         <Button
           variant="ghost"
           size="sm"
           onClick={handleClear}
-          className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted"
+          aria-label="Clear search"
+          className="absolute right-1 top-1/2 transform -translate-y-1/2 h-9 w-9 p-0 hover:bg-muted"
         >
-          <X className="h-4 w-4" />
+          <X aria-hidden className="h-4 w-4" />
         </Button>
       )}
     </div>

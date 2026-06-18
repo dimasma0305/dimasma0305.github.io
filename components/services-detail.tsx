@@ -134,6 +134,24 @@ export function ServicesDetail() {
             </p>
           </div>
 
+          <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-3">
+            <Link
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors duration-[var(--dur-base)] ease-[var(--ease-out)] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <MessageCircle className="h-4 w-4" aria-hidden />
+              Start a review
+            </Link>
+            <Link
+              href="#start-a-review"
+              className="rounded-sm text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              See all contact options
+            </Link>
+          </div>
+
           <div className="mt-7">
             <p className="text-sm font-medium">
               Every project ships as a full report, in Markdown and PDF:
@@ -143,18 +161,18 @@ export function ServicesDetail() {
                 href={SAMPLE_PDF}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border border-primary/50 px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10"
+                className="inline-flex items-center gap-2 rounded-md border border-primary/50 px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                <FileText className="h-4 w-4" />
+                <FileText className="h-4 w-4" aria-hidden />
                 Sample report (PDF)
               </Link>
               <Link
                 href={SAMPLE_MD}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
+                className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                <FileCode2 className="h-4 w-4" />
+                <FileCode2 className="h-4 w-4" aria-hidden />
                 Sample report (Markdown)
               </Link>
             </div>
@@ -243,7 +261,7 @@ export function ServicesDetail() {
               key={faq.q}
               className="group rounded-lg glass-card px-5 py-4 [&_summary]:cursor-pointer"
             >
-              <summary className="flex items-center justify-between gap-4 font-medium list-none">
+              <summary className="flex items-center justify-between gap-4 rounded-sm font-medium list-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                 {faq.q}
                 <span
                   aria-hidden="true"
@@ -261,7 +279,10 @@ export function ServicesDetail() {
       </div>
 
       {/* CTA */}
-      <div className="mt-12 flex flex-col items-center gap-3 text-center">
+      <div
+        id="start-a-review"
+        className="mt-12 flex scroll-mt-24 flex-col items-center gap-3 text-center"
+      >
         <h2 className="text-xl font-semibold">Start a review</h2>
         <p className="max-w-md text-sm text-muted-foreground">
           Message me to scope your project, then share your code however is
@@ -269,22 +290,22 @@ export function ServicesDetail() {
         </p>
         <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
           <Link
-            href={DISCORD_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-md border border-primary/50 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10"
-          >
-            <DiscordIcon className="w-4 h-4" />
-            Discord
-          </Link>
-          <Link
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-md border border-primary/50 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors duration-[var(--dur-base)] ease-[var(--ease-out)] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            <MessageCircle className="w-4 h-4" />
+            <MessageCircle className="w-4 h-4" aria-hidden />
             WhatsApp
+          </Link>
+          <Link
+            href={DISCORD_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-md border border-primary/50 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <DiscordIcon className="w-4 h-4" />
+            Discord
           </Link>
         </div>
       </div>

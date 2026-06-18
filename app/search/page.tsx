@@ -143,14 +143,15 @@ function SearchPageContent() {
       </div>
 
       {searchQuery && (
-        <div className="mb-6">
+        <div className="mb-6" aria-live="polite" role="status">
           <div className="flex items-center gap-2 mb-4">
             <p className="text-lg font-medium">
               {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for "{searchQuery}"
             </p>
-            <button 
+            <button
+              type="button"
               onClick={handleClearSearch}
-              className="text-sm text-primary hover:underline"
+              className="text-sm text-primary rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               Clear search
             </button>

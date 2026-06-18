@@ -38,7 +38,7 @@ export default function NoteCard({ note, className }: NoteCardProps) {
           )}
 
           {/* Title */}
-          <h3 className="text-lg font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="text-xl font-bold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             {note.title}
           </h3>
 

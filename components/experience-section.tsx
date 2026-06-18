@@ -98,7 +98,7 @@ export function ExperienceSection() {
                         {experience.title}
                       </CardTitle>
                       {experience.highlight && hoveredCard === index && (
-                        <Sparkles className="w-4 h-4 text-yellow-500" />
+                        <Sparkles className="w-4 h-4 text-primary" />
                       )}
                     </div>
                     <div>

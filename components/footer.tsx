@@ -22,34 +22,34 @@ export function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/#about" className="text-muted-foreground hover:text-foreground">
+                <Link href="/#about" className="text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/#projects" className="text-muted-foreground hover:text-foreground">
+                <Link href="/#projects" className="text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
                   Projects
                 </Link>
               </li>
               <li>
-                <Link href="/#experience" className="text-muted-foreground hover:text-foreground">
+                <Link href="/#experience" className="text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
                   Experience
                 </Link>
               </li>
               <li>
-                <Link href={"/services"} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                <Link href={"/services"} className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
                   <ShieldCheck className="w-4 h-4" />
                   Services
                 </Link>
               </li>
               <li>
-                <Link href={"/blog"} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                <Link href={"/blog"} className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
                   <FileText className="w-4 h-4" />
                   Blog
                 </Link>
               </li>
               <li>
-                <Link href={"/tools"} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                <Link href={"/tools"} className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
                   <Wrench className="w-4 h-4" />
                   Tools
                 </Link>
@@ -65,7 +65,7 @@ export function Footer() {
                 href="https://github.com/dimasma0305"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
               >
                 <Github className="w-5 h-5" />
                 <span>GitHub</span>
@@ -74,7 +74,7 @@ export function Footer() {
                 href="https://twitter.com/dimasma__"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
               >
                 <Twitter className="w-5 h-5" />
                 <span>Twitter</span>
@@ -83,14 +83,14 @@ export function Footer() {
                 href="https://www.linkedin.com/in/solderet/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
               >
                 <Linkedin className="w-5 h-5" />
                 <span>LinkedIn</span>
               </Link>
               <Link
                 href="mailto:dimasmaulana0305@gmail.com"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
               >
                 <Mail className="w-5 h-5" />
                 <span>Email</span>
@@ -107,7 +107,7 @@ export function Footer() {
                   href="https://github.com/TCP1P"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                  className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
                 >
                   <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
                   TCP1P
@@ -118,7 +118,7 @@ export function Footer() {
                   href="https://github.com/project-sekai-ctf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                  className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
                 >
                   <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
                   Project Sekai CTF
@@ -129,7 +129,7 @@ export function Footer() {
                   href="https://ctftime.org/team/58979/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                  className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
                 >
                   <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
                   P1G SEKAI

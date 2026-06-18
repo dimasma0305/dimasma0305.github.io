@@ -84,8 +84,8 @@ export function NavigationLoader() {
       aria-hidden="true"
     >
       <div
-        className="h-0.5 bg-primary transition-[width,opacity] duration-150 ease-out"
-        style={{ width: `${progress}%`, opacity: isActive ? 1 : 0 }}
+        className="h-0.5 w-full origin-left bg-primary [transition:transform_var(--dur-fast)_var(--ease-out),opacity_var(--dur-fast)_var(--ease-out)]"
+        style={{ transform: `scaleX(${progress / 100})`, opacity: isActive ? 1 : 0 }}
       />
     </div>
   )

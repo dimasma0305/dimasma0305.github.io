@@ -5,7 +5,8 @@ import { usePosts } from "@/hooks/use-posts"
 import { getAllCategories, getPostsByCategory } from "@/lib/posts-client"
 import PostCard from "@/components/post-card"
 import { SearchBar } from "@/components/search-bar"
-import { LoadingSpinner } from "@/components/loading-spinner"
+import { SectionHeader } from "@/components/section-header"
+import { CardSkeleton } from "@/components/card-skeleton"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
@@ -60,9 +61,10 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
   if (loading) {
     return (
       <div className="container px-4 py-12 mx-auto max-w-7xl">
-        <div className="flex flex-col items-center justify-center py-12">
-          <LoadingSpinner />
-          <p className="text-sm text-muted-foreground mt-4">Loading posts...</p>
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
         </div>
       </div>
     )
@@ -104,17 +106,28 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
 
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
-      <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-3xl font-bold tracking-tight break-words">
-          Category: {actualCategoryName}
-        </h1>
-        <SearchBar
-          value={searchQuery}
-          onChange={handleSearch}
-          placeholder={`Search in ${actualCategoryName}...`}
-          className="w-full sm:w-64"
-        />
-      </div>
+      <Link
+        href="/categories"
+        className="mb-6 -ml-2 inline-flex items-center gap-2 rounded-md p-2 text-sm font-medium text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Categories
+      </Link>
+
+      <SectionHeader
+        titleAs="h1"
+        eyebrow="Category"
+        title={actualCategoryName}
+        subtitle={`${categoryPosts.length} post${categoryPosts.length !== 1 ? "s" : ""}`}
+        action={
+          <SearchBar
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder={`Search in ${actualCategoryName}...`}
+            className="w-full sm:w-64"
+          />
+        }
+      />
 
       {searchQuery && (
         <div className="mb-6 flex items-center gap-2">

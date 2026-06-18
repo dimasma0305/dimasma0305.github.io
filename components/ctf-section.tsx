@@ -29,7 +29,7 @@ const achievements = [
     event: "XCTF 2025 Professional Division",
     team: "Individual",
     date: "November 2025",
-    icon: <Trophy className="w-6 h-6 text-yellow-500" />,
+    icon: <Trophy className="w-6 h-6 text-primary" />,
     issuer: "XCTF",
     points: 5000,
     difficulty: "Legendary",
@@ -39,7 +39,7 @@ const achievements = [
     event: "idekCTF 2024",
     team: "P1G SEKAI",
     date: "August 2024",
-    icon: <Trophy className="w-6 h-6 text-yellow-500" />,
+    icon: <Trophy className="w-6 h-6 text-primary" />,
     points: 5000,
     difficulty: "Legendary",
   },
@@ -48,7 +48,7 @@ const achievements = [
     event: "Backdoor CTF 2024",
     team: "Ada Indonesia Coy",
     date: "December 2024",
-    icon: <Trophy className="w-6 h-6 text-yellow-500" />,
+    icon: <Trophy className="w-6 h-6 text-primary" />,
     points: 4800,
     difficulty: "Legendary",
   },
@@ -57,7 +57,7 @@ const achievements = [
     event: "Cyber Jawara International 2024",
     team: "TCP1P x SNI x MAGER",
     date: "October 2024",
-    icon: <Trophy className="w-6 h-6 text-yellow-500" />,
+    icon: <Trophy className="w-6 h-6 text-primary" />,
     points: 4750,
     difficulty: "Legendary",
   },
@@ -66,7 +66,7 @@ const achievements = [
     event: "Seleknas Cyber Security 2024",
     team: "Team",
     date: "November 2024",
-    icon: <Trophy className="w-6 h-6 text-yellow-500" />,
+    icon: <Trophy className="w-6 h-6 text-primary" />,
     issuer: "KEMNAKER",
     points: 4500,
     difficulty: "Epic",
@@ -76,7 +76,7 @@ const achievements = [
     event: "Patchstack February 2025 Bug Bounty Program",
     team: "Individual",
     date: "February 2025",
-    icon: <Trophy className="w-6 h-6 text-yellow-500" />,
+    icon: <Trophy className="w-6 h-6 text-primary" />,
     issuer: "Patchstack",
     points: 4200,
     difficulty: "Epic",
@@ -86,7 +86,7 @@ const achievements = [
     event: "NCW 2023",
     team: "TEAM",
     date: "December 2023",
-    icon: <Trophy className="w-6 h-6 text-yellow-500" />,
+    icon: <Trophy className="w-6 h-6 text-primary" />,
     issuer: "PETIR Cyber Security",
     points: 4000,
     difficulty: "Epic",
@@ -96,7 +96,7 @@ const achievements = [
     event: "TPCTF 2025",
     team: "Project Sekai",
     date: "March 2025",
-    icon: <Award className="w-6 h-6 text-gray-400" />,
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
     points: 3800,
     difficulty: "Rare",
   },
@@ -105,7 +105,7 @@ const achievements = [
     event: "ISITDTU CTF 2024 Finals Attack & Defense",
     team: "Project Sekai",
     date: "December 2024",
-    icon: <Award className="w-6 h-6 text-gray-400" />,
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
     issuer: "ISITDTU",
     points: 3700,
     difficulty: "Rare",
@@ -115,7 +115,7 @@ const achievements = [
     event: "Patchstack Alliance CTF S02E01 - WordCamp Asia",
     team: "Individual",
     date: "February 2025",
-    icon: <Award className="w-6 h-6 text-gray-400" />,
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
     issuer: "Patchstack",
     points: 3600,
     difficulty: "Rare",
@@ -125,7 +125,7 @@ const achievements = [
     event: "THE SAS CON CTF 2024",
     team: "P1G SEKAI",
     date: "October 2024",
-    icon: <Award className="w-6 h-6 text-gray-400" />,
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
     issuer: "KASPERSKY",
     points: 3500,
     difficulty: "Rare",
@@ -340,8 +340,8 @@ export function CTFSection() {
                                   </div>
                                 )}
                                 <div className="flex items-center gap-1 mt-2">
-                                  <Zap className="w-3 h-3 text-yellow-500" />
-                                  <span className="text-yellow-500 text-xs">
+                                  <Zap className="w-3 h-3 text-primary" />
+                                  <span className="text-primary text-xs">
                                     {achievement.points} XP
                                   </span>
                                 </div>
@@ -413,8 +413,8 @@ export function CTFSection() {
                               </div>
                             )}
                             <div className="flex items-center gap-1 mt-2">
-                              <Zap className="w-3 h-3 text-yellow-500" />
-                              <span className="text-yellow-500 text-xs">
+                              <Zap className="w-3 h-3 text-primary" />
+                              <span className="text-primary text-xs">
                                 {achievement.points} XP
                               </span>
                             </div>
@@ -453,7 +453,7 @@ export function CTFSection() {
                             </div>
                           </div>
                           <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-full bg-primary/20 shrink-0">
-                            <Star className="w-4 h-4 text-yellow-500" />
+                            <Star className="w-4 h-4 text-primary" />
                             <span className="whitespace-nowrap">
                               LVL {team.level}
                             </span>
@@ -549,7 +549,7 @@ export function CTFSection() {
                                 </div>
                               </div>
                               <div className="flex items-center gap-1 px-2 py-1 text-sm rounded-full bg-primary/20 shrink-0">
-                                <Star className="w-4 h-4 text-yellow-500" />
+                                <Star className="w-4 h-4 text-primary" />
                                 <span className="whitespace-nowrap">
                                   LVL {team.level}
                                 </span>
@@ -641,7 +641,7 @@ export function CTFSection() {
                   className="w-16 h-16 rounded-full border-2 border-primary/50 shadow-lg"
                 />
                 <div className="absolute -top-1 -right-1">
-                  <Sparkles className="w-6 h-6 text-yellow-500" />
+                  <Sparkles className="w-6 h-6 text-primary" />
                 </div>
               </div>
               <h3 className="mb-2 text-xl font-semibold">Let&apos;s work together</h3>

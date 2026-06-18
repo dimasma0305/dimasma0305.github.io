@@ -89,7 +89,7 @@ export function HeroSection() {
 
               <p
                 key={activeTab}
-                className="text-xl sm:text-2xl text-muted-foreground font-light animate-in fade-in duration-200"
+                className="text-xl sm:text-2xl lg:text-3xl text-muted-foreground font-light animate-in fade-in duration-200"
               >
                 {active.subtitle}
               </p>

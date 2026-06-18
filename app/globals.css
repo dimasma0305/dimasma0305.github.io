@@ -80,6 +80,12 @@ html {
     --dur-base: 250ms;
     --dur-slow: 400ms;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    /* Shared inset top-highlight for glass surfaces (one source of truth) */
+    --glass-inset: 210 40% 98%;
+    /* Hacker-persona retro terminal — deliberate specialized hues kept out of
+       the general palette so the single blue accent stays the only brand color */
+    --terminal-surface: 222 49% 8%;
+    --terminal-accent: 142 69% 58%;
     --sidebar-background: 222 38% 7%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 217 91% 60%;
@@ -136,15 +142,15 @@ html {
 }
 
 .notion-inline-code {
-  @apply bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono text-primary;
+  @apply bg-muted px-2 py-1 rounded text-sm font-mono text-primary;
 }
 
 .notion-quote {
-  @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-700 dark:text-gray-300 my-4 bg-gray-50 dark:bg-gray-800 py-3 rounded-r;
+  @apply border-l-4 border-border pl-4 italic text-muted-foreground my-4 bg-muted/40 py-3 rounded-r;
 }
 
 .notion-callout {
-  @apply flex items-start gap-3 p-4 rounded-lg border bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 my-4;
+  @apply flex items-start gap-3 p-4 rounded-lg border bg-primary/10 border-primary/30 my-4;
 }
 
 .notion-callout-icon {
@@ -152,11 +158,11 @@ html {
 }
 
 .notion-callout-content {
-  @apply flex-1 text-blue-900 dark:text-blue-100;
+  @apply flex-1 text-foreground;
 }
 
 .notion-divider {
-  @apply border-gray-300 dark:border-gray-600 my-8;
+  @apply border-border my-8;
 }
 
 .notion-image {
@@ -168,7 +174,7 @@ html {
 }
 
 .notion-image-caption {
-  @apply text-sm text-gray-600 dark:text-gray-400 text-center mt-2 italic;
+  @apply text-sm text-muted-foreground text-center mt-2 italic;
 }
 
 .notion-video {
@@ -390,12 +396,12 @@ ol.notion-list {
 
 /* Quote styling */
 blockquote {
-  @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-700 dark:text-gray-300 my-4;
+  @apply border-l-4 border-border pl-4 italic text-muted-foreground my-4;
 }
 
 /* Divider styling */
 hr {
-  @apply border-gray-300 dark:border-gray-600 my-8;
+  @apply border-border my-8;
 }
 
 /* Prism.js Syntax Highlighting Styles */
@@ -495,7 +501,7 @@ pre.line-numbers > code {
     -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
   z-index: 10;
   opacity: 1;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--dur-fast) var(--ease-out);
 }
 
 /* Optional: Add a subtle hover effect for better UX */
@@ -753,7 +759,7 @@ pre.line-numbers > code {
   background: hsl(var(--card) / 0.85);
   border: 1px solid hsl(var(--border));
   box-shadow:
-    inset 0 1px 0 0 hsl(210 40% 98% / 0.06),
+    inset 0 1px 0 0 hsl(var(--glass-inset) / 0.06),
     var(--elevation-1);
 }
 
@@ -772,9 +778,9 @@ pre.line-numbers > code {
 
 /* CRT / Retro Terminal Effects */
 .retro-terminal {
-  background-color: #0b1120;
-  color: #4ade80;
-  border: 1px solid rgba(74, 222, 128, 0.25);
+  background-color: hsl(var(--terminal-surface));
+  color: hsl(var(--terminal-accent));
+  border: 1px solid hsl(var(--terminal-accent) / 0.25);
   position: relative;
   overflow: hidden;
 }
@@ -865,7 +871,7 @@ pre.line-numbers > code {
   background: hsl(var(--card) / 0.85);
   border: 1px solid hsl(var(--border));
   box-shadow:
-    inset 0 1px 0 0 hsl(210 40% 98% / 0.06),
+    inset 0 1px 0 0 hsl(var(--glass-inset) / 0.06),
     var(--elevation-1);
 }
 
@@ -875,7 +881,7 @@ pre.line-numbers > code {
   background: hsl(var(--card) / 0.85);
   border: 1px solid hsl(var(--border));
   box-shadow:
-    inset 0 1px 0 0 hsl(210 40% 98% / 0.06),
+    inset 0 1px 0 0 hsl(var(--glass-inset) / 0.06),
     var(--elevation-1);
   transition:
     border-color var(--dur-base) var(--ease-out),
@@ -887,7 +893,7 @@ pre.line-numbers > code {
   background: hsl(var(--card) / 0.85);
   border-color: hsl(var(--primary) / 0.35);
   box-shadow:
-    inset 0 1px 0 0 hsl(210 40% 98% / 0.09),
+    inset 0 1px 0 0 hsl(var(--glass-inset) / 0.09),
     var(--elevation-2);
   transform: translateY(-2px);
 }

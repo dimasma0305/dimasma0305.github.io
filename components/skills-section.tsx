@@ -54,7 +54,7 @@ export function SkillsSection() {
         {skills.map((skill, index) => (
           <div
             key={index}
-            className="p-6 rounded-lg glass-card min-h-[200px]"
+            className={`p-6 rounded-lg glass-card min-h-[200px] ${index === 0 ? "border-primary/40 ring-1 ring-primary/30 shadow-[var(--elevation-2)]" : ""}`}
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 rounded-full bg-primary/10 text-primary">

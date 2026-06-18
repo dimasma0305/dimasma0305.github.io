@@ -120,7 +120,7 @@ export function NotesStats() {
               </Badge>
             ))}
             {stats.categories.length > 6 && (
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="secondary" className="text-xs">
                 +{stats.categories.length - 6} more
               </Badge>
             )}
