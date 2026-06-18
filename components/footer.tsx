@@ -13,7 +13,7 @@ export function Footer() {
           <div>
             <h3 className="mb-4 text-lg font-semibold text-foreground">Dimas Maulana</h3>
             <p className="text-sm text-muted-foreground">
-              Cybersecurity researcher, CTF player, gamer, and manga enthusiast based in Denpasar, Bali, Indonesia.
+              Cybersecurity researcher, CTF player, and source code pentester based in Denpasar, Bali, Indonesia.
             </p>
           </div>
           <div>

@@ -7,7 +7,9 @@ import {
   Linkedin,
   Mail,
   Twitter,
-  Gamepad2,
+  Code2,
+  ScanSearch,
+  Check,
   BookOpen,
   Shield,
   ChevronDown,
@@ -17,49 +19,48 @@ import {
 import { Button } from "@/components/ui/button";
 import { Parallax } from "@/components/parallax";
 import Link from "next/link";
-import Image from "next/image";
 
 export function HeroSection() {
-  const [activeTab, setActiveTab] = useState("hacker");
+  const [activeTab, setActiveTab] = useState("researcher");
 
   const tabs = [
-    { id: "hacker", label: "Hacker", icon: <Shield className="w-5 h-5" /> },
-    { id: "gamer", label: "Gamer", icon: <Gamepad2 className="w-5 h-5" /> },
-    { id: "manga", label: "Manga Reader", icon: <BookOpen className="w-5 h-5" /> },
+    { id: "researcher", label: "Researcher", icon: <Shield className="w-5 h-5" /> },
+    { id: "builder", label: "Builder", icon: <Code2 className="w-5 h-5" /> },
+    { id: "pentester", label: "Pentester", icon: <ScanSearch className="w-5 h-5" /> },
   ];
 
   const tabContent = {
-    hacker: {
-      title: "Cybersecurity Expert",
-      subtitle: "CTF Player & Security Researcher",
+    researcher: {
+      title: "Cybersecurity Researcher",
+      subtitle: "CTF Player & Source Code Pentester",
       description:
-        "Exploring the world of cybersecurity, Linux, and CTF competitions. Creating tools and resources to help secure the digital world.",
+        "I break things to understand how to secure them. I hunt vulnerabilities across web and Linux, then turn what I find into shippable fixes.",
       stats: [
         { label: "Years of Experience", value: "3+" },
         { label: "Security Tools", value: "10+" },
         { label: "CVEs", value: "172+" },
       ],
     },
-    gamer: {
-      title: "Passionate Gamer",
-      subtitle: "Strategy & RPG Enthusiast",
+    builder: {
+      title: "Open Source Builder",
+      subtitle: "Security tooling in Go and Python",
       description:
-        "When I'm not hacking systems, I'm conquering virtual worlds. Gaming is not just a hobby, it's a way to sharpen strategic thinking and problem-solving skills.",
+        "I ship command-line tools and scanners the security community actually uses, from CTF tooling to a WordPress taint-analysis engine.",
       stats: [
-        { label: "Games Completed", value: "30+" },
-        { label: "Achievement Score", value: "300+" },
-        { label: "Gaming Hours", value: "1k+" },
+        { label: "Public Repos", value: "35+" },
+        { label: "Stars Earned", value: "220+" },
+        { label: "Followers", value: "320+" },
       ],
     },
-    manga: {
-      title: "Manga Aficionado",
-      subtitle: "Collector & Reader",
+    pentester: {
+      title: "Source Code Pentester",
+      subtitle: "AI-assisted source code review",
       description:
-        "A manga enjoyer. I appreciate the artistry and storytelling that brings characters and worlds to life through this unique medium.",
+        "I run AI-assisted reviews over real codebases, triage the bugs that are actually exploitable, and hand back ready-to-merge fixes with a plain-English report.",
       stats: [
-        { label: "Manga Read", value: "100+" },
-        { label: "Hours Spent", value: "100+" },
-        { label: "Favorite Series", value: "10+" },
+        { label: "Per Project", value: "$99" },
+        { label: "Turnaround", value: "1-2d" },
+        { label: "Free Re-test", value: "1" },
       ],
     },
   };
@@ -245,7 +246,7 @@ export function HeroSection() {
               key={activeTab}
               className="absolute inset-0 flex items-center justify-center p-8 animate-in fade-in duration-200"
             >
-              {activeTab === "hacker" && (
+              {activeTab === "researcher" && (
                 <div className="w-full h-full retro-terminal scanlines rounded-xl shadow-2xl p-6 font-mono text-sm leading-relaxed overflow-hidden border border-green-500/30">
                   <div className="flex items-center justify-between mb-4 border-b border-green-500/30 pb-2">
                     <span className="text-xs text-green-400">
@@ -298,96 +299,127 @@ export function HeroSection() {
                 </div>
               )}
 
-              {activeTab === "gamer" && (
+              {activeTab === "builder" && (
                 <div className="relative w-full max-w-md bg-card rounded-2xl p-1 border border-primary/30 shadow-[var(--elevation-2)]">
                   <div className="bg-background rounded-xl p-6 h-full relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4 text-primary opacity-10">
-                      <Gamepad2 className="w-32 h-32" />
+                      <Github className="w-32 h-32" />
                     </div>
 
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-20 h-20 rounded-xl bg-primary p-0.5 shadow-lg overflow-hidden">
-                        <Image
-                          src="https://avatars.githubusercontent.com/u/92920739"
-                          width={80}
-                          height={80}
-                          alt="Avatar"
-                          className="rounded-lg"
-                        />
+                      <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <Github className="w-7 h-7" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-foreground">DimasMa</h3>
-                        <div className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-primary/20 text-primary">
-                          LVL 99
-                        </div>
+                        <h3 className="text-xl font-bold text-foreground">
+                          @dimasma0305
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          Open source security tooling
+                        </p>
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <div>
-                        <div className="flex justify-between text-xs font-bold text-muted-foreground mb-1">
-                          <span>HP</span>
-                          <span>2500/2500</span>
+                    <div className="grid grid-cols-3 gap-3 mb-6">
+                      {[
+                        { v: "35+", l: "Repos" },
+                        { v: "220+", l: "Stars" },
+                        { v: "320+", l: "Followers" },
+                      ].map((m) => (
+                        <div
+                          key={m.l}
+                          className="rounded-lg border border-border bg-muted/40 p-3 text-center"
+                        >
+                          <div className="font-mono text-xl font-bold text-foreground">
+                            {m.v}
+                          </div>
+                          <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                            {m.l}
+                          </div>
                         </div>
-                        <div className="w-full h-3 bg-muted rounded-full overflow-hidden border border-border">
-                          <div className="h-full bg-primary w-full" />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-xs font-bold text-muted-foreground mb-1">
-                          <span>MP</span>
-                          <span>850/850</span>
-                        </div>
-                        <div className="w-full h-3 bg-muted rounded-full overflow-hidden border border-border">
-                          <div className="h-full bg-primary/70 w-[85%]" />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-xs font-bold text-muted-foreground mb-1">
-                          <span>EXP</span>
-                          <span>98.5%</span>
-                        </div>
-                        <div className="w-full h-3 bg-muted rounded-full overflow-hidden border border-border">
-                          <div className="h-full bg-primary/50 w-[98.5%]" />
-                        </div>
-                      </div>
+                      ))}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mt-8">
-                      <div className="bg-muted/40 rounded-lg p-3 text-center border border-border">
-                        <div className="text-xs text-muted-foreground">Class</div>
-                        <div className="font-bold text-primary">Cyber Mage</div>
+                    <div className="space-y-2.5">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Top languages
                       </div>
-                      <div className="bg-muted/40 rounded-lg p-3 text-center border border-border">
-                        <div className="text-xs text-muted-foreground">Guild</div>
-                        <div className="font-bold text-primary">Sekai</div>
-                      </div>
+                      {[
+                        { n: "Python", w: "92%", c: "bg-primary" },
+                        { n: "Go", w: "64%", c: "bg-primary/80" },
+                        { n: "PHP", w: "46%", c: "bg-primary/60" },
+                        { n: "TypeScript", w: "34%", c: "bg-primary/45" },
+                      ].map((lng) => (
+                        <div key={lng.n} className="flex items-center gap-3">
+                          <span className="w-20 shrink-0 text-xs text-muted-foreground">
+                            {lng.n}
+                          </span>
+                          <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                            <div
+                              className={`h-full rounded-full ${lng.c}`}
+                              style={{ width: lng.w }}
+                            />
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
               )}
 
-              {activeTab === "manga" && (
-                <div className="w-full max-w-md bg-card text-foreground p-6 rounded-lg shadow-[8px_8px_0px_hsl(var(--primary)/0.18)] border border-border rotate-1 relative">
-                  <div className="absolute -top-6 -right-6 bg-primary text-primary-foreground border-2 border-primary/50 px-4 py-2 font-bold transform rotate-6 shadow-[3px_3px_0px_hsl(var(--primary)/0.3)]">
-                    OTAKU MODE
-                  </div>
+              {activeTab === "pentester" && (
+                <div className="w-full max-w-md bg-card rounded-2xl p-1 border border-primary/30 shadow-[var(--elevation-2)]">
+                  <div className="bg-background rounded-xl p-6 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 text-primary opacity-10">
+                      <ScanSearch className="w-32 h-32" />
+                    </div>
 
-                  <h3 className="text-3xl font-black italic tracking-tighter mb-4 border-b-2 border-border pb-2">
-                    MY COLLECTION
-                  </h3>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    {["Action", "Sci-Fi", "Seinen", "Mystery"].map((genre) => (
-                      <div
-                        key={genre}
-                        className="flex h-16 items-center justify-center rounded-md border border-border bg-muted/60 text-sm font-bold uppercase tracking-wide text-foreground transition-colors hover:border-primary/40 hover:text-primary"
-                      >
-                        {genre}
+                    <div className="flex items-center gap-4 mb-5">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <ScanSearch className="w-7 h-7" />
                       </div>
-                    ))}
+                      <div>
+                        <h3 className="text-xl font-bold text-foreground">
+                          Source Code Review
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          AI-assisted, exploitable-first
+                        </p>
+                      </div>
+                    </div>
+
+                    <ul className="space-y-3">
+                      {[
+                        "Whole codebase reviewed by an AI agent",
+                        "Only the genuinely exploitable bugs flagged",
+                        "A ready-to-merge fix for every finding",
+                        "Plain-English report in PDF and Markdown",
+                      ].map((item) => (
+                        <li
+                          key={item}
+                          className="flex items-start gap-3 text-sm text-foreground"
+                        >
+                          <span className="mt-0.5 grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-primary/15 text-primary">
+                            <Check className="h-3.5 w-3.5" />
+                          </span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-6 flex items-center justify-between border-t border-border pt-4 text-sm">
+                      <span className="text-muted-foreground">
+                        From{" "}
+                        <span className="font-bold text-foreground">$99</span> /
+                        project
+                      </span>
+                      <Link
+                        href="/services"
+                        className="font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm"
+                      >
+                        See the service
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}

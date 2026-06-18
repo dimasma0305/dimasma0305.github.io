@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     template: "%s | Dimas Maulana",
   },
   description:
-    "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
+    "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
   keywords: [
     "cybersecurity",
     "CTF",
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     siteName: "Dimas Maulana",
     title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
     description:
-      "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
+      "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
     images: [
       {
         url: baseUrl + "/og-image.jpg",
@@ -87,7 +87,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
     description:
-      "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
+      "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
     creator: "@dimasma__",
     images: [baseUrl + "/og-image.jpg"],
   },

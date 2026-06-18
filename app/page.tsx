@@ -9,7 +9,7 @@ const fullUrl = `${baseUrl}${basePath}`
 
 export const metadata: Metadata = {
   title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
-  description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
+  description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
   keywords: ["cybersecurity", "CTF", "capture the flag", "security research", "vulnerability", "bug bounty", "hacking", "Indonesia", "Dimas Maulana"],
   authors: [{ name: "Dimas Maulana", url: fullUrl }],
   creator: "Dimas Maulana",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     url: fullUrl,
     siteName: "Dimas Maulana",
     title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
-    description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
+    description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
     images: [
       {
         url: `${fullUrl}/og-image.jpg`,
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     site: "@dimasma__",
     creator: "@dimasma__",
     title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
-    description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
+    description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
     images: [`${fullUrl}/og-image.jpg`],
   },
   robots: {
