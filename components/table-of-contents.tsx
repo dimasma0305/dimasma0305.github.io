@@ -485,7 +485,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
 
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
-        <div className="sticky top-6 max-w-xs">
+        <div className="sticky top-6">
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
