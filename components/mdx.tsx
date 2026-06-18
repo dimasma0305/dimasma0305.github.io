@@ -16,30 +16,42 @@ function loadPrism(): Promise<any> {
     prismPromise = (async () => {
       const mod: any = await import("prismjs");
       const Prism = mod.default ?? mod;
-      // Core, then languages in dependency order.
-      await import("prismjs/components/prism-markup");
-      await import("prismjs/components/prism-css");
-      await import("prismjs/components/prism-clike");
-      await import("prismjs/components/prism-javascript");
-      await import("prismjs/components/prism-typescript");
-      await import("prismjs/components/prism-python");
-      await import("prismjs/components/prism-bash");
-      await import("prismjs/components/prism-json");
-      await import("prismjs/components/prism-yaml");
-      await import("prismjs/components/prism-markdown");
-      await import("prismjs/components/prism-sql");
-      await import("prismjs/components/prism-java");
-      await import("prismjs/components/prism-c");
-      await import("prismjs/components/prism-cpp");
-      await import("prismjs/components/prism-go");
-      await import("prismjs/components/prism-rust");
-      await import("prismjs/components/prism-ruby");
-      await import("prismjs/components/prism-perl");
-      await import("prismjs/components/prism-diff");
-      await import("prismjs/components/prism-docker");
-      // PHP last (complex deps on markup-templating).
-      await import("prismjs/components/prism-markup-templating");
-      await import("prismjs/components/prism-php");
+      // Grammars register onto the Prism singleton as a side effect of import,
+      // and several require another grammar to already be present (e.g. js needs
+      // clike, ts needs js). So load them in dependency TIERS — every grammar in
+      // a tier fetches in parallel (Promise.all), and tiers run in order. This
+      // turns the old 22-request waterfall (color appeared seconds late) into
+      // three concurrent batches.
+      await Promise.all([
+        import("prismjs/components/prism-markup"),
+        import("prismjs/components/prism-css"),
+        import("prismjs/components/prism-clike"),
+        import("prismjs/components/prism-python"),
+        import("prismjs/components/prism-bash"),
+        import("prismjs/components/prism-json"),
+        import("prismjs/components/prism-yaml"),
+        import("prismjs/components/prism-sql"),
+        import("prismjs/components/prism-rust"),
+        import("prismjs/components/prism-perl"),
+        import("prismjs/components/prism-diff"),
+        import("prismjs/components/prism-docker"),
+      ]);
+      // Tier 2 — depend on markup / clike from tier 1.
+      await Promise.all([
+        import("prismjs/components/prism-javascript"), // clike
+        import("prismjs/components/prism-markdown"), // markup
+        import("prismjs/components/prism-java"), // clike
+        import("prismjs/components/prism-c"), // clike
+        import("prismjs/components/prism-go"), // clike
+        import("prismjs/components/prism-ruby"), // clike
+        import("prismjs/components/prism-markup-templating"), // markup
+      ]);
+      // Tier 3 — depend on tier 2.
+      await Promise.all([
+        import("prismjs/components/prism-typescript"), // javascript
+        import("prismjs/components/prism-cpp"), // c
+        import("prismjs/components/prism-php"), // markup-templating + clike
+      ]);
       return Prism;
     })();
   }
@@ -413,15 +425,23 @@ export function Mdx({ content }: MdxProps) {
             if (idx < pendingHighlights.length) schedule();
           };
 
+          // Pace the remaining slices on animation frames, NOT requestIdleCallback.
+          // rAF fires every frame (~16ms) regardless of whether the main thread is
+          // "idle", so every block colours within a few frames. The old idle path
+          // got starved during a busy post load (lazy images, the scroll sky), so
+          // only the first slice coloured and the rest stayed plain until the thread
+          // happened to go idle seconds later — the "first quarter has color, the
+          // rest appears much later" bug. Still 5-at-a-time so no long task.
           const schedule = () => {
-            if (typeof window.requestIdleCallback === "function") {
-              window.requestIdleCallback(pump, { timeout: 2000 });
+            if (typeof window.requestAnimationFrame === "function") {
+              window.requestAnimationFrame(() => pump());
             } else {
               setTimeout(() => pump(), 16);
             }
           };
 
-          schedule();
+          // Colour the first slice immediately; pump() self-schedules the rest.
+          pump();
         });
       }
 

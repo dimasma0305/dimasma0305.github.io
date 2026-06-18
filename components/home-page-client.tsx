@@ -38,6 +38,11 @@ const ServicesSection = lazy(() =>
     default: m.ServicesSection,
   })),
 );
+const PhotoGallerySection = lazy(() =>
+  import("@/components/photo-gallery-section").then((m) => ({
+    default: m.PhotoGallerySection,
+  })),
+);
 
 // Memoized About section component
 const AboutSection = memo(() => (
@@ -226,6 +231,10 @@ function HomePageClient() {
 
       <Suspense fallback={<SectionFallback />}>
         <CTFSection />
+      </Suspense>
+
+      <Suspense fallback={<SectionFallback />}>
+        <PhotoGallerySection />
       </Suspense>
 
       <BlogSection posts={latestPosts} loading={loading} />
