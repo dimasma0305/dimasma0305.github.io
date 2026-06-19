@@ -16,9 +16,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import dynamic from "next/dynamic";
-const Mdx = dynamic(() => import("@/components/mdx").then((m) => m.Mdx), {
-  ssr: false,
-});
+// Server-render the article body so it lands in the static export (SSG). Mdx's
+// render output is a pure `dangerouslySetInnerHTML` div (no browser APIs at
+// render time — document/window/Prism all live inside useEffect), so it is
+// SSR-safe. Keeping `ssr: false` here would exclude the body from the
+// prerendered HTML and defeat the build-time `initialPost` we now pass.
+const Mdx = dynamic(() => import("@/components/mdx").then((m) => m.Mdx));
 import { PostSkeleton } from "@/components/post-skeleton";
 import { NotionLinkButton } from "@/components/notion-link-button";
 
@@ -41,11 +44,14 @@ const PostNavigation = lazy(() =>
 
 interface PostPageClientProps {
   slug: string;
+  // Pre-rendered post built at build time (SSG). When provided, the body HTML
+  // is already in the static markup; we skip the client fetch entirely.
+  initialPost?: Post;
 }
 
-export default function PostPageClient({ slug }: PostPageClientProps) {
-  const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function PostPageClient({ slug, initialPost }: PostPageClientProps) {
+  const [post, setPost] = useState<Post | null>(initialPost ?? null);
+  const [loading, setLoading] = useState(!initialPost);
   const [error, setError] = useState<string | null>(null);
   // If the cover image fails to load (e.g. an expired Notion URL), hide the
   // whole banner rather than showing a broken box or a generic fallback.
@@ -53,6 +59,13 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
   const { posts } = usePosts();
 
   useEffect(() => {
+    // When the post was pre-rendered at build time, its content is already
+    // render-ready (the server loader applies the same code-block normalization),
+    // so skip the client fetch and avoid any double-processing.
+    if (initialPost) {
+      return;
+    }
+
     const loadPost = async () => {
       try {
         const fetchedPost = await fetchPostBySlug(slug);
@@ -83,7 +96,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
     if (slug) {
       loadPost();
     }
-  }, [slug]);
+  }, [slug, initialPost]);
 
   // Handle scroll to hash on page load with lazy loading awareness
   useEffect(() => {
