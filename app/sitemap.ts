@@ -43,6 +43,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/tags/`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/tools/`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
@@ -59,6 +65,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Dynamic blog posts
   let blogPosts: MetadataRoute.Sitemap = []
   let categories: MetadataRoute.Sitemap = []
+  let tags: MetadataRoute.Sitemap = []
   let notePosts: MetadataRoute.Sitemap = []
 
   try {
@@ -89,6 +96,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,
         priority: 0.7,
+      }))
+
+      // Get tags from taxonomy section. Tag landing pages (app/tags/[tag])
+      // generate their static params from this same taxonomy, so the slug
+      // format here (encodeURIComponent + lowercase, trailing slash) must match
+      // the route exactly or the sitemap would point at 301/404 URLs.
+      const taxonomyTags = blogIndex.taxonomy?.tags || []
+
+      tags = taxonomyTags.map((tag: any) => ({
+        url: `${baseUrl}/tags/${encodeURIComponent(tag.name.toLowerCase())}/`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.6,
       }))
     }
   } catch (error) {
@@ -123,5 +143,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     console.error('Error generating notes sitemap:', error)
   }
 
-  return [...staticPages, ...blogPosts, ...categories, ...notePosts]
+  return [...staticPages, ...blogPosts, ...categories, ...tags, ...notePosts]
 }
