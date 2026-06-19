@@ -252,7 +252,33 @@ function readHeadIndex(gitPath) {
   }
 }
 
-function checkDrift() {
+// The published indexes are gitignored, so there's usually no committed git
+// baseline. Fall back to the CURRENTLY-DEPLOYED index as the prior — comparing a
+// fresh build against what's live is exactly the drift signal we want (a
+// transient Notion failure that guts this build vs. the healthy live site).
+// Configurable + best-effort: any network problem returns null (skip, never
+// false-fail).
+const LIVE_BASELINE_BASE = (process.env.BASELINE_URL_BASE || 'https://dimasc.tf').replace(/\/$/, '');
+
+async function readLiveBaseline(localPath) {
+  // public/blog-index.json -> https://dimasc.tf/blog-index.json
+  const urlPath = localPath.replace(/^public\//, '');
+  const url = `${LIVE_BASELINE_BASE}/${urlPath}`;
+  if (typeof fetch !== 'function') return null;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (error) {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function checkDrift() {
   // Only the full indexes carry meta.total_posts; check both blog and notes.
   const driftTargets = [
     'public/blog-index.json',
@@ -267,9 +293,14 @@ function checkDrift() {
     const newCount = countFromIndexObject(current);
     if (newCount == null) continue;
 
-    const previous = readHeadIndex(target);
+    let previous = readHeadIndex(target);
+    let baselineSource = 'committed git baseline';
     if (!previous) {
-      console.log(`ℹ️  CHECK C: no committed baseline for ${target}, skipping drift check.`);
+      previous = await readLiveBaseline(target);
+      baselineSource = `live ${LIVE_BASELINE_BASE}`;
+    }
+    if (!previous) {
+      console.log(`ℹ️  CHECK C: no baseline for ${target} (no git history, live unreachable), skipping drift check.`);
       continue;
     }
     const oldCount = countFromIndexObject(previous);
@@ -280,23 +311,53 @@ function checkDrift() {
     if (drop > allowedDrop) {
       fail(
         'CHECK C',
-        `${target}: post count dropped from ${oldCount} to ${newCount} (drop ${drop} > allowed ${allowedDrop}). ` +
+        `${target}: post count dropped from ${oldCount} to ${newCount} (drop ${drop} > allowed ${allowedDrop}; baseline: ${baselineSource}). ` +
           `Likely a transient Notion failure silently unpublishing content.`
       );
     } else {
-      console.log(`✓ CHECK C: ${target} count ${oldCount} -> ${newCount} (within tolerance, allowed drop ${allowedDrop}).`);
+      console.log(`✓ CHECK C: ${target} count ${oldCount} -> ${newCount} (within tolerance, allowed drop ${allowedDrop}; baseline: ${baselineSource}).`);
     }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CHECK D: duplicate slugs (WARN) — two entries that slugify to the same path
+// shadow each other (only one /<slug>/ page is generated), silently dropping a
+// post/note. Warn-only: it's a pre-existing generator slug-collision class, not
+// a reason to block an otherwise-healthy deploy.
+// ---------------------------------------------------------------------------
+function checkDuplicateSlugs() {
+  let dupeGroups = 0;
+  for (const { index } of INDEX_TARGETS) {
+    if (!fs.existsSync(index)) continue;
+    const parsed = readJson(index, 'CHECK D');
+    if (!parsed) continue;
+    const counts = new Map();
+    for (const entry of collectEntries(parsed)) {
+      const slug = entry && entry.slug;
+      if (!slug) continue;
+      counts.set(slug, (counts.get(slug) || 0) + 1);
+    }
+    const dupes = [...counts.entries()].filter(([, n]) => n > 1);
+    for (const [slug, n] of dupes) {
+      dupeGroups++;
+      console.warn(`⚠️  CHECK D (warn): ${index} has ${n} entries with slug "${slug}" — only one /${slug}/ page is generated; the rest are shadowed.`);
+    }
+  }
+  if (dupeGroups === 0) {
+    console.log('✓ CHECK D: no duplicate slugs.');
   }
 }
 
 // ---------------------------------------------------------------------------
 // Run
 // ---------------------------------------------------------------------------
-function main() {
+async function main() {
   console.log('🔎 Validating generated content...');
   checkIntegrity();
   checkExpiringUrls();
-  checkDrift();
+  await checkDrift();
+  checkDuplicateSlugs();
 
   if (failures.length === 0) {
     console.log('✅ Content validation passed (integrity, expiring URLs, drift).');
@@ -313,7 +374,10 @@ function main() {
 }
 
 if (require.main === module) {
-  main();
+  main().catch((error) => {
+    console.error('❌ Content validation crashed:', error && error.message ? error.message : error);
+    process.exit(1);
+  });
 }
 
 module.exports = {
