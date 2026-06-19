@@ -19,11 +19,12 @@ import { useLazyLoadingReady } from "@/hooks/use-lazy-loading-ready"
 import { convertNotionContentToHtml, type NotionBlock } from "@/lib/notion-content-utils"
 import { TableOfContents } from "@/components/table-of-contents"
 
-// Lazy load heavy components. Mdx pulls in Prism (+ language grammars), so keep
-// it out of the notes route's first load — content renders client-side anyway.
-const Mdx = dynamic(() => import("@/components/mdx").then((m) => m.Mdx), {
-  ssr: false,
-})
+// Server-render the note body so it lands in the static export (SSG). Mdx's
+// render output is a pure `dangerouslySetInnerHTML` div (no browser APIs at
+// render time — document/window/Prism all live inside useEffect), so it is
+// SSR-safe. Keeping `ssr: false` here would exclude the body from the
+// prerendered HTML and defeat the build-time `initialNote` we now pass.
+const Mdx = dynamic(() => import("@/components/mdx").then((m) => m.Mdx))
 const ShareButtons = lazy(() => import("@/components/share-buttons").then((m) => ({ default: m.ShareButtons })))
 const NoteNavigation = lazy(() => import("@/components/note-navigation").then((m) => ({ default: m.NoteNavigation })))
 
@@ -286,14 +287,33 @@ const NoteTOC = memo(({ content }: { content: string | NotionBlock[] }) => {
 
 NoteTOC.displayName = "NoteTOC"
 
-export default function NotePageClient({ slug }: { slug: string }) {
-  const [note, setNote] = useState<Note | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+export default function NotePageClient({
+  slug,
+  initialNote,
+}: {
+  slug: string
+  // Pre-rendered note built at build time (SSG). When provided, the body HTML
+  // is already in the static markup; we skip the client fetch entirely.
+  initialNote?: Note
+}) {
+  const [note, setNote] = useState<Note | null>(initialNote ?? null)
+  const [isLoading, setIsLoading] = useState(!initialNote)
   const [error, setError] = useState<string | null>(null)
-  const [tocContent, setTocContent] = useState<string>("")
+  // Seed the TOC from the pre-rendered note so it renders on the SSG path too
+  // (the fetch effect that normally fills it early-returns when initialNote is
+  // present). content is always an HTML string on both paths.
+  const [tocContent, setTocContent] = useState<string>(
+    typeof initialNote?.content === "string" ? initialNote.content : "",
+  )
   const isReady = useLazyLoadingReady()
 
   useEffect(() => {
+    // When the note was pre-rendered at build time, its content is already
+    // render-ready, so skip the client fetch and avoid any double-processing.
+    if (initialNote) {
+      return
+    }
+
     async function fetchNote() {
       try {
         setIsLoading(true)
@@ -349,7 +369,7 @@ export default function NotePageClient({ slug }: { slug: string }) {
     if (slug) {
       fetchNote()
     }
-  }, [slug])
+  }, [slug, initialNote])
 
   // Handle scroll to hash on page load with lazy loading awareness
   useEffect(() => {
@@ -362,7 +382,12 @@ export default function NotePageClient({ slug }: { slug: string }) {
     }
   }, [isLoading, note])
 
-  if (isLoading || !isReady) {
+  // On the SSG path (initialNote present) bypass the loading gate so the
+  // pre-rendered body lands in the static HTML — `isReady`/`isLoading` are
+  // effect-driven and never settle during the server prerender. The
+  // client-fetch path keeps its original spinner timing (including the
+  // isReady delay) unchanged.
+  if (!initialNote && (isLoading || !isReady)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner />
@@ -543,7 +568,13 @@ function NotionContent({
   content: string | NotionBlock[], 
   renderToc?: (content: string) => React.ReactNode 
 }) {
-  const [renderedContent, setRenderedContent] = useState<string>("")
+  // Seed from the content when it is already an HTML string so the body renders
+  // during the static prerender (SSG). For NotionBlock[] input the conversion
+  // still happens in the effect below. This is what lets the pre-rendered note
+  // body land in the static HTML instead of an effect-gated empty `null`.
+  const [renderedContent, setRenderedContent] = useState<string>(
+    typeof content === 'string' ? content : "",
+  )
 
   useEffect(() => {
     async function processContent() {
