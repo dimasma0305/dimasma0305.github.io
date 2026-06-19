@@ -12,6 +12,122 @@ const dns = require('dns').promises;
 // exhausting CI runner memory (applies to cover and inline images alike).
 const MAX_DOWNLOAD_BYTES = 25 * 1024 * 1024; // 25 MB
 
+// Per-request socket timeout for image downloads. A stalled signed-URL fetch
+// otherwise hangs the whole batch; we abort + retry instead of dropping media.
+const DOWNLOAD_TIMEOUT_MS = 20000;
+
+// Retry/backoff tuning for transient Notion API + image-download failures.
+const RETRY_BASE_DELAY_MS = 500;   // first backoff window
+const RETRY_MAX_DELAY_MS = 8000;   // cap so a 429 hint can't stall CI forever
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Decide whether an error is worth retrying. Transient = rate limits (429),
+// 5xx upstream errors, and the usual flaky-network socket errors. A 4xx other
+// than 429 (e.g. 401 unauthorized, 404 not found) is permanent, so we don't
+// burn attempts on it.
+const TRANSIENT_ERROR_CODES = new Set([
+  'ECONNRESET',
+  'ECONNREFUSED',
+  'ETIMEDOUT',
+  'EAI_AGAIN',
+  'EPIPE',
+  'ENOTFOUND',
+  'ENETUNREACH',
+  'EHOSTUNREACH',
+]);
+
+function getErrorStatus(error) {
+  if (!error) return undefined;
+  // Notion SDK uses `status`; some shapes use `statusCode`.
+  if (typeof error.status === 'number') return error.status;
+  if (typeof error.statusCode === 'number') return error.statusCode;
+  return undefined;
+}
+
+function isRateLimited(error) {
+  if (!error) return false;
+  if (error.code === 'rate_limited') return true; // Notion SDK code
+  return getErrorStatus(error) === 429;
+}
+
+function isTransientError(error) {
+  if (!error) return false;
+  if (isRateLimited(error)) return true;
+  const status = getErrorStatus(error);
+  if (typeof status === 'number' && status >= 500 && status <= 599) return true;
+  if (error.code && TRANSIENT_ERROR_CODES.has(error.code)) return true;
+  // Our own download timeout / abort signals.
+  if (error.name === 'AbortError') return true;
+  if (typeof error.message === 'string' && /timeout/i.test(error.message)) return true;
+  return false;
+}
+
+// Parse a Retry-After / retry_after hint into milliseconds, if present.
+// Honors both seconds (Notion + most HTTP) and an HTTP-date form.
+function getRetryAfterMs(error) {
+  if (!error) return undefined;
+  const candidates = [];
+  // Notion SDK sometimes surfaces `retry_after` (seconds) on the error/body.
+  if (error.retry_after != null) candidates.push(error.retry_after);
+  if (error.body && error.body.retry_after != null) candidates.push(error.body.retry_after);
+  // Standard HTTP header (case-insensitive); may live on error.headers.
+  const headers = error.headers;
+  if (headers) {
+    const raw = headers['retry-after'] || headers['Retry-After'];
+    if (raw != null) candidates.push(raw);
+  }
+  for (const candidate of candidates) {
+    if (candidate == null) continue;
+    const asNumber = Number(candidate);
+    if (Number.isFinite(asNumber)) {
+      return Math.max(0, asNumber * 1000); // seconds -> ms
+    }
+    const asDate = Date.parse(String(candidate));
+    if (!Number.isNaN(asDate)) {
+      return Math.max(0, asDate - Date.now());
+    }
+  }
+  return undefined;
+}
+
+// Generic retry wrapper: exponential backoff with full jitter. Respects an
+// explicit Retry-After / retry_after hint (or a 429) when the upstream provides
+// one. Only retries transient failures; re-throws permanent errors immediately
+// and re-throws the last error after exhausting attempts.
+async function withRetry(fn, { attempts = 3, label = 'operation' } = {}) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      const isLast = attempt >= attempts;
+      if (isLast || !isTransientError(error)) {
+        throw error;
+      }
+      const hintedDelay = getRetryAfterMs(error);
+      let delay;
+      if (hintedDelay != null) {
+        delay = Math.min(hintedDelay, RETRY_MAX_DELAY_MS);
+      } else {
+        // Exponential backoff with full jitter.
+        const expo = Math.min(RETRY_BASE_DELAY_MS * 2 ** (attempt - 1), RETRY_MAX_DELAY_MS);
+        delay = Math.floor(Math.random() * expo);
+      }
+      console.warn(
+        `⏳ Retry ${attempt}/${attempts - 1} for ${label} after ${delay}ms (${error && error.message ? error.message : error})`
+      );
+      await sleep(delay);
+    }
+  }
+  // Unreachable in practice (loop either returns or throws), but keep the
+  // contract explicit.
+  throw lastError;
+}
+
 // Configuration
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const DATABASE_ID = process.env.NOTION_DATABASE_ID;
@@ -258,12 +374,21 @@ function downloadImage(urlString, assertFn = assertAllowedDownloadUrl) {
           return;
         }
         const client = finalUrl.protocol === 'https:' ? https : http;
-        client.get(finalUrl, handleResponse).on('error', reject);
+        const redirectReq = client.get(finalUrl, handleResponse);
+        redirectReq.on('error', reject);
+        redirectReq.setTimeout(DOWNLOAD_TIMEOUT_MS, () => {
+          redirectReq.destroy(new Error('Image download timeout'));
+        });
         return;
       }
 
       if (response.statusCode !== 200) {
-        reject(new Error(`Failed to download image: ${response.statusCode}`));
+        // Surface the HTTP status so withRetry can tell transient (5xx) from
+        // permanent (4xx) and back off only when it makes sense.
+        const err = new Error(`Failed to download image: ${response.statusCode}`);
+        err.statusCode = response.statusCode;
+        response.resume(); // drain so the socket can be freed
+        reject(err);
         return;
       }
 
@@ -317,10 +442,24 @@ function downloadImage(urlString, assertFn = assertAllowedDownloadUrl) {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
       };
-      client.get(options, handleResponse).on('error', reject);
+      const req = client.get(options, handleResponse);
+      req.on('error', reject);
+      req.setTimeout(DOWNLOAD_TIMEOUT_MS, () => {
+        req.destroy(new Error('Image download timeout'));
+      });
     } catch (error) {
       reject(new Error(`Invalid URL: ${error.message}`));
     }
+  });
+}
+
+// Retry the whole image download on transient failures (5xx, timeout,
+// ECONNRESET, etc.) so one flaky fetch doesn't permanently drop an image.
+// Permanent failures (404, SSRF/allowlist rejections) re-throw immediately.
+function downloadImageWithRetry(urlString, assertFn = assertAllowedDownloadUrl) {
+  return withRetry(() => downloadImage(urlString, assertFn), {
+    attempts: 3,
+    label: `image download ${urlString}`,
   });
 }
 
@@ -344,7 +483,7 @@ async function localizeImagesInBlocks(blocks, postDir, folderName) {
       const srcUrl = block.content.url;
       try {
         await assertResolvedHostPublic(new URL(srcUrl).hostname.toLowerCase());
-        const { buffer } = await downloadImage(srcUrl, assertSafeInlineDownloadUrl);
+        const { buffer } = await downloadImageWithRetry(srcUrl, assertSafeInlineDownloadUrl);
         // Determine the type from the bytes, not the URL/Content-Type. Anything
         // that is not a real raster image (e.g. SVG, which would execute scripts
         // same-origin if opened directly) is left as its external URL.
@@ -592,14 +731,20 @@ async function getPageContent(pageId, depth = 0, maxDepth = 3) {
     while (hasMore) {
       pageCount++;
 
-      // Use rate limiter for API calls
-      const response = await rateLimiter.execute(async () => {
-        return await notion.blocks.children.list({
-          block_id: pageId,
-          start_cursor: nextCursor,
-          page_size: 100, // Maximum allowed by Notion API
-        });
-      });
+      // Use rate limiter for API calls, with retry on transient Notion errors
+      // (429 / 5xx / dropped connections) so a single blip doesn't truncate a
+      // page's block list (which would silently drop content).
+      const response = await rateLimiter.execute(async () =>
+        withRetry(
+          () =>
+            notion.blocks.children.list({
+              block_id: pageId,
+              start_cursor: nextCursor,
+              page_size: 100, // Maximum allowed by Notion API
+            }),
+          { label: `blocks.children.list ${pageId}` }
+        )
+      );
 
       // Early exit if no results to reduce unnecessary processing
       if (!response.results || response.results.length === 0) {
@@ -776,7 +921,7 @@ async function processSinglePage(page, pageIndex, totalPages) {
     if (blogPost.cover?.external?.url || blogPost.cover?.file?.url) {
       try {
         const coverUrl = blogPost.cover.external?.url || blogPost.cover.file?.url;
-        const { buffer, contentTypeExt } = await downloadImage(coverUrl);
+        const { buffer, contentTypeExt } = await downloadImageWithRetry(coverUrl);
         const imageExtension = contentTypeExt || getCleanFileExtension(coverUrl);
         const imagePath = path.join(postDir, `cover.${imageExtension}`);
         fs.writeFileSync(imagePath, buffer);
@@ -793,7 +938,7 @@ async function processSinglePage(page, pageIndex, totalPages) {
     else if (blogPost.properties.featured_image?.[0]?.url) {
       try {
         const featuredImageUrl = blogPost.properties.featured_image[0].url;
-        const { buffer, contentTypeExt } = await downloadImage(featuredImageUrl);
+        const { buffer, contentTypeExt } = await downloadImageWithRetry(featuredImageUrl);
         const imageExtension = contentTypeExt || getCleanFileExtension(featuredImageUrl);
         const imagePath = path.join(postDir, `featured-image.${imageExtension}`);
         fs.writeFileSync(imagePath, buffer);
@@ -819,7 +964,7 @@ async function processSinglePage(page, pageIndex, totalPages) {
 
       if (firstImage && firstImage.url) {
         try {
-          const { buffer, contentTypeExt } = await downloadImage(firstImage.url);
+          const { buffer, contentTypeExt } = await downloadImageWithRetry(firstImage.url);
           const imageExtension = contentTypeExt || getCleanFileExtension(firstImage.url);
           const imagePath = path.join(postDir, `og-image.${imageExtension}`);
           fs.writeFileSync(imagePath, buffer);
@@ -904,11 +1049,18 @@ async function generateBlogJsonWithContent() {
     let nextCursor = undefined;
 
     while (hasMore) {
-      const response = await notion.databases.query({
-        database_id: DATABASE_ID,
-        start_cursor: nextCursor,
-        page_size: 100,
-      });
+      // Retry transient Notion failures here too: a dropped query page would
+      // otherwise silently shrink the published post set (the drift guard in
+      // validate-content.js is the second line of defense against that).
+      const response = await withRetry(
+        () =>
+          notion.databases.query({
+            database_id: DATABASE_ID,
+            start_cursor: nextCursor,
+            page_size: 100,
+          }),
+        { label: 'databases.query' }
+      );
 
       allPages = allPages.concat(response.results);
       hasMore = response.has_more;

@@ -29,41 +29,65 @@ function escapeXml(unsafe) {
   });
 }
 
+// Read one content index (blog-index.json / notes-index.json shape) and turn
+// its published entries into RSS items. `urlPrefix` is the served route base
+// ("/posts" for the blog, "/notes" for notes). Missing/unreadable index files
+// are skipped gracefully so the feed still builds from whatever exists.
+function collectItemsFromIndex(indexPath, urlPrefix, baseUrl) {
+  if (!fs.existsSync(indexPath)) {
+    return []
+  }
+
+  let index
+  try {
+    index = JSON.parse(fs.readFileSync(indexPath, 'utf8'))
+  } catch (error) {
+    console.warn(`⚠️  Skipping ${indexPath} (could not parse): ${error.message}`)
+    return []
+  }
+
+  const published = (index.posts?.published || [])
+    .filter(entry => entry.properties?.published)
+
+  return published.map(entry => ({
+    title: entry.title,
+    url: `${baseUrl}${urlPrefix}/${entry.slug}/`,
+    description: entry.excerpt || '',
+    pubDate: new Date(entry.last_edited_time || entry.created_time).toUTCString(),
+    categories: entry.categories || []
+  }))
+}
+
 function generateRssFeed() {
   try {
     const currentDate = new Date().toUTCString()
     const baseUrl = siteConfig.url
-    const allItems = []
+    let allItems = []
 
     // A feed should contain real content only. Nav/utility pages (Home, Blog
     // index, Categories, Search, Tools) as feed items get the feed
     // deprioritized by aggregators, so they are intentionally excluded.
 
-    // Read the blog index for dynamic content
-    const indexPath = path.join(process.cwd(), 'public', 'blog-index.json')
-    
-    if (fs.existsSync(indexPath)) {
-      const indexContent = fs.readFileSync(indexPath, 'utf8')
-      const blogIndex = JSON.parse(indexContent)
-      
-      // Get published posts and sort by date (newest first)
-      const publishedPosts = (blogIndex.posts?.published || [])
-        .filter(post => post.properties?.published)
-        .sort((a, b) => new Date(b.last_edited_time || b.created_time) - new Date(a.last_edited_time || a.created_time))
+    // Blog posts (served at /posts/<slug>/).
+    allItems = allItems.concat(
+      collectItemsFromIndex(
+        path.join(process.cwd(), 'public', 'blog-index.json'),
+        '/posts',
+        baseUrl
+      )
+    )
 
-      // Add blog posts to items (trailing slash matches the served URL)
-      publishedPosts.forEach(post => {
-        allItems.push({
-          title: post.title,
-          url: `${baseUrl}/posts/${post.slug}/`,
-          description: post.excerpt || '',
-          pubDate: new Date(post.last_edited_time || post.created_time).toUTCString(),
-          categories: post.categories || []
-        })
-      })
-    }
+    // Notes (served at /notes/<slug>/). Same index shape; skipped gracefully if
+    // notes-index.json doesn't exist (e.g. a blog-only build).
+    allItems = allItems.concat(
+      collectItemsFromIndex(
+        path.join(process.cwd(), 'public', 'notes-index.json'),
+        '/notes',
+        baseUrl
+      )
+    )
 
-    // Sort all items by publication date (newest first)
+    // Sort all items (blog + notes merged) by publication date (newest first)
     allItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
     // Generate RSS XML
@@ -110,7 +134,7 @@ function generateRssFeed() {
     const rssPath = path.join(process.cwd(), 'public', 'rss.xml')
     fs.writeFileSync(rssPath, rssXml, 'utf8')
     
-    console.log(`✅ RSS feed generated successfully with ${allItems.length} posts`)
+    console.log(`✅ RSS feed generated successfully with ${allItems.length} items (blog + notes)`)
     console.log(`📄 RSS file saved to: ${rssPath}`)
     
   } catch (error) {
