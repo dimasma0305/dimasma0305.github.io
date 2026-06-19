@@ -59,6 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Dynamic blog posts
   let blogPosts: MetadataRoute.Sitemap = []
   let categories: MetadataRoute.Sitemap = []
+  let notePosts: MetadataRoute.Sitemap = []
 
   try {
     // Read the blog index
@@ -94,5 +95,33 @@ export default function sitemap(): MetadataRoute.Sitemap {
     console.error('Error generating sitemap:', error)
   }
 
-  return [...staticPages, ...blogPosts, ...categories]
+  // Dynamic note pages. Read notes-index.json the same way as blog-index.json.
+  // Notes are emitted under /notes/<slug>/ (matching the app/notes/[slug] route
+  // and trailingSlash:true). The /notes/ index route is already in staticPages.
+  // Note CATEGORY pages are intentionally NOT emitted: the /categories/[category]
+  // route generates its static params from blog-index taxonomy only, so a
+  // note-only category would 404. Kept in a SEPARATE try/catch so a missing or
+  // corrupt notes-index.json degrades gracefully without dropping blog entries.
+  try {
+    const notesIndexPath = path.join(process.cwd(), 'public', 'notes-index.json')
+
+    if (fs.existsSync(notesIndexPath)) {
+      const notesIndexContent = fs.readFileSync(notesIndexPath, 'utf8')
+      const notesIndex = JSON.parse(notesIndexContent)
+
+      // notes-index.json exposes every note under posts.all
+      const allNotes = notesIndex.posts?.all || []
+
+      notePosts = allNotes.map((note: any) => ({
+        url: `${baseUrl}/notes/${note.slug}/`,
+        lastModified: new Date(note.last_edited_time || note.created_time),
+        changeFrequency: 'weekly' as const,
+        priority: 0.7,
+      }))
+    }
+  } catch (error) {
+    console.error('Error generating notes sitemap:', error)
+  }
+
+  return [...staticPages, ...blogPosts, ...categories, ...notePosts]
 }
