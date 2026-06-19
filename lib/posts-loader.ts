@@ -256,10 +256,21 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
       // Process cover image
       let coverImage = ""
       if (notionPost.cover) {
-        if (notionPost.cover.type === "external") {
-          coverImage = notionPost.cover.external.url
+        // Prefer the build-localized copy. The content generator downloads the
+        // cover to a permanent local file and records it as post.featured_image;
+        // the raw notionPost.cover URL is, for `file` covers, an ~1h expiring S3
+        // signed link that 404s once stale (the hero "stops rendering"). Fall
+        // back to the raw URL only when localization did not produce a local path.
+        const localCover =
+          typeof notionPost.featured_image === "string" && notionPost.featured_image.startsWith("/")
+            ? notionPost.featured_image
+            : ""
+        if (localCover) {
+          coverImage = localCover
+        } else if (notionPost.cover.type === "external") {
+          coverImage = notionPost.cover.external?.url || ""
         } else if (notionPost.cover.type === "file") {
-          coverImage = notionPost.cover.file.url
+          coverImage = notionPost.cover.file?.url || ""
         }
       } else if (notionPost.properties.featured_image) {
         coverImage = Array.isArray(notionPost.properties.featured_image)

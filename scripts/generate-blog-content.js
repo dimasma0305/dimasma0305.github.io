@@ -140,6 +140,7 @@ function getCleanFileExtension(url) {
 const ALLOWED_IMAGE_HOST_SUFFIXES = [
   '.notion.so',
   '.notion.site',
+  '.notion.com', // app.notion.com/images/page-cover/* (Notion stock covers)
   '.notion-static.com',
   '.amazonaws.com', // prod-files-secure*.s3.amazonaws.com
 ];
