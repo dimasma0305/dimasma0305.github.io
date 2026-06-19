@@ -27,7 +27,9 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-jetbrains-mono",
-  preload: true,
+  // Only code-heavy pages need the mono face; don't race it against Inter/LCP on
+  // every page. display:swap covers the brief fallback on the pages that use it.
+  preload: false,
   fallback: ["ui-monospace", "monospace"],
 });
 
@@ -113,12 +115,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
+        {/* next/font self-hosts Inter & JetBrains Mono at build time, so there
+            are no runtime requests to Google Fonts — no preconnect needed. Warm
+            the origins we actually hit at runtime instead: the photo-gallery CDN
+            and GitHub avatars. */}
+        <link rel="preconnect" href="https://lh3.googleusercontent.com" />
+        <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
         <link rel="preconnect" href="https://avatars.githubusercontent.com" />
         <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
 

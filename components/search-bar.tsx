@@ -39,6 +39,7 @@ export function SearchBar({ value = "", onChange, placeholder = "Search...", cla
       <Input
         type="search"
         placeholder={placeholder}
+        aria-label={placeholder}
         value={localValue}
         onChange={(e) => handleChange(e.target.value)}
         onKeyDown={(e) => {

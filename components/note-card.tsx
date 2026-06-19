@@ -16,8 +16,8 @@ interface NoteCardProps {
 
 export default function NoteCard({ note, className }: NoteCardProps) {
   return (
-    <Card className={cn("group relative h-full overflow-hidden transition-[transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1 hover:shadow-[var(--elevation-2)]", className)}>
-      <CardContent className="p-4 flex flex-col h-full">
+    <Card className={cn("group relative overflow-hidden transition-[transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1 hover:shadow-[var(--elevation-2)]", className)}>
+      <CardContent className="p-4 flex flex-col">
           {/* Categories */}
           {note.categories && note.categories.length > 0 && (
             <div className="flex items-center gap-2 mb-4">
@@ -48,7 +48,7 @@ export default function NoteCard({ note, className }: NoteCardProps) {
           )}
 
           {/* Footer */}
-          <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-auto">
+          <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-4">
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="h-3 w-3" />

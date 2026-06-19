@@ -173,9 +173,9 @@ function SearchPageContent() {
           <p className="text-sm text-muted-foreground mb-4">
             Try different keywords or search terms.
           </p>
-          <button 
+          <button
             onClick={handleClearSearch}
-            className="text-primary hover:underline"
+            className="text-primary hover:underline focus-ring rounded-sm"
           >
             Clear search
           </button>

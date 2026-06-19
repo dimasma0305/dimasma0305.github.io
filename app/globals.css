@@ -13,6 +13,12 @@ html {
     text-wrap: balance;
   }
 
+  /* One standardized keyboard focus ring for bare buttons/inline links that
+     aren't built on the Button/Card primitives (which already include it). */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
   .line-clamp-1 {
     overflow: hidden;
     display: -webkit-box;
@@ -54,6 +60,10 @@ html {
     --popover-foreground: 210 40% 98%;
     --primary: 217 91% 60%;
     --primary-foreground: 222 47% 7%;
+    /* Brighter step of the single accent for small/low-contrast text (eyebrows,
+       chips): clears AA on every sky phase and card surface. Same hue/chroma as
+       --primary, so it reads as a lightness ramp, not a second color. */
+    --primary-bright: 217 91% 72%;
     --secondary: 217 33% 15%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217 33% 15%;
@@ -409,8 +419,8 @@ hr {
 code[class*="language-"],
 pre[class*="language-"] {
   font-family:
-    "Fira Code", "JetBrains Mono", "SF Mono", Monaco, "Cascadia Code",
-    "Roboto Mono", Consolas, "Courier New", monospace;
+    var(--font-jetbrains-mono), "JetBrains Mono", "SF Mono", Monaco,
+    "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
   font-size: 0.875rem;
   text-align: left;
   white-space: pre;

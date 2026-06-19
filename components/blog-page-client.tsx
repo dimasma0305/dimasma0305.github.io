@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo, useCallback, memo, useRef, Suspense, lazy
 import { usePosts } from "@/hooks/use-posts"
 import PostCard from "@/components/post-card"
 import { SearchBar } from "@/components/search-bar"
-import { LoadingSpinner } from "@/components/loading-spinner"
+import { CardSkeleton } from "@/components/card-skeleton"
 import { Button } from "@/components/ui/button"
 import { SectionHeader } from "@/components/section-header"
 import Link from "next/link"
@@ -43,7 +43,7 @@ const SearchResults = memo(
       <p className="text-sm text-muted-foreground">
         {resultCount} result{resultCount !== 1 ? "s" : ""} for "{query}"
       </p>
-      <button onClick={onClear} className="text-sm text-primary hover:underline">
+      <button onClick={onClear} className="text-sm text-primary hover:underline focus-ring rounded-sm">
         Clear search
       </button>
     </div>
@@ -115,7 +115,7 @@ const EmptyState = memo(
         <>
           <p className="text-muted-foreground">No posts found matching "{searchQuery}".</p>
           {onClearSearch && (
-            <button onClick={onClearSearch} className="mt-2 text-primary hover:underline">
+            <button onClick={onClearSearch} className="mt-2 text-primary hover:underline focus-ring rounded-sm">
               Clear search to see all posts
             </button>
           )}
@@ -237,9 +237,10 @@ function BlogPageClient() {
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="w-full lg:w-3/4">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <LoadingSpinner />
-              <p className="text-sm text-muted-foreground mt-4">Loading posts...</p>
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <CardSkeleton key={i} />
+              ))}
             </div>
           ) : filteredPosts.length > 0 ? (
             <PostsGrid posts={filteredPosts} />

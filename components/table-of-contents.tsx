@@ -433,12 +433,14 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowOnlyTopLevel(!showOnlyTopLevel)}
+                        aria-pressed={showOnlyTopLevel}
+                        aria-label={showOnlyTopLevel ? "Show all sections" : "Show only main sections"}
                         className="h-7 px-2"
                       >
                         {showOnlyTopLevel ? (
-                          <Eye className="h-3 w-3" />
+                          <Eye aria-hidden className="h-3 w-3" />
                         ) : (
-                          <EyeOff className="h-3 w-3" />
+                          <EyeOff aria-hidden className="h-3 w-3" />
                         )}
                       </Button>
                     )}
@@ -503,6 +505,12 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                       size="sm"
                       onClick={() => setShowOnlyTopLevel(!showOnlyTopLevel)}
                       className="h-7 w-7 p-0"
+                      aria-pressed={showOnlyTopLevel}
+                      aria-label={
+                        showOnlyTopLevel
+                          ? "Show all sections"
+                          : "Show only main sections"
+                      }
                       title={
                         showOnlyTopLevel
                           ? "Show all sections"
@@ -510,9 +518,9 @@ export function TableOfContents({ content }: TableOfContentsProps) {
                       }
                     >
                       {showOnlyTopLevel ? (
-                        <Eye className="h-3 w-3" />
+                        <Eye aria-hidden className="h-3 w-3" />
                       ) : (
-                        <EyeOff className="h-3 w-3" />
+                        <EyeOff aria-hidden className="h-3 w-3" />
                       )}
                     </Button>
                   )}

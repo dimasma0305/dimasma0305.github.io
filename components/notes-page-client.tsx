@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import NoteCard from "@/components/note-card"
 import { SectionHeader } from "@/components/section-header"
 import { NotesStats } from "@/components/notes-stats"
-import { LoadingSpinner } from "@/components/loading-spinner"
 import { fetchNotes, type Note } from "@/lib/notes-client"
 
 export default function NotesPageClient() {
@@ -75,9 +74,17 @@ export default function NotesPageClient() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-[50vh]">
-        <LoadingSpinner />
-        <p className="text-sm text-muted-foreground mt-4">Loading notes...</p>
+      <div className="container max-w-7xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="space-y-3 rounded-lg border bg-card p-4">
+              <div className="h-3 w-20 animate-pulse rounded bg-muted" />
+              <div className="h-6 w-3/4 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-full animate-pulse rounded bg-muted" />
+              <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
+            </div>
+          ))}
+        </div>
       </div>
     )
   }
@@ -147,7 +154,9 @@ export default function NotesPageClient() {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        // items-start so short reference notes size to their content instead of
+        // stretching to the tallest card and leaving dead space.
+        <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredNotes.map((note) => (
             <NoteCard key={note.id} note={note} />
           ))}

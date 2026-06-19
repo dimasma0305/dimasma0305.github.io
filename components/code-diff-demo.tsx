@@ -94,9 +94,9 @@ const CYCLE_MS = 5500;
 
 function lineClass(sign: Line["sign"]) {
   if (sign === "-")
-    return "bg-red-500/10 text-red-200/90 [animation:diff-removed-out_5.5s_ease-in-out_infinite]";
+    return "bg-red-500/10 text-red-200/90 [animation:diff-removed-out_5.5s_ease-in-out_infinite_both]";
   if (sign === "+")
-    return "bg-emerald-500/10 text-emerald-200/95 [animation:diff-added-in_5.5s_ease-in-out_infinite]";
+    return "bg-emerald-500/10 text-emerald-200/95 [animation:diff-added-in_5.5s_ease-in-out_infinite_both]";
   return "text-muted-foreground";
 }
 
@@ -148,14 +148,14 @@ export function CodeDiffDemo() {
         {/* Status pill: cross-fades problem → fixed, settling on "fixed" */}
         <span className="relative ml-auto grid h-6 place-items-center">
           <span
-            className={`col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold [animation:diff-status-vuln_5.5s_ease-in-out_infinite] ${badPillClass(
+            className={`col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold [animation:diff-status-vuln_5.5s_ease-in-out_infinite_both] ${badPillClass(
               example.bad.tone,
             )}`}
           >
             <BadIcon className="h-3 w-3" />
             {example.bad.label}
           </span>
-          <span className="col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 [animation:diff-status-fixed_5.5s_ease-in-out_infinite]">
+          <span className="col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 [animation:diff-status-fixed_5.5s_ease-in-out_infinite_both]">
             <GoodIcon className="h-3 w-3" />
             {example.good.label}
           </span>
@@ -165,7 +165,7 @@ export function CodeDiffDemo() {
       {/* Code body, keyed so the fade + diff animations restart on each swap */}
       <div className="relative">
         {/* AI scan sweep */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-10 bg-gradient-to-b from-primary/25 to-transparent [animation:diff-scan_5.5s_ease-in-out_infinite]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-10 bg-gradient-to-b from-primary/25 to-transparent [animation:diff-scan_5.5s_ease-in-out_infinite_both]" />
 
         <pre
           key={index}
@@ -197,7 +197,7 @@ export function CodeDiffDemo() {
 
       {/* Footer: caption + which example is showing */}
       <div className="flex items-center gap-2 border-t border-border/50 bg-card/40 px-4 py-2.5 text-xs text-muted-foreground">
-        <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-[hsl(217_91%_72%)]" />
+        <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-primary-bright" />
         <span className="min-w-0 flex-1">{example.caption}</span>
         <span className="flex flex-shrink-0 gap-1.5">
           {examples.map((_, i) => (

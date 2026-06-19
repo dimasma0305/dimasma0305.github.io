@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Github, Twitter, Linkedin, Mail, MapPin, FileText, Wrench, ShieldCheck } from "lucide-react"
+import { Github, Twitter, Linkedin, Mail, MapPin, FileText, Wrench, ShieldCheck, StickyNote } from "lucide-react"
 import { withBasePath } from "@/lib/utils"
 
 export function Footer() {
@@ -46,6 +46,12 @@ export function Footer() {
                 <Link href={"/blog"} className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
                   <FileText className="w-4 h-4" />
                   Blog
+                </Link>
+              </li>
+              <li>
+                <Link href={"/notes"} className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
+                  <StickyNote className="w-4 h-4" />
+                  Notes
                 </Link>
               </li>
               <li>

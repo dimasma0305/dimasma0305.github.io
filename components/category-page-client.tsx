@@ -134,9 +134,9 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
           <p className="text-sm text-muted-foreground">
             {filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''} for "{searchQuery}" in {actualCategoryName}
           </p>
-          <button 
+          <button
             onClick={handleClearSearch}
-            className="text-sm text-primary hover:underline"
+            className="text-sm text-primary hover:underline focus-ring rounded-sm"
           >
             Clear search
           </button>
@@ -152,9 +152,9 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
       ) : searchQuery ? (
         <div className="text-center py-12">
           <p className="text-muted-foreground">No posts found matching "{searchQuery}" in {actualCategoryName}.</p>
-          <button 
+          <button
             onClick={handleClearSearch}
-            className="mt-2 text-primary hover:underline"
+            className="mt-2 text-primary hover:underline focus-ring rounded-sm"
           >
             Clear search to see all posts in this category
           </button>

@@ -170,12 +170,12 @@ export function HeroSection() {
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Open to security research roles &amp; CTF collaborations —{" "}
+              Open to security research roles and CTF collaborations.{" "}
               <a
                 href="mailto:dimasmaulana0305@gmail.com"
                 className="font-medium text-primary hover:underline"
               >
-                get in touch
+                Get in touch
               </a>
               .
             </p>

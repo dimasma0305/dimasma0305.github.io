@@ -19,7 +19,7 @@ import dynamic from "next/dynamic";
 const Mdx = dynamic(() => import("@/components/mdx").then((m) => m.Mdx), {
   ssr: false,
 });
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { PostSkeleton } from "@/components/post-skeleton";
 import { NotionLinkButton } from "@/components/notion-link-button";
 
 // Lazy load heavy components for better initial page load
@@ -97,11 +97,7 @@ export default function PostPageClient({ slug }: PostPageClientProps) {
   }, [loading, post]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+    return <PostSkeleton />;
   }
 
   if (error || !post) {

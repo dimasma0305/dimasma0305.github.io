@@ -28,10 +28,9 @@ export function FallbackImage({
   const [imgSrc, setImgSrc] = useState<string | undefined>(priority ? src : undefined)
   const [imageLoaded, setImageLoaded] = useState(false)
   
-  const { elementRef, shouldLoad, isDOMReady } = useLazyLoading({
+  const { elementRef, shouldLoad } = useLazyLoading({
     threshold: 0.1,
-    rootMargin: '50px',
-    delayAfterDOMLoaded: 250
+    rootMargin: '200px',
   })
 
   // For priority images, load immediately. For others, wait for lazy loading trigger
@@ -59,11 +58,9 @@ export function FallbackImage({
       ref={elementRef}
       className={`relative overflow-hidden ${fill ? 'w-full h-full' : ''}`}
     >
-      {/* Loading placeholder for non-priority images */}
+      {/* Silent skeleton while the image decodes (no developer-facing text). */}
       {!priority && !imageLoaded && (
-        <div className="absolute inset-0 bg-muted animate-pulse flex items-center justify-center">
-          <div className="text-muted-foreground text-sm">Loading image...</div>
-        </div>
+        <div aria-hidden className="absolute inset-0 bg-muted animate-pulse" />
       )}
       
       {imgSrc && (

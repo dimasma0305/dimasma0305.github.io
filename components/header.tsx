@@ -39,6 +39,8 @@ export function Header() {
   // flicker through intermediate sections while the smooth-scroll is running.
   const spyLockRef = useRef(0)
   const rafRef = useRef(0)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
   const isHome = (pathname || "/") === "/"
 
   // Custom scroll handler for anchor links using centralized utility
@@ -114,6 +116,54 @@ export function Header() {
     setIsOpen(false)
   }, [pathname])
 
+  // Mobile menu: lock body scroll, close on Escape, keep focus inside the
+  // panel while open, and return focus to the toggle on close.
+  useEffect(() => {
+    if (!isOpen) return
+
+    const previouslyFocused = document.activeElement as HTMLElement | null
+    const { overflow } = document.body.style
+    document.body.style.overflow = "hidden"
+
+    // Move focus into the panel so screen-reader/keyboard users land there.
+    const focusables = () =>
+      Array.from(
+        menuRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled])',
+        ) ?? [],
+      )
+    focusables()[0]?.focus()
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault()
+        setIsOpen(false)
+        return
+      }
+      if (e.key !== "Tab") return
+      const items = focusables()
+      if (items.length === 0) return
+      const first = items[0]
+      const last = items[items.length - 1]
+      const activeEl = document.activeElement as HTMLElement | null
+      if (e.shiftKey && activeEl === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && activeEl === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.removeEventListener("keydown", onKeyDown)
+      document.body.style.overflow = overflow
+      // Return focus to the trigger so the keyboard context is preserved.
+      ;(previouslyFocused ?? toggleRef.current)?.focus?.()
+    }
+  }, [isOpen])
+
   // Active state: section anchors light up via the observer on home; routes via path.
   const isNavItemActive = (item: NavItem) => {
     const currentPath = pathname || "/"
@@ -146,7 +196,7 @@ export function Header() {
         </Link>
 
         <div className="hidden lg:flex lg:items-center lg:gap-2">
-          <nav className="flex items-center gap-1 p-1 rounded-full bg-secondary/40 border border-border">
+          <nav aria-label="Main navigation" className="flex items-center gap-1 p-1 rounded-full bg-secondary/40 border border-border">
             {sectionItems.map((item) => (
               <Button
                 key={item.path}
@@ -206,23 +256,38 @@ export function Header() {
             </Link>
           </Button>
           <Button
+            ref={toggleRef}
             variant="ghost"
             size="icon"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle Menu"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
+            aria-controls="mobile-menu"
             className="h-11 w-11"
           >
-            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {isOpen ? <X aria-hidden className="w-5 h-5" /> : <Menu aria-hidden className="w-5 h-5" />}
           </Button>
         </div>
       </div>
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="lg:hidden absolute top-16 left-0 w-full bg-background/95 border-b border-border shadow-[var(--elevation-3)] animate-in slide-in-from-top-5">
+        <>
+          {/* Dismiss-on-outside-tap backdrop, sits below the panel. */}
+          <button
+            type="button"
+            aria-label="Close menu"
+            tabIndex={-1}
+            onClick={() => setIsOpen(false)}
+            className="lg:hidden fixed inset-0 top-16 z-40 bg-background/60 animate-in fade-in"
+          />
+          <div
+            ref={menuRef}
+            id="mobile-menu"
+            className="lg:hidden absolute top-16 left-0 z-50 w-full bg-background/95 border-b border-border shadow-[var(--elevation-3)] animate-in slide-in-from-top-5"
+          >
           <div className="container px-4 py-4 mx-auto">
-            <nav className="flex flex-col space-y-1.5">
+            <nav aria-label="Mobile navigation" className="flex flex-col space-y-1.5">
               {sectionItems.map((item) => (
                 <Button
                   key={item.path}
@@ -256,7 +321,8 @@ export function Header() {
               ))}
             </nav>
           </div>
-        </div>
+          </div>
+        </>
       )}
     </header>
   )

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Metadata } from 'next'
-import { Calculator, Shield } from 'lucide-react'
+import { Calculator, Shield, Lightbulb, ArrowRight } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { SectionHeader } from '@/components/section-header'
@@ -37,10 +37,16 @@ export default function ToolsPage() {
         subtitle="A collection of useful cybersecurity and CTF tools I've built to help the community."
       />
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Column count tracks the item count (tools + the suggest CTA) so the
+          row always reads as intentional instead of stranding empty tracks. */}
+      <div
+        className={`grid gap-6 ${
+          tools.length + 1 >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2"
+        }`}
+      >
         {tools.map((tool) => (
           <Link key={tool.href} href={tool.href} className="group block">
-            <Card className="h-full p-6 transition-colors hover:border-primary/40">
+            <Card className="h-full p-6 transition-colors hover:border-primary/40 group-hover:shadow-[var(--elevation-2)]">
               <div className="flex items-start gap-4">
                 <div className="p-2 rounded-lg bg-primary/10 text-primary">
                   <tool.icon className="w-6 h-6" />
@@ -66,15 +72,28 @@ export default function ToolsPage() {
             </Card>
           </Link>
         ))}
-      </div>
 
-      <Card className="mt-12 p-6 bg-muted/40">
-        <h2 className="text-xl font-semibold mb-2">More Tools Coming Soon</h2>
-        <p className="text-muted-foreground">
-          I&apos;m actively working on more tools to help the cybersecurity community.
-          Check back regularly or follow me on social media for updates.
-        </p>
-      </Card>
+        {/* Suggest-a-tool CTA fills the row and invites contribution. */}
+        <a
+          href="mailto:dimasmaulana0305@gmail.com?subject=Tool%20idea"
+          className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg"
+        >
+          <Card className="flex h-full flex-col justify-center border-dashed bg-muted/30 p-6 transition-colors hover:border-primary/40 hover:bg-muted/50">
+            <div className="mb-3 grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary">
+              <Lightbulb className="h-5 w-5" />
+            </div>
+            <h2 className="mb-1 text-xl font-semibold">More tools coming soon</h2>
+            <p className="mb-4 text-muted-foreground">
+              I&apos;m actively building more cybersecurity and CTF tools. Have an
+              idea you&apos;d find useful?
+            </p>
+            <span className="inline-flex items-center gap-2 text-sm font-medium text-primary">
+              Suggest a tool
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </Card>
+        </a>
+      </div>
     </div>
   )
 }

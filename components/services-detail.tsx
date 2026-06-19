@@ -92,7 +92,7 @@ export function ServicesDetail() {
       {/* Pitch + live demo */}
       <div className="grid items-center gap-10 lg:grid-cols-2">
         <div>
-          <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-[hsl(217_91%_72%)]">
+          <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-primary-bright">
             <Sparkles className="w-3.5 h-3.5" />
             AI-automated review
           </span>

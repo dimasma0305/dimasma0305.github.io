@@ -111,10 +111,8 @@ export function Mdx({ content }: MdxProps) {
         wrapper.style.minHeight = "200px";
 
         const placeholder = document.createElement("div") as HTMLDivElement;
-        placeholder.className =
-          "absolute inset-0 bg-muted animate-pulse flex items-center justify-center";
-        placeholder.innerHTML =
-          '<div class="text-muted-foreground text-sm">Loading image...</div>';
+        placeholder.className = "absolute inset-0 bg-muted animate-pulse";
+        placeholder.setAttribute("aria-hidden", "true");
 
         const newImg = document.createElement("img") as HTMLImageElement;
         newImg.alt = originalAlt;
@@ -522,8 +520,8 @@ export function Mdx({ content }: MdxProps) {
       ref={contentRef}
       className="mdx prose prose-lg dark:prose-invert max-w-none break-words
         prose-headings:scroll-mt-24 prose-headings:font-semibold prose-headings:tracking-tight prose-headings:break-words
-        prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-5 prose-h2:pb-2 prose-h2:border-b prose-h2:border-border/70
-        prose-h3:text-xl prose-h3:mt-9 prose-h3:mb-3
+        prose-h2:mt-12 prose-h2:mb-5 prose-h2:pb-2 prose-h2:border-b prose-h2:border-border/70
+        prose-h3:mt-9 prose-h3:mb-3
         prose-p:leading-[1.8] prose-p:text-foreground/90 prose-p:break-words
         prose-li:leading-[1.75] prose-li:my-1.5 prose-li:marker:text-primary/70
         prose-ul:my-5 prose-ol:my-5
