@@ -241,6 +241,7 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
                   <div className="min-w-0">
                     <time
                       dateTime={post.createdAt}
+                      suppressHydrationWarning
                       className="font-medium whitespace-nowrap"
                     >
                       {format(new Date(post.createdAt), "MMMM d, yyyy")}
