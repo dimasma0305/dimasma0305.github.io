@@ -1110,6 +1110,41 @@ pre.line-numbers > code {
   }
 }
 
+/* --- Page transitions (app/template.tsx) ---------------------------------
+   The new route fades in on every navigation so a page change reads as one
+   smooth motion rather than a snap/flash. Compositor-only (opacity/transform).
+   Home uses opacity only to avoid re-anchoring the fixed ScrollSky; content
+   routes add a small rise. The reduced-motion block below collapses both to an
+   instant swap. */
+@keyframes page-enter-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes page-enter-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter-fade {
+  animation: page-enter-fade var(--dur-base) var(--ease-out) both;
+}
+
+.page-enter-rise {
+  animation: page-enter-rise var(--dur-slow) var(--ease-out) both;
+  will-change: transform, opacity;
+}
+
 /* Respect the user's reduced-motion preference everywhere. */
 @media (prefers-reduced-motion: reduce) {
   *,

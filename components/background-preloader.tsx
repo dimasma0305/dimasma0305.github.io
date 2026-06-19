@@ -2,11 +2,15 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { warmPostsCache } from "@/hooks/use-posts"
+import { warmNotesCache } from "@/hooks/use-notes"
+import { fetchNotesStats } from "@/lib/notes-client"
 
 /**
- * Warms commonly-visited routes and a few heavy lazy chunks during browser
- * IDLE time — one task per idle slice — so subsequent navigations are fast
- * without competing with initial render/hydration or saturating the network.
+ * Warms commonly-visited routes, their client-fetched DATA, and a few heavy
+ * lazy chunks during browser IDLE time — one task per idle slice — so
+ * subsequent navigations render instantly (no skeleton flash) without competing
+ * with initial render/hydration or saturating the network.
  */
 export function BackgroundPreloader() {
   const router = useRouter()
@@ -21,6 +25,12 @@ export function BackgroundPreloader() {
             /* prefetch may be unavailable in some environments */
           }
         }),
+      // Warm the client-fetched data caches so /blog and /notes render content
+      // on arrival (no skeleton) — router.prefetch only warms route code, not the
+      // JSON. warmPostsCache also warms the posts index used by post pages.
+      () => void warmPostsCache(),
+      () => void warmNotesCache(),
+      () => void fetchNotesStats().catch(() => {}),
       () => void import("@/components/footer"),
       () => void import("@/components/projects-section"),
       () => void import("@/components/skills-section"),

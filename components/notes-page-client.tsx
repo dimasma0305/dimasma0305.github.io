@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { Search, Filter } from "lucide-react"
 
 import Link from "next/link"
@@ -10,39 +10,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import NoteCard from "@/components/note-card"
 import { SectionHeader } from "@/components/section-header"
 import { NotesStats } from "@/components/notes-stats"
-import { fetchNotes, type Note } from "@/lib/notes-client"
+import { useNotes } from "@/hooks/use-notes"
 
 export default function NotesPageClient() {
-  const [notes, setNotes] = useState<Note[]>([])
+  // useNotes shares a module cache that BackgroundPreloader warms during idle,
+  // so arriving here from another page renders content with no skeleton flash.
+  const { notes: loadedNotes, loading: isLoading } = useNotes()
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
-  const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    let active = true
-    async function loadNotes() {
-      try {
-        setIsLoading(true)
-        const data = await fetchNotes()
-        if (!active) return
-        // Sort newest first
-        const sorted = [...data].sort(
-          (a, b) => new Date(b.created_time).getTime() - new Date(a.created_time).getTime(),
-        )
-        setNotes(sorted)
-      } catch (error) {
-        console.error("Error fetching notes:", error)
-        if (active) setNotes([])
-      } finally {
-        if (active) setIsLoading(false)
-      }
-    }
-
-    loadNotes()
-    return () => {
-      active = false
-    }
-  }, [])
+  // Newest first.
+  const notes = useMemo(
+    () =>
+      [...loadedNotes].sort(
+        (a, b) => new Date(b.created_time).getTime() - new Date(a.created_time).getTime(),
+      ),
+    [loadedNotes],
+  )
 
   // Unique categories derived from the notes' categories arrays
   const categories = useMemo(() => {

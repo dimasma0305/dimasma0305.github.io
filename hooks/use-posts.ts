@@ -23,6 +23,24 @@ let sharedPostsCache: Post[] | null = null
 let cacheTimestamp: number = 0
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 
+/**
+ * Populate the shared cache ahead of navigation (called from BackgroundPreloader
+ * during idle). When it's warm, usePosts initializes with loading:false so the
+ * blog listing renders content immediately — no skeleton flash on arrival.
+ */
+export async function warmPostsCache(): Promise<void> {
+  if (sharedPostsCache && Date.now() - cacheTimestamp < CACHE_DURATION) return
+  try {
+    const posts = await fetchAllPosts()
+    if (posts && posts.length) {
+      sharedPostsCache = posts
+      cacheTimestamp = Date.now()
+    }
+  } catch {
+    /* best-effort warm; the hook will retry on mount */
+  }
+}
+
 // Per-hook instance request tracking to avoid global state pollution
 interface RequestManager {
   currentRequest: AbortController | null
