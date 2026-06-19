@@ -463,12 +463,138 @@ function downloadImageWithRetry(urlString, assertFn = assertAllowedDownloadUrl) 
   });
 }
 
+// Inert (safe-to-rehost) file extensions for non-image media blocks. These are
+// either non-executable in a browser or are media/raster types the browser
+// treats as opaque downloads/playback. We deliberately DENY active document
+// types (html/svg/xml/js/wasm/etc.): rehosting one on dimasc.tf would make it
+// same-origin, turning a writeup attachment into stored XSS if a visitor opens
+// it directly. Anything not on this list is left as the original external URL.
+const INERT_MEDIA_EXTENSIONS = new Set([
+  // Archives / documents / data
+  'pdf', 'zip', 'tar', 'gz', 'tgz', '7z', 'rar', 'txt', 'md', 'csv', 'json',
+  'log', 'pcap', 'bin',
+  // Raster images
+  'png', 'jpg', 'jpeg', 'gif', 'webp', 'svgz',
+  // Video / audio
+  'mp4', 'webm', 'mov', 'mkv', 'mp3', 'wav', 'ogg',
+  // Source code / config (served as static files, not executed by the host page)
+  'py', 'c', 'cpp', 'h', 'hpp', 'rs', 'go', 'java', 'rb', 'php', 'sh', 'sql',
+  'yaml', 'yml', 'toml', 'ini', 'conf',
+]);
+
+// Notion signed-URL host markers. Only these expiring S3-backed links are worth
+// rehosting; plain external author links (imgur/github/etc.) are stable and are
+// left untouched so we never proxy unrelated third-party hosts.
+const NOTION_SIGNED_URL_MARKERS = [
+  'prod-files-secure',
+  'secure.notion-static.com',
+  'amazonaws',
+];
+
+function isNotionSignedUrl(urlString) {
+  if (typeof urlString !== 'string') return false;
+  if (!/^https:\/\//i.test(urlString)) return false;
+  const lower = urlString.toLowerCase();
+  return NOTION_SIGNED_URL_MARKERS.some((marker) => lower.includes(marker));
+}
+
+// Derive a lowercased, sanitized extension from a filename (preferred) or, as a
+// fallback, the URL's path basename. Unlike getCleanFileExtension (image-only,
+// defaults to 'jpg'), this never invents an extension: it returns '' when none
+// can be found, so the inert allowlist below stays the real gate (a PDF must be
+// recognized as 'pdf', not silently coerced to 'jpg' and rehosted with a lie).
+function deriveMediaExtension(name, urlString) {
+  const fromName = extractExtensionToken(name);
+  if (fromName) return fromName;
+  try {
+    const pathname = new URL(urlString).pathname;
+    const basename = pathname.split('/').pop() || '';
+    return extractExtensionToken(decodeURIComponent(basename));
+  } catch (error) {
+    return '';
+  }
+}
+
+function extractExtensionToken(value) {
+  if (typeof value !== 'string') return '';
+  const trimmed = value.trim();
+  if (!trimmed.includes('.')) return '';
+  const ext = trimmed.split('.').pop() || '';
+  return ext.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+// Resolve where a non-image media block keeps its URL/expiry. processBlock
+// normalizes `file`/`video` to content.url (+ content.expiry_time) but lets
+// `pdf`/`audio` fall through to the raw Notion shape (content.file.url /
+// content.external.url). We read from and write back to that same field so the
+// renderer keeps consuming the exact shape processBlock already emitted; we do
+// NOT reshape the block (that would change post.json and risk the renderer).
+function getMediaUrlRef(block) {
+  const content = block && block.content;
+  if (!content) return null;
+  if (typeof content.url === 'string') {
+    return {
+      url: content.url,
+      setUrl: (next) => { content.url = next; },
+      clearExpiry: () => { delete content.expiry_time; },
+    };
+  }
+  if (content.file && typeof content.file.url === 'string') {
+    return {
+      url: content.file.url,
+      setUrl: (next) => { content.file.url = next; },
+      clearExpiry: () => { delete content.file.expiry_time; },
+    };
+  }
+  return null;
+}
+
+// Localize one non-image media block (file/pdf/video/audio) when it points at
+// an expiring Notion signed URL and its extension is on the inert allowlist.
+// Denied/external/failed cases leave the original URL untouched (never worse
+// than today). Never throws.
+async function localizeMediaBlock(block, postDir, folderName) {
+  const ref = getMediaUrlRef(block);
+  if (!ref || !isNotionSignedUrl(ref.url)) return;
+
+  const srcUrl = ref.url;
+  // Prefer the Notion filename (block.content.name) for the extension; signed
+  // S3 URLs often have no usable extension in the path.
+  const declaredName = block.content && block.content.name;
+  const ext = deriveMediaExtension(declaredName, srcUrl);
+
+  if (!ext || !INERT_MEDIA_EXTENSIONS.has(ext)) {
+    // SECURITY: active types (html/svg/js/wasm/...) and unknown extensions are
+    // not rehosted same-origin; keep the external/expiring URL as-is.
+    console.log(`↪︎  Kept external (non-inert media .${ext || '?'}): ${srcUrl}`);
+    return;
+  }
+
+  try {
+    await assertResolvedHostPublic(new URL(srcUrl).hostname.toLowerCase());
+    // Same SSRF + size controls as inline images; downloadImage enforces
+    // MAX_DOWNLOAD_BYTES internally.
+    const { buffer } = await downloadImageWithRetry(srcUrl, assertSafeInlineDownloadUrl);
+    const safeId = String(block.id || '').replace(/[^a-zA-Z0-9]/g, '') || 'file';
+    const filename = `file-${safeId}.${ext}`;
+    fs.writeFileSync(path.join(postDir, filename), buffer);
+    ref.setUrl(getImagePath(folderName, filename));
+    ref.clearExpiry();
+    console.log(`📎 Localized inline ${block.type}: ${folderName}/${filename}`);
+  } catch (error) {
+    console.error(`⚠️  Could not localize inline ${block.type} (${block.id}): ${error.message}`);
+    // Leave the original URL so the page can still try the (soon-expiring) link.
+  }
+}
+
 // Download every inline image block to the post directory and rewrite its URL
 // to the local copy, so a published page never depends on an expiring Notion
 // signed URL (or a fragile external hotlink). Recurses into child blocks
 // (callouts, toggles, list items can all nest images). Filenames are keyed on
 // the stable Notion block id so rebuilds are deterministic (no churn). On any
 // download failure the original URL is left in place so the page can still try.
+// Non-image media (file/pdf/video/audio) is localized in the SAME walk so
+// writeup attachments don't 404 ~1h after build when the signed URL expires.
 async function localizeImagesInBlocks(blocks, postDir, folderName) {
   if (!Array.isArray(blocks)) return;
 
@@ -503,6 +629,14 @@ async function localizeImagesInBlocks(blocks, postDir, folderName) {
         console.error(`⚠️  Could not localize inline image (${block.id}): ${error.message}`);
         // Leave the original URL so the browser still attempts to load it.
       }
+    } else if (
+      block &&
+      (block.type === 'file' ||
+        block.type === 'pdf' ||
+        block.type === 'video' ||
+        block.type === 'audio')
+    ) {
+      await localizeMediaBlock(block, postDir, folderName);
     }
 
     if (block && Array.isArray(block.children) && block.children.length) {
@@ -930,6 +1064,15 @@ async function processSinglePage(page, pageIndex, totalPages) {
         // Use cover image as both featured and OG image with correct base path
         blogPost.featured_image = getImagePath(folderName, `cover.${imageExtension}`);
         blogPost.og_image = blogPost.featured_image;
+
+        // The cover is now a local file, so the retained raw `cover` no longer
+        // needs the expiring Notion signed URL. Strip it from a `file`-type
+        // cover so post.json never serializes a URL that 404s ~1h after build.
+        // `external`-type covers are stable/non-expiring, so leave them intact.
+        if (blogPost.featured_image?.startsWith('/') && blogPost.cover?.file) {
+          delete blogPost.cover.file.url;
+          delete blogPost.cover.file.expiry_time;
+        }
       } catch (error) {
         console.error(`❌ Failed to save cover image for ${folderName}:`, error.message);
       }
