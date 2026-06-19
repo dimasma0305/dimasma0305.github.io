@@ -70,32 +70,6 @@ function createNotionPublicUrl(pageId: string): string {
   return `https://www.notion.so/${cleanId}`
 }
 
-// Helper function to escape HTML entities for safe rendering
-function escapeHtml(text: string): string {
-  const map: { [key: string]: string } = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;",
-  }
-  return text.replace(/[&<>"']/g, (m) => map[m])
-}
-
-// Helper function to validate and clean URLs
-function sanitizeUrl(url: string): string {
-  try {
-    const urlObj = new URL(url)
-    // Only allow http and https protocols
-    if (urlObj.protocol === "http:" || urlObj.protocol === "https:") {
-      return escapeHtml(url)
-    }
-    return "#"
-  } catch {
-    return "#"
-  }
-}
-
 // Helper function to extract categories from posts
 function extractCategories(posts: Post[]): string[] {
   const categorySet = new Set<string>()
