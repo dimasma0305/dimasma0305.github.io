@@ -58,6 +58,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: verify
+    # Skip on PRs: the content build needs NOTION_TOKEN (guarded off for PRs), so
+    # a PR build would have no content and fail under output:export. PRs are gated
+    # by `verify` (typecheck + lint + tests); the real content build + deploy run
+    # on push to main and the cron.
+    if: github.event_name != 'pull_request'
     # Least-privilege: build only needs to read the repo and produce an artifact.
     # The Pages-deploy grants (pages: write, id-token: write) belong to the
     # deploy job, which inherits them from the top-level permissions block.
