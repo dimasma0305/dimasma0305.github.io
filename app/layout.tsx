@@ -8,6 +8,7 @@ import { Analytics } from "@/components/analytics";
 import { Suspense, lazy } from "react";
 import { BackgroundPreloader } from "@/components/background-preloader";
 import NavigationLoader from "@/components/navigation-loader";
+import { RouteAnnouncer } from "@/components/route-announcer";
 
 // Lazy load Footer for better initial page load
 const Footer = lazy(() =>
@@ -153,6 +154,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <RouteAnnouncer />
         <div className="flex flex-col min-h-screen">
           <Suspense fallback={null}>
             <NavigationLoader />
