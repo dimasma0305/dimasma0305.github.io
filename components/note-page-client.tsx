@@ -105,7 +105,7 @@ const NoteHero = memo(({ note }: { note: Note }) => {
               <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
               <div className="min-w-0">
                 <time dateTime={note.created_time} suppressHydrationWarning className="font-medium whitespace-nowrap">
-                  {createdDate ? format(createdDate, "MMMM d, yyyy") : "Invalid Date"}
+                  {createdDate && !isNaN(createdDate.getTime()) ? format(createdDate, "MMMM d, yyyy") : "Invalid Date"}
                 </time>
                 <p className="text-muted-foreground text-xs">Created</p>
               </div>
@@ -119,7 +119,7 @@ const NoteHero = memo(({ note }: { note: Note }) => {
                   <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                   <div className="min-w-0">
                     <time dateTime={note.last_edited_time} suppressHydrationWarning className="font-medium whitespace-nowrap">
-                      {updatedDate ? format(updatedDate, "MMMM d, yyyy") : "Invalid Date"}
+                      {updatedDate && !isNaN(updatedDate.getTime()) ? format(updatedDate, "MMMM d, yyyy") : "Invalid Date"}
                     </time>
                     <p className="text-muted-foreground text-xs">Updated</p>
                   </div>

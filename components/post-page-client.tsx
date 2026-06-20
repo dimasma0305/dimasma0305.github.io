@@ -244,7 +244,9 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
                       suppressHydrationWarning
                       className="font-medium whitespace-nowrap"
                     >
-                      {format(new Date(post.createdAt), "MMMM d, yyyy")}
+                      {!isNaN(new Date(post.createdAt).getTime())
+                        ? format(new Date(post.createdAt), "MMMM d, yyyy")
+                        : "Invalid Date"}
                     </time>
                     <p className="hidden sm:block text-muted-foreground text-xs">Published</p>
                   </div>

@@ -27,6 +27,7 @@ function getTagSummaries(): TagSummary[] {
     const taxonomyTags = blogIndex.taxonomy?.tags
     if (Array.isArray(taxonomyTags) && taxonomyTags.length > 0) {
       return taxonomyTags
+        .filter((t: any) => t && typeof t.name === "string")
         .map((t: any) => ({ name: t.name as string, count: Number(t.count) || 0 }))
         .sort(
           (a: TagSummary, b: TagSummary) =>

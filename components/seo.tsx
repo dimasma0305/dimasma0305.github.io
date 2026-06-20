@@ -204,6 +204,8 @@ export function generateNotesMetadata(): Metadata {
 // generateNoteMetadata. Returns undefined on any failure so callers can omit
 // the dependent JSON-LD fields instead of emitting wrong values.
 function getPostReadingTime(slug: string): number | undefined {
+  // Server-only: guard so a future client import can't bundle/run fs in the browser.
+  if (typeof window !== 'undefined') return undefined
   try {
     const fs = require('fs')
     const path = require('path')
@@ -814,6 +816,8 @@ export function NotesStructuredData() {
 // Mirrors generateNoteMetadata's read pattern; returns null on any failure so
 // the component degrades to slug-only data without throwing during render.
 function getNoteFromIndex(slug: string): any | null {
+  // Server-only: guard so a future client import can't bundle/run fs in the browser.
+  if (typeof window !== 'undefined') return null
   try {
     const fs = require('fs')
     const path = require('path')

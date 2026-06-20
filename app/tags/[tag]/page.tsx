@@ -62,10 +62,16 @@ function readBlogIndex(): { tags: IndexTag[]; posts: IndexPost[] } {
 // deriving from each post's `tags` array.
 function getAllTagNames(tags: IndexTag[], posts: IndexPost[]): string[] {
   if (tags.length > 0) {
-    return tags.map((t) => t.name)
+    // Guard against a malformed taxonomy entry without a string `name`
+    // (would crash later on n.toLowerCase()).
+    return tags.map((t) => t.name).filter((name): name is string => typeof name === "string")
   }
   const set = new Set<string>()
-  posts.forEach((p) => (p.tags || []).forEach((t) => set.add(t)))
+  posts.forEach((p) =>
+    (p.tags || []).forEach((t) => {
+      if (typeof t === "string") set.add(t)
+    }),
+  )
   return Array.from(set)
 }
 

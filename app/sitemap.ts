@@ -80,12 +80,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       const publishedPosts = blogIndex.posts?.published || []
       
       // Generate sitemap entries for blog posts
-      blogPosts = publishedPosts.map((post: any) => ({
-        url: `${baseUrl}/posts/${post.slug}/`,
-        lastModified: new Date(post.last_edited_time || post.created_time),
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-      }))
+      blogPosts = publishedPosts
+        .filter((post: any) => post && typeof post.slug === "string")
+        .map((post: any) => {
+          // Same Invalid-Date guard as notes: a bad date would crash sitemap
+          // serialization via toISOString.
+          const dateStr = post.last_edited_time || post.created_time
+          const parsed = dateStr ? new Date(dateStr) : new Date()
+          const lastModified = isNaN(parsed.getTime()) ? new Date() : parsed
+          return {
+            url: `${baseUrl}/posts/${post.slug}/`,
+            lastModified,
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+          }
+        })
 
       // Get categories from taxonomy section
       const taxonomyCategories = blogIndex.taxonomy?.categories || []
@@ -104,12 +113,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       // the route exactly or the sitemap would point at 301/404 URLs.
       const taxonomyTags = blogIndex.taxonomy?.tags || []
 
-      tags = taxonomyTags.map((tag: any) => ({
-        url: `${baseUrl}/tags/${encodeURIComponent(tag.name.toLowerCase())}/`,
-        lastModified: new Date(),
-        changeFrequency: 'weekly' as const,
-        priority: 0.6,
-      }))
+      tags = taxonomyTags
+        .filter((tag: any) => tag && typeof tag.name === "string")
+        .map((tag: any) => ({
+          url: `${baseUrl}/tags/${encodeURIComponent(tag.name.toLowerCase())}/`,
+          lastModified: new Date(),
+          changeFrequency: 'weekly' as const,
+          priority: 0.6,
+        }))
     }
   } catch (error) {
     console.error('Error generating sitemap:', error)
@@ -132,12 +143,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       // notes-index.json exposes every note under posts.all
       const allNotes = notesIndex.posts?.all || []
 
-      notePosts = allNotes.map((note: any) => ({
-        url: `${baseUrl}/notes/${note.slug}/`,
-        lastModified: new Date(note.last_edited_time || note.created_time),
-        changeFrequency: 'weekly' as const,
-        priority: 0.7,
-      }))
+      notePosts = allNotes
+        .filter((note: any) => note && typeof note.slug === "string")
+        .map((note: any) => {
+          // Guard against missing/invalid Notion dates: an Invalid Date would
+          // throw RangeError when Next serializes lastModified via toISOString.
+          const dateStr = note.last_edited_time || note.created_time
+          const parsed = dateStr ? new Date(dateStr) : new Date()
+          const lastModified = isNaN(parsed.getTime()) ? new Date() : parsed
+          return {
+            url: `${baseUrl}/notes/${note.slug}/`,
+            lastModified,
+            changeFrequency: 'weekly' as const,
+            priority: 0.7,
+          }
+        })
     }
   } catch (error) {
     console.error('Error generating notes sitemap:', error)
