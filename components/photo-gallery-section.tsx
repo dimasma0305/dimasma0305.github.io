@@ -64,8 +64,8 @@ export function PhotoGallerySection() {
         subtitle="Moments from international CTF finals with Project Sekai, across Bali, Vietnam, and China."
       />
 
-      {/* Two headline events */}
-      <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2">
+      {/* Headline events: one card each, balanced 3-up from tablet width */}
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
         {FEATURES.map((f) => (
           <figure key={f.id} className="space-y-3">
             <div className="group relative aspect-[16/10] overflow-hidden rounded-2xl border border-border/70 bg-muted shadow-[var(--elevation-2)]">
