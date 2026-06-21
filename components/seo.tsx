@@ -197,19 +197,44 @@ export function generateNotesMetadata(): Metadata {
   }
 }
 
+// Read the index reading_time for a post slug. The component receives a Post
+// whose `content` is empty at this layer (post page passes content: ""), so
+// wordCount/timeRequired/articleBody must NOT be derived from it. reading_time
+// (minutes) lives in blog-index.json; read it by slug, mirroring
+// generateNoteMetadata. Returns undefined on any failure so callers can omit
+// the dependent JSON-LD fields instead of emitting wrong values.
+function getPostReadingTime(slug: string): number | undefined {
+  // Server-only: guard so a future client import can't bundle/run fs in the browser.
+  if (typeof window !== 'undefined') return undefined
+  try {
+    const fs = require('fs')
+    const path = require('path')
+    const indexPath = path.join(process.cwd(), 'public', 'blog-index.json')
+    const data = JSON.parse(fs.readFileSync(indexPath, 'utf8'))
+    const entry = (data.posts?.all || data.posts?.published || []).find(
+      (p: any) => p.slug === slug
+    )
+    const rt = entry?.reading_time
+    return typeof rt === 'number' && rt > 0 ? rt : undefined
+  } catch (error) {
+    console.error('Error reading post reading_time:', error)
+    return undefined
+  }
+}
+
+const READING_WORDS_PER_MINUTE = 200
+
 // Enhanced JSON-LD Structured Data Component
 export function PostStructuredData({ post }: SEOProps) {
   const postUrl = `${baseUrl}/posts/${post.slug}/`
-  const imageUrl = post.coverImage?.startsWith('http') 
-    ? post.coverImage 
+  const imageUrl = post.coverImage?.startsWith('http')
+    ? post.coverImage
     : `${baseUrl}${post.coverImage || '/og-image.jpg'}`
 
-  // Calculate reading time
-  const estimateReadingTime = (content: string) => {
-    const wordsPerMinute = 200
-    const words = content.replace(/<[^>]*>/g, "").split(/\s+/).length
-    return Math.ceil(words / wordsPerMinute)
-  }
+  // reading_time (minutes) sourced from the index, not from the empty content
+  // string. timeRequired/wordCount are derived from it; both are omitted when
+  // unknown (JSON.stringify drops undefined keys) so we never emit wordCount:0.
+  const readingTime = getPostReadingTime(post.slug)
 
   // Main Article structured data
   const articleStructuredData = {
@@ -280,10 +305,16 @@ export function PostStructuredData({ post }: SEOProps) {
       }
     },
     keywords: post.categories?.join(", "),
-    wordCount: post.content ? post.content.replace(/<[^>]*>/g, "").split(/\s+/).length : 0,
-    timeRequired: `PT${post.content ? estimateReadingTime(post.content) : 5}M`,
+    // Estimate wordCount from reading_time (minutes * WPM); omit both when
+    // reading_time is unknown rather than emit wordCount:0 / a bogus default.
+    wordCount: readingTime ? readingTime * READING_WORDS_PER_MINUTE : undefined,
+    timeRequired: readingTime ? `PT${readingTime}M` : undefined,
     articleSection: post.categories?.[0] || "Technology",
-    articleBody: post.content?.replace(/<[^>]*>/g, '').substring(0, 500) + "...",
+    // content is empty at this layer; only emit articleBody when it actually
+    // has text (otherwise the old code emitted the literal string "...").
+    articleBody: post.content
+      ? post.content.replace(/<[^>]*>/g, '').substring(0, 500) + "..."
+      : undefined,
     inLanguage: "en-US",
     isAccessibleForFree: true,
     genre: ["Technology", "Cybersecurity", "Tutorial"],
@@ -780,18 +811,76 @@ export function NotesStructuredData() {
   )
 }
 
+// Look up a note in notes-index.json by slug so the structured data can carry
+// real title/dates/description/image/keywords instead of a slug-derived guess.
+// Mirrors generateNoteMetadata's read pattern; returns null on any failure so
+// the component degrades to slug-only data without throwing during render.
+function getNoteFromIndex(slug: string): any | null {
+  // Server-only: guard so a future client import can't bundle/run fs in the browser.
+  if (typeof window !== 'undefined') return null
+  try {
+    const fs = require('fs')
+    const path = require('path')
+    const indexPath = path.join(process.cwd(), 'public', 'notes-index.json')
+    const data = JSON.parse(fs.readFileSync(indexPath, 'utf8'))
+    return data.posts?.all?.find((n: any) => n.slug === slug) || null
+  } catch (error) {
+    console.error('Error reading note from index:', error)
+    return null
+  }
+}
+
 export function NoteStructuredData({ slug }: { slug: string }) {
   const noteUrl = `${baseUrl}/notes/${slug}`
-  
+
+  // Pull real metadata from the index; fall back to slug-derived values if the
+  // note (or the index) is unavailable.
+  const note = getNoteFromIndex(slug)
+
+  const headline = note?.title
+    ? note.title
+    : slug
+        .split("-")
+        .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
+        .join(" ")
+
+  // Clean the excerpt into a plain-text description, mirroring the post version.
+  const description = note?.excerpt
+    ? note.excerpt
+        .replace(/[#*_`]/g, '')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .trim()
+        .substring(0, 160)
+    : undefined
+
+  // featured_image is null for most notes; fall back to the default OG image
+  // (consistent with generateNoteMetadata) so we never emit image: null.
+  const imageUrl = note?.featured_image
+    ? `${baseUrl}${note.featured_image}`
+    : `${baseUrl}/og-image.jpg`
+
+  // Keywords from the note's categories + tags (deduped), mirroring the post.
+  const keywords = note
+    ? [...new Set([...(note.categories || []), ...(note.tags || [])])].join(", ") || undefined
+    : undefined
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "@id": noteUrl,
-    headline: slug
-      .split("-")
-      .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
-      .join(" "),
+    headline,
+    description,
+    image: {
+      "@type": "ImageObject",
+      url: imageUrl,
+      width: 1200,
+      height: 630,
+      caption: headline
+    },
     url: noteUrl,
+    datePublished: note?.created_time,
+    dateModified: note?.last_edited_time || note?.created_time,
+    keywords,
     author: {
       "@type": "Person",
       "@id": `${baseUrl}/#person`,
@@ -832,7 +921,7 @@ export function NoteStructuredData({ slug }: { slug: string }) {
       "@type": "WebPage",
       "@id": noteUrl,
       url: noteUrl,
-      name: `Technical Note: ${slug}`,
+      name: `Technical Note: ${headline}`,
       inLanguage: "en-US",
       isPartOf: {
         "@type": "WebSite",

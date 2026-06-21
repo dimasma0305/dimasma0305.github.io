@@ -1,4 +1,8 @@
-import { withBasePath } from "@/lib/utils"
+import { escapeHtml, sanitizeUrl, withBasePath } from "@/lib/utils"
+
+// Re-export the canonical sanitizers so existing import paths keep working.
+// The single source of truth lives in lib/utils.ts.
+export { escapeHtml, sanitizeUrl }
 
 // Types
 export interface RichText {
@@ -59,18 +63,6 @@ export interface NotionBlock {
   children?: (NotionBlock | TableRow)[]
 }
 
-// Utility function to escape HTML entities
-export function escapeHtml(text: string): string {
-  const htmlEntities: { [key: string]: string } = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  }
-  return text.replace(/[&<>"']/g, (char) => htmlEntities[char])
-}
-
 // Utility function to format file size
 export function formatFileSize(bytes: number): string {
   const units = ['B', 'KB', 'MB', 'GB']
@@ -83,35 +75,6 @@ export function formatFileSize(bytes: number): string {
   }
   
   return `${Math.round(size * 100) / 100} ${units[unitIndex]}`
-}
-
-// Utility function to sanitize URLs
-export function sanitizeUrl(url: string): string {
-  if (!url) return ''
-  // Allow root-relative paths. Build-time image localization rewrites Notion
-  // media to local copies under /posts/... or /notes/..., and those would
-  // otherwise fail `new URL()` (no origin) and be blanked to "". Permit a
-  // SINGLE leading slash only — reject protocol-relative "//host" and the
-  // backslash variant browsers may treat as "//" — and forbid characters that
-  // could break out of the double-quoted src/href attribute (stored XSS).
-  if (/^\/(?![/\\])[^"'<>\s]*$/.test(url)) {
-    return url
-  }
-  try {
-    const parsedUrl = new URL(url)
-    if (['http:', 'https:'].includes(parsedUrl.protocol)) {
-      // Return the normalized href, NOT the raw input. URL normalization
-      // percent-encodes characters such as " < > and spaces, preventing the
-      // URL from breaking out of the double-quoted HTML attribute it is later
-      // interpolated into (src="..."/href="..."), which would otherwise allow
-      // stored XSS via Notion-sourced block URLs.
-      return parsedUrl.href
-    }
-  } catch {
-    // If URL parsing fails, return an empty string
-    return ''
-  }
-  return ''
 }
 
 // Utility function to extract domain from URL

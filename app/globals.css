@@ -1145,6 +1145,65 @@ pre.line-numbers > code {
   will-change: transform, opacity;
 }
 
+/* --- Windows High Contrast Mode / forced-colors support ------------------
+   In forced-colors mode the browser discards the site's author colors and
+   substitutes a small system palette. Two things this dark, token-driven theme
+   relies on then break:
+     1. Focus is shown via box-shadow rings (`.focus-ring`, shadcn primitives) —
+        forced-colors drops box-shadow, so keyboard focus becomes invisible.
+     2. Surfaces/borders are HSL custom properties — those are exactly what HCM
+        overrides, and clipped-gradient text collapses to transparent.
+   This block restores only what HCM strips, using ONLY CSS system color
+   keywords (Canvas, CanvasText, LinkText, ButtonText, Highlight, GrayText, …).
+   It deliberately does NOT use the app's hsl()/var(--token) colors here — those
+   are the very values HCM replaces — and avoids `forced-color-adjust: none`
+   except where a transparent-fill element would otherwise vanish. Keeping it
+   conservative: let the system own text/background, we only re-add structure. */
+@media (forced-colors: active) {
+  /* 1. ALWAYS-visible keyboard focus. The site indicates focus with
+     box-shadow rings, which forced-colors removes. `.focus-ring` also applies
+     Tailwind's `outline-none` (a *transparent* outline that survives HCM), so
+     styling the class alone is a no-op — we must target :focus-visible and set
+     a real outline. !important defeats the transparent `outline-none`. */
+  :focus-visible,
+  .focus-ring:focus-visible {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px !important;
+  }
+
+  /* 2. Structural borders that would otherwise vanish. The glass utilities are
+     `1px solid hsl(var(--border))`; remap only the COLOR so the surface edge,
+     panel, and card outlines stay visible. Width/offset are left intact. */
+  .glass,
+  .glass-card,
+  .glass-panel {
+    border-color: CanvasText;
+  }
+
+  /* 3. Clipped-gradient hero text collapses to transparent under HCM (the
+     gradient background is stripped but `-webkit-text-fill-color: transparent`
+     persists). Force a solid system color so the name stays readable. This is
+     the one place forced-color-adjust must be relaxed via an explicit fill. */
+  .text-gradient-accent,
+  .text-gradient-neon {
+    background: none;
+    -webkit-text-fill-color: CanvasText;
+    color: CanvasText;
+  }
+
+  /* 4. Body links. Tailwind's preflight strips the default underline, so HCM
+     links inside prose/notion/bare body copy would be distinguishable by color
+     alone (and HCM flattens link color toward body text). Re-underline them
+     with the system LinkText color. Nav/button-styled links are excluded — they
+     already read as controls via their borders/shape. */
+  .prose a,
+  .notion-link,
+  p a {
+    text-decoration: underline;
+    color: LinkText;
+  }
+}
+
 /* Respect the user's reduced-motion preference everywhere. */
 @media (prefers-reduced-motion: reduce) {
   *,

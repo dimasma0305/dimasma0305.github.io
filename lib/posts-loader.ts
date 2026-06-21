@@ -70,32 +70,6 @@ function createNotionPublicUrl(pageId: string): string {
   return `https://www.notion.so/${cleanId}`
 }
 
-// Helper function to escape HTML entities for safe rendering
-function escapeHtml(text: string): string {
-  const map: { [key: string]: string } = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;",
-  }
-  return text.replace(/[&<>"']/g, (m) => map[m])
-}
-
-// Helper function to validate and clean URLs
-function sanitizeUrl(url: string): string {
-  try {
-    const urlObj = new URL(url)
-    // Only allow http and https protocols
-    if (urlObj.protocol === "http:" || urlObj.protocol === "https:") {
-      return escapeHtml(url)
-    }
-    return "#"
-  } catch {
-    return "#"
-  }
-}
-
 // Helper function to extract categories from posts
 function extractCategories(posts: Post[]): string[] {
   const categorySet = new Set<string>()
@@ -137,10 +111,6 @@ function setCachedData<T>(cache: Map<string, CacheEntry<T>>, key: string, data: 
     expires: now + CACHE_DURATION
   }
   cache.set(key, entry)
-}
-
-function isCacheExpired(entry: CacheEntry<any>): boolean {
-  return Date.now() > entry.expires
 }
 
 // Optimized function to fetch index with caching and deduplication
@@ -324,17 +294,6 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
   return fetchPromise
 }
 
-// Helper function to format file sizes
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) {
-    return "0 Bytes"
-  }
-  const k = 1024
-  const sizes = ["Bytes", "KB", "MB", "GB"]
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
-}
-
 // Function to get blog statistics
 export async function getBlogStats(): Promise<BlogStats | null> {
   try {
@@ -363,62 +322,6 @@ export function invalidateCache(): void {
   pendingPostRequests.clear()
 
   console.log("Blog cache invalidated")
-}
-
-// Function to get cache statistics
-export function getCacheStats() {
-  const now = Date.now()
-  
-  const indexCacheEntry = indexCache.get(INDEX_CACHE_KEY)
-  const indexCacheStatus = indexCacheEntry 
-    ? (isCacheExpired(indexCacheEntry) ? 'expired' : 'valid')
-    : 'empty'
-
-  const postCacheEntries = Array.from(postCache.entries())
-  const validPostCacheEntries = postCacheEntries.filter(([_, entry]) => !isCacheExpired(entry))
-  
-  return {
-    indexCache: {
-      status: indexCacheStatus,
-      cachedAt: indexCacheEntry?.timestamp ? new Date(indexCacheEntry.timestamp).toISOString() : null,
-      expiresAt: indexCacheEntry?.expires ? new Date(indexCacheEntry.expires).toISOString() : null
-    },
-    postCache: {
-      totalEntries: postCache.size,
-      validEntries: validPostCacheEntries.length,
-      expiredEntries: postCache.size - validPostCacheEntries.length,
-      cachedSlugs: validPostCacheEntries.map(([key]) => key.replace(POST_CACHE_KEY_PREFIX, ''))
-    },
-    pendingRequests: {
-      indexRequest: !!pendingIndexRequest,
-      postRequests: Array.from(pendingPostRequests.keys())
-    }
-  }
-}
-
-// Function to clean expired cache entries
-export function cleanExpiredCache(): void {
-  const now = Date.now()
-  let cleanedCount = 0
-
-  // Clean index cache
-  const indexEntry = indexCache.get(INDEX_CACHE_KEY)
-  if (indexEntry && isCacheExpired(indexEntry)) {
-    indexCache.delete(INDEX_CACHE_KEY)
-    cleanedCount++
-  }
-
-  // Clean post cache
-  for (const [key, entry] of postCache.entries()) {
-    if (isCacheExpired(entry)) {
-      postCache.delete(key)
-      cleanedCount++
-    }
-  }
-
-  if (cleanedCount > 0) {
-    console.log(`Cleaned ${cleanedCount} expired cache entries`)
-  }
 }
 
 // Function to prefetch posts for performance optimization
@@ -460,17 +363,5 @@ export async function fetchAllPosts(): Promise<Post[]> {
   } catch (error) {
     console.error("Error fetching all posts:", error)
     return []
-  }
-}
-
-// Auto-cleanup function to run periodically
-export function startCacheCleanup(intervalMinutes: number = 60): () => void {
-  const intervalId = setInterval(() => {
-    cleanExpiredCache()
-  }, intervalMinutes * 60 * 1000)
-
-  // Return cleanup function
-  return () => {
-    clearInterval(intervalId)
   }
 }

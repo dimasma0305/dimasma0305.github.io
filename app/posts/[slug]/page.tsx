@@ -1,5 +1,6 @@
 import PostPageClient from "@/components/post-page-client"
 import { generatePostMetadata, PostStructuredData } from "@/components/seo"
+import { getPostBySlugAtBuild } from "@/lib/posts-server"
 import type { Metadata } from "next"
 import fs from "fs"
 import path from "path"
@@ -103,6 +104,11 @@ interface PostPageProps {
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params
 
+  // Pre-render the full post body at build time so the article text lands in the
+  // static HTML (for crawlers, AI, and no-JS clients). Falls back to null on
+  // any failure, in which case the client fetches the post as before.
+  const initialPost = await getPostBySlugAtBuild(slug)
+
   // Get post data for structured data
   let post = null
   try {
@@ -144,10 +150,15 @@ export default async function PostPage({ params }: PostPageProps) {
     console.error("Error loading post for structured data:", error)
   }
 
+  // Prefer the content-bearing build-time post for structured data so the
+  // Article JSON-LD carries a real articleBody/excerpt; otherwise fall back to
+  // the index-built partial (content: "").
+  const structuredPost = initialPost ?? post
+
   return (
     <>
-      {post && <PostStructuredData post={post} />}
-      <PostPageClient slug={slug} />
+      {structuredPost && <PostStructuredData post={structuredPost} />}
+      <PostPageClient slug={slug} initialPost={initialPost ?? undefined} />
     </>
   )
 }

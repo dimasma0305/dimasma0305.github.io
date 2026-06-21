@@ -9,8 +9,8 @@ import { SectionHeader } from "@/components/section-header";
 const gd = (id: string, w: number) =>
   `https://lh3.googleusercontent.com/d/${id}=w${w}`;
 
-// The two headline events get a feature card each; the strip below mixes action
-// shots from both.
+// The headline events get a feature card each; the strip below mixes action
+// shots from across them.
 const FEATURES = [
   {
     id: "1hA9LIS5pdZYTgHrbD5OEUs0AP17hr0pS",
@@ -23,6 +23,13 @@ const FEATURES = [
     chip: "XCTF 2025",
     caption: "9th XCTF International Invitational in China, representing Project Sekai.",
     alt: "Project Sekai with their banner at the 9th XCTF International Invitational in China",
+  },
+  {
+    id: "1ILzurxhpI4Q-gkg7z2oLGXt7s6KTJvm3",
+    chip: "ISITDTU CTF 2024",
+    caption:
+      "ISITDTU CTF 2024 finals in Vietnam, second place in Attack & Defense with Project Sekai.",
+    alt: "Project Sekai at the ISITDTU CTF 2024 finals (Attack & Defense) in Vietnam, second place",
   },
 ];
 
@@ -54,11 +61,11 @@ export function PhotoGallerySection() {
       <SectionHeader
         eyebrow="In person"
         title="On the CTF Floor"
-        subtitle="Moments from international CTF finals with Project Sekai, from Bali to China."
+        subtitle="Moments from international CTF finals with Project Sekai, across Bali, Vietnam, and China."
       />
 
-      {/* Two headline events */}
-      <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2">
+      {/* Headline events: one card each, balanced 3-up from tablet width */}
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
         {FEATURES.map((f) => (
           <figure key={f.id} className="space-y-3">
             <div className="group relative aspect-[16/10] overflow-hidden rounded-2xl border border-border/70 bg-muted shadow-[var(--elevation-2)]">

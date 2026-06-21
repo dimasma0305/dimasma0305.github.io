@@ -43,6 +43,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/tags/`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/tools/`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
@@ -59,6 +65,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Dynamic blog posts
   let blogPosts: MetadataRoute.Sitemap = []
   let categories: MetadataRoute.Sitemap = []
+  let tags: MetadataRoute.Sitemap = []
+  let notePosts: MetadataRoute.Sitemap = []
 
   try {
     // Read the blog index
@@ -72,12 +80,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       const publishedPosts = blogIndex.posts?.published || []
       
       // Generate sitemap entries for blog posts
-      blogPosts = publishedPosts.map((post: any) => ({
-        url: `${baseUrl}/posts/${post.slug}/`,
-        lastModified: new Date(post.last_edited_time || post.created_time),
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-      }))
+      blogPosts = publishedPosts
+        .filter((post: any) => post && typeof post.slug === "string")
+        .map((post: any) => {
+          // Same Invalid-Date guard as notes: a bad date would crash sitemap
+          // serialization via toISOString.
+          const dateStr = post.last_edited_time || post.created_time
+          const parsed = dateStr ? new Date(dateStr) : new Date()
+          const lastModified = isNaN(parsed.getTime()) ? new Date() : parsed
+          return {
+            url: `${baseUrl}/posts/${post.slug}/`,
+            lastModified,
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+          }
+        })
 
       // Get categories from taxonomy section
       const taxonomyCategories = blogIndex.taxonomy?.categories || []
@@ -89,10 +106,62 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: 'weekly' as const,
         priority: 0.7,
       }))
+
+      // Get tags from taxonomy section. Tag landing pages (app/tags/[tag])
+      // generate their static params from this same taxonomy, so the slug
+      // format here (encodeURIComponent + lowercase, trailing slash) must match
+      // the route exactly or the sitemap would point at 301/404 URLs.
+      const taxonomyTags = blogIndex.taxonomy?.tags || []
+
+      tags = taxonomyTags
+        .filter((tag: any) => tag && typeof tag.name === "string")
+        .map((tag: any) => ({
+          url: `${baseUrl}/tags/${encodeURIComponent(tag.name.toLowerCase())}/`,
+          lastModified: new Date(),
+          changeFrequency: 'weekly' as const,
+          priority: 0.6,
+        }))
     }
   } catch (error) {
     console.error('Error generating sitemap:', error)
   }
 
-  return [...staticPages, ...blogPosts, ...categories]
+  // Dynamic note pages. Read notes-index.json the same way as blog-index.json.
+  // Notes are emitted under /notes/<slug>/ (matching the app/notes/[slug] route
+  // and trailingSlash:true). The /notes/ index route is already in staticPages.
+  // Note CATEGORY pages are intentionally NOT emitted: the /categories/[category]
+  // route generates its static params from blog-index taxonomy only, so a
+  // note-only category would 404. Kept in a SEPARATE try/catch so a missing or
+  // corrupt notes-index.json degrades gracefully without dropping blog entries.
+  try {
+    const notesIndexPath = path.join(process.cwd(), 'public', 'notes-index.json')
+
+    if (fs.existsSync(notesIndexPath)) {
+      const notesIndexContent = fs.readFileSync(notesIndexPath, 'utf8')
+      const notesIndex = JSON.parse(notesIndexContent)
+
+      // notes-index.json exposes every note under posts.all
+      const allNotes = notesIndex.posts?.all || []
+
+      notePosts = allNotes
+        .filter((note: any) => note && typeof note.slug === "string")
+        .map((note: any) => {
+          // Guard against missing/invalid Notion dates: an Invalid Date would
+          // throw RangeError when Next serializes lastModified via toISOString.
+          const dateStr = note.last_edited_time || note.created_time
+          const parsed = dateStr ? new Date(dateStr) : new Date()
+          const lastModified = isNaN(parsed.getTime()) ? new Date() : parsed
+          return {
+            url: `${baseUrl}/notes/${note.slug}/`,
+            lastModified,
+            changeFrequency: 'weekly' as const,
+            priority: 0.7,
+          }
+        })
+    }
+  } catch (error) {
+    console.error('Error generating notes sitemap:', error)
+  }
+
+  return [...staticPages, ...blogPosts, ...categories, ...tags, ...notePosts]
 }

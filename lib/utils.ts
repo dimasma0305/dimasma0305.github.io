@@ -85,6 +85,12 @@ export function sanitizeHtml(html: string): string {
 }
 
 // HTML entity encoding/decoding functions
+//
+// CANONICAL escapeHtml. This is the single source of truth used by the Notion
+// content renderer (lib/notion-content-utils.ts) and the post loader. It escapes
+// the five characters that are dangerous inside HTML text and double-quoted
+// attribute values: & < > " '. Escaping `&` first is implicit because the regex
+// matches each character independently against the original string.
 export function escapeHtml(text: string): string {
   const htmlEntities: { [key: string]: string } = {
     "&": "&amp;",
@@ -92,12 +98,53 @@ export function escapeHtml(text: string): string {
     ">": "&gt;",
     '"': "&quot;",
     "'": "&#39;",
-    "/": "&#x2F;",
-    "`": "&#x60;",
-    "=": "&#x3D;",
   }
 
-  return text.replace(/[&<>"'`=/]/g, (match) => htmlEntities[match] || match)
+  return text.replace(/[&<>"']/g, (match) => htmlEntities[match] || match)
+}
+
+// CANONICAL sanitizeUrl. Single source of truth for validating URLs before they
+// are interpolated into HTML attributes (href/src) by the Notion renderer.
+//
+// Security contract:
+//   - Allow ONLY http:, https:, and mailto: protocols. Everything else
+//     (javascript:, data:, vbscript:, file:, blob:, etc.) is rejected.
+//   - Allow root-relative paths beginning with a SINGLE "/". Build-time image
+//     localization rewrites Notion media to same-origin copies under
+//     /posts/... or /notes/..., which have no origin and would otherwise fail
+//     `new URL()`. Protocol-relative "//host" and the "/\" backslash variant
+//     (which browsers may treat as "//") are rejected, and characters that
+//     could break out of a double-quoted attribute are forbidden.
+//   - For absolute URLs, return the NORMALIZED `href`, not the raw input.
+//     URL normalization percent-encodes characters such as " < > and spaces,
+//     preventing the value from breaking out of the double-quoted attribute it
+//     is interpolated into (stored XSS via Notion-sourced URLs).
+//   - On invalid/garbage/empty input, return the safe default "".
+const ALLOWED_URL_PROTOCOLS = ["http:", "https:", "mailto:"]
+
+export function sanitizeUrl(url: string): string {
+  if (!url || typeof url !== "string") return ""
+
+  // Same-origin root-relative path: single leading slash, no protocol-relative
+  // "//" or "/\" trick, and no characters that could escape the attribute.
+  // Backslashes are forbidden anywhere in the path: browsers normalize "\" to
+  // "/", so allowing them enables both the protocol-relative "//host" smuggle
+  // (via a leading "/\") and confusing traversal sequences. Localized Notion
+  // media paths (/posts/..., /notes/...) never contain backslashes.
+  if (/^\/(?![/\\])[^"'<>\s\\]*$/.test(url)) {
+    return url
+  }
+
+  try {
+    const parsed = new URL(url)
+    if (ALLOWED_URL_PROTOCOLS.includes(parsed.protocol)) {
+      return parsed.href
+    }
+  } catch {
+    return ""
+  }
+
+  return ""
 }
 
 export function unescapeHtml(html: string): string {
