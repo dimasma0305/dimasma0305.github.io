@@ -17,6 +17,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
+import { smoothScrollToElement } from "@/lib/scroll-utils";
 
 interface TocItem {
   id: string;
@@ -110,7 +111,6 @@ export function TableOfContents({ content }: TableOfContentsProps) {
         if (!isVisible) {
           // Calculate the scroll position to center the active item
           const containerHeight = container.clientHeight;
-          const scrollTop = container.scrollTop;
           const buttonOffsetTop = activeButton.offsetTop;
           const buttonHeight = activeButton.offsetHeight;
 
@@ -296,14 +296,13 @@ export function TableOfContents({ content }: TableOfContentsProps) {
   }, []);
 
   const scrollToHeading = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-      window.location.hash = `#${id}`;
-    }
+    // Self-correcting scroll: long posts use content-visibility + lazy images,
+    // so a one-shot scroll lands in the wrong place and drifts as content loads.
+    // Update the URL via replaceState (not `location.hash =`) to avoid a second,
+    // native smooth scroll fighting ours under `scroll-behavior: smooth`.
+    smoothScrollToElement(id).then((ok) => {
+      if (ok) history.replaceState(null, "", `#${id}`);
+    });
   };
 
   const toggleSection = (itemId: string) => {
