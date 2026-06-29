@@ -127,17 +127,44 @@ export function processRichText(richText: RichText[]): string {
     .join("")
 }
 
+// Render a block array, wrapping each run of consecutive same-kind list items
+// in a single <ul>/<ol>. Without a list container the browser shares one
+// document-wide list-item counter, so a later numbered list visually
+// "continues" from an earlier, unrelated one; a fresh <ol> restarts at 1.
+async function renderBlockList(blocks: NotionBlock[], folder: string = ""): Promise<string> {
+  const out: string[] = []
+  let i = 0
+  while (i < blocks.length) {
+    const type = blocks[i]?.type
+    if (type === "numbered_list_item" || type === "bulleted_list_item") {
+      const items: string[] = []
+      while (i < blocks.length && blocks[i]?.type === type) {
+        items.push(await convertNotionBlockToHtml(blocks[i], folder))
+        i++
+      }
+      const inner = items.filter(Boolean).join("")
+      if (inner) {
+        const tag = type === "numbered_list_item" ? "ol" : "ul"
+        const cls = type === "numbered_list_item" ? "notion-numbered-list" : "notion-bulleted-list"
+        out.push(`<${tag} class="${cls}">${inner}</${tag}>`)
+      }
+    } else {
+      const html = await convertNotionBlockToHtml(blocks[i], folder)
+      if (html) out.push(html)
+      i++
+    }
+  }
+  return out.join("\n")
+}
+
 // Process children blocks
 export async function processChildBlocks(children: (NotionBlock | TableRow)[], folder: string = ""): Promise<string> {
   if (!children || !Array.isArray(children)) {
     return ""
   }
-  
-  const childPromises = children
-    .filter((child): child is NotionBlock => child.type !== 'table_row')
-    .map((child) => convertNotionBlockToHtml(child, folder))
-  const childResults = await Promise.all(childPromises)
-  return childResults.join("")
+
+  const blocks = children.filter((child): child is NotionBlock => child.type !== 'table_row')
+  return renderBlockList(blocks, folder)
 }
 
 // Convert Notion block to HTML
@@ -165,16 +192,18 @@ export async function convertNotionBlockToHtml(block: NotionBlock, folder: strin
 
     case "bulleted_list_item":
       const liText = processRichText(block.content?.rich_text || [])
+      // Children (including any nested list) are grouped and wrapped in their
+      // own <ul>/<ol> by processChildBlocks, so don't add a wrapper here.
       const liChildren = await processChildBlocks(block.children || [], folder)
       return liText || liChildren
-        ? `<li class="notion-list-item">${liText}${liChildren ? `<ul class="notion-nested-list">${liChildren}</ul>` : ""}</li>`
+        ? `<li class="notion-list-item">${liText}${liChildren}</li>`
         : ""
 
     case "numbered_list_item":
       const numLiText = processRichText(block.content?.rich_text || [])
       const numLiChildren = await processChildBlocks(block.children || [], folder)
       return numLiText || numLiChildren
-        ? `<li class="notion-numbered-item">${numLiText}${numLiChildren ? `<ol class="notion-nested-list">${numLiChildren}</ol>` : ""}</li>`
+        ? `<li class="notion-numbered-item">${numLiText}${numLiChildren}</li>`
         : ""
 
     case "code":
@@ -369,16 +398,7 @@ export async function convertNotionContentToHtml(blocks: NotionBlock[], folder: 
     return ""
   }
 
-  const htmlBlocks: string[] = []
-
-  for (const block of blocks) {
-    const html = await convertNotionBlockToHtml(block, folder)
-    if (html) {
-      htmlBlocks.push(html)
-    }
-  }
-
-  return htmlBlocks.join("\n")
+  return renderBlockList(blocks, folder)
 }
 
 // Extract excerpt from Notion content

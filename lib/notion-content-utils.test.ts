@@ -96,6 +96,38 @@ describe("convertNotionContentToHtml - happy path renders block markup", () => {
   })
 })
 
+describe("convertNotionContentToHtml - list grouping (numbered lists restart per run)", () => {
+  const num = (s: string) => block("numbered_list_item", { rich_text: [rt(s)] })
+  const bul = (s: string) => block("bulleted_list_item", { rich_text: [rt(s)] })
+  const count = (h: string, needle: string) => h.split(needle).length - 1
+
+  test("consecutive numbered items collapse into a single <ol>", async () => {
+    const html = await convertNotionContentToHtml([num("one"), num("two"), num("three")])
+    expect(count(html, "<ol")).toBe(1)
+    expect(count(html, 'class="notion-numbered-item"')).toBe(3)
+  })
+
+  test("numbered lists split by a paragraph render as separate <ol> (each restarts at 1)", async () => {
+    const html = await convertNotionContentToHtml([
+      num("a1"),
+      num("a2"),
+      paragraph([rt("interruption")]),
+      num("b1"),
+      num("b2"),
+    ])
+    // Two distinct <ol> elements => the browser's list-item counter restarts for
+    // the second list instead of continuing from the first (the reported bug).
+    expect(count(html, "<ol")).toBe(2)
+    expect(count(html, 'class="notion-numbered-item"')).toBe(4)
+  })
+
+  test("adjacent bulleted and numbered runs each get their own <ul>/<ol>", async () => {
+    const html = await convertNotionContentToHtml([bul("dot"), num("digit")])
+    expect(count(html, "<ul")).toBe(1)
+    expect(count(html, "<ol")).toBe(1)
+  })
+})
+
 describe("convertNotionContentToHtml - XSS is escaped / neutralized at every sink", () => {
   test("script payload in paragraph rich_text is HTML-escaped, not emitted raw", async () => {
     const html = await convertNotionContentToHtml([

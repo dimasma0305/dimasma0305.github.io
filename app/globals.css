@@ -404,6 +404,18 @@ ol.notion-list {
   @apply list-decimal list-inside space-y-1 my-4;
 }
 
+/* Each consecutive run of list items is wrapped in its own <ul>/<ol> so a
+   numbered list restarts at 1 instead of continuing the document-wide list-item
+   counter from an earlier, unrelated list. The marker + indent live on the <li>
+   (.notion-list-item / .notion-numbered-item), so the wrapper only needs
+   spacing; the <ol> boundary itself is what resets the numbering. */
+.notion-bulleted-list,
+.notion-numbered-list {
+  @apply my-4;
+  list-style: none;
+  padding-left: 0;
+}
+
 /* Quote styling */
 blockquote {
   @apply border-l-4 border-border pl-4 italic text-muted-foreground my-4;
