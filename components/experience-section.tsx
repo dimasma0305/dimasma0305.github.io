@@ -27,40 +27,11 @@ const experiences = [
   },
   {
     title: "Challenge Author",
-    company: "Information and Technology Festival (IntechFest)",
+    company: "IntechFest · TECHCOMFEST · CTF IT Festival · HOLOGY UB",
     location: "Remote",
-    period: "Aug 2024 - Sep 2024",
+    period: "Sep 2023 - Sep 2024",
     description:
-      "Created and designed CTF challenges for the Information and Technology Festival.",
-    skills: ["Web Security", "Challenge Design", "CTF"],
-    type: "Freelance",
-  },
-  {
-    title: "Challenge Author",
-    company: "TECHCOMFEST",
-    location: "Remote",
-    period: "Dec 2023 - Jan 2024",
-    description: "Developed CTF challenges for TECHCOMFEST competition.",
-    skills: ["Web Security", "Challenge Design", "CTF"],
-    type: "Freelance",
-  },
-  {
-    title: "Challenge Author",
-    company: "CTF IT Festival",
-    location: "Remote",
-    period: "Dec 2023",
-    description:
-      "Created security challenges for the CTF IT Festival competition.",
-    skills: ["Web Security", "Challenge Design", "CTF"],
-    type: "Freelance",
-  },
-  {
-    title: "Challenge Author",
-    company: "HOLOGY UB",
-    location: "Remote",
-    period: "Sep 2023",
-    description:
-      "Designed and developed CTF challenges for HOLOGY 6.0 competition at Universitas Brawijaya.",
+      "Designed and built web-security CTF challenges for four national competitions, and served on the jury for HOLOGY 6.0 at Universitas Brawijaya.",
     skills: ["Web Security", "Challenge Design", "CTF", "Jury"],
     type: "Freelance",
   },
@@ -83,7 +54,7 @@ export function ExperienceSection() {
           {experiences.map((experience, index) => (
             <div
               key={index}
-              className="mb-12 relative"
+              className="mb-12 last:mb-0 relative"
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
             >
@@ -91,7 +62,7 @@ export function ExperienceSection() {
               <Card
                 className={`glass-card transition-all duration-300 ${experience.highlight ? "border-primary/40 ring-1 ring-primary/30" : ""}`}
               >
-                <CardHeader>
+                <CardHeader className="pb-3 sm:pb-3">
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <CardTitle className="text-xl">

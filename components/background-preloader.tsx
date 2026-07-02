@@ -32,9 +32,11 @@ export function BackgroundPreloader() {
       () => void warmNotesCache(),
       () => void fetchNotesStats().catch(() => {}),
       () => void import("@/components/footer"),
-      () => void import("@/components/projects-section"),
+      // Warm section chunks in the homepage's visual order (skills, ctf,
+      // projects, experience) so the first-seen sections win the idle slices.
       () => void import("@/components/skills-section"),
       () => void import("@/components/ctf-section"),
+      () => void import("@/components/projects-section"),
       () => void import("@/components/experience-section"),
       () => void import("@/components/mdx"),
       () => void import("@/components/table-of-contents"),

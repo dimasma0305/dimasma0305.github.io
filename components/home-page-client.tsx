@@ -3,6 +3,7 @@
 import { memo, useMemo, Suspense, lazy, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { handleHashOnPageLoad } from "@/lib/scroll-utils";
 import { usePosts } from "@/hooks/use-posts";
 import PostCard from "@/components/post-card";
 import { CardSkeleton } from "@/components/card-skeleton";
@@ -81,17 +82,11 @@ const AboutSection = memo(() => (
         </p>
         <p className="text-lg">
           I enjoy creating CTF challenges, developing security tools, and
-          sharing my knowledge through blog posts and resources.
-        </p>
-        <p className="text-lg text-muted-foreground leading-relaxed">
-          Passionate cybersecurity professional with expertise in penetration
-          testing, CTF competitions, and secure development practices. I love
-          sharing knowledge and experiences through my blog. Check out my latest{" "}
-          <Link href={"/blog"} className="text-primary hover:underline">
-            blog posts
+          sharing what I learn through{" "}
+          <Link href="/blog" className="text-primary hover:underline">
+            writeups and tutorials
           </Link>{" "}
-          for insights into cybersecurity, CTF writeups, and technical
-          tutorials.
+          on my blog.
         </p>
       </div>
       <div className="flex items-center justify-center">
@@ -176,28 +171,17 @@ function HomePageClient() {
   const latestPosts = useMemo(() => posts.slice(0, 3), [posts]);
 
   useEffect(() => {
-    // Handle scroll to hash on page load
-    const hash = window.location.hash;
-    if (hash) {
-      // Wait a bit for the content to render (sections are lazy loaded)
-      setTimeout(() => {
-        const element = document.getElementById(hash.substring(1));
-        if (element) {
-          const headerOffset = 80; // Account for sticky header
-          const elementPosition =
-            element.getBoundingClientRect().top + window.pageYOffset;
-          window.scrollTo({
-            top: elementPosition - headerOffset,
-            // An explicit "smooth" would override the reduced-motion CSS
-            // (scroll-behavior: auto !important) — honor the preference here.
-            behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
-              .matches
-              ? "auto"
-              : "smooth",
-          });
-        }
-      }, 500);
-    }
+    // Land page-load hash links (/#experience etc.) via the shared helper: it
+    // retries until the target exists and re-pins until layout settles. A
+    // one-shot timeout mis-lands here because several tall lazy sections sit
+    // above the lower anchors and hydrate from 288px placeholders.
+    handleHashOnPageLoad({
+      // An explicit "smooth" would override the reduced-motion CSS
+      // (scroll-behavior: auto !important) — honor the preference here.
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
   }, []);
 
   return (
@@ -207,6 +191,8 @@ function HomePageClient() {
       {/* Fixed day→night sky behind the whole page, driven by scroll */}
       <ScrollSky />
 
+      {/* Section order: proof first (CTF wins + photos) right after the intro,
+          then the pitch (projects/services); experience and blog close the page. */}
       <Suspense fallback={<SectionFallback />}>
         <HeroSection />
       </Suspense>
@@ -218,11 +204,11 @@ function HomePageClient() {
       </Suspense>
 
       <Suspense fallback={<SectionFallback />}>
-        <ServicesSection />
+        <CTFSection />
       </Suspense>
 
       <Suspense fallback={<SectionFallback />}>
-        <ExperienceSection />
+        <PhotoGallerySection />
       </Suspense>
 
       <Suspense fallback={<SectionFallback />}>
@@ -230,11 +216,11 @@ function HomePageClient() {
       </Suspense>
 
       <Suspense fallback={<SectionFallback />}>
-        <CTFSection />
+        <ServicesSection />
       </Suspense>
 
       <Suspense fallback={<SectionFallback />}>
-        <PhotoGallerySection />
+        <ExperienceSection />
       </Suspense>
 
       <BlogSection posts={latestPosts} loading={loading} />

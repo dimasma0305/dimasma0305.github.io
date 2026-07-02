@@ -2,11 +2,12 @@
 
 import { Shield, Terminal, Server, Code, Database, Globe } from "lucide-react";
 import { SectionHeader } from "@/components/section-header";
+import { Badge } from "@/components/ui/badge";
 
 const skills = [
   {
     category: "Cybersecurity",
-    icon: <Shield className="w-6 h-6" />,
+    icon: <Shield className="w-4 h-4" />,
     items: [
       "Penetration Testing",
       "Vulnerability Assessment",
@@ -16,27 +17,27 @@ const skills = [
   },
   {
     category: "Operating Systems",
-    icon: <Terminal className="w-6 h-6" />,
+    icon: <Terminal className="w-4 h-4" />,
     items: ["Linux", "Windows", "Kali Linux", "Ubuntu"],
   },
   {
     category: "Infrastructure",
-    icon: <Server className="w-6 h-6" />,
+    icon: <Server className="w-4 h-4" />,
     items: ["Docker", "Kubernetes", "AWS", "Networking"],
   },
   {
     category: "Programming",
-    icon: <Code className="w-6 h-6" />,
+    icon: <Code className="w-4 h-4" />,
     items: ["Python", "JavaScript", "PHP", "Bash", "Go"],
   },
   {
     category: "Databases",
-    icon: <Database className="w-6 h-6" />,
+    icon: <Database className="w-4 h-4" />,
     items: ["MySQL", "PostgreSQL", "MongoDB", "SQLite"],
   },
   {
     category: "Web Technologies",
-    icon: <Globe className="w-6 h-6" />,
+    icon: <Globe className="w-4 h-4" />,
     items: ["HTML/CSS", "React", "Node.js", "Web Security"],
   },
 ];
@@ -47,34 +48,40 @@ export function SkillsSection() {
       <SectionHeader
         eyebrow="Toolkit"
         title="Skills & Expertise"
-        subtitle="My toolkit across security, systems, and code."
+        subtitle="The stack behind the research, tools, and writeups below."
       />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {skills.map((skill, index) => (
-          <div
-            key={index}
-            className={`p-6 rounded-lg glass-card min-h-[200px] ${index === 0 ? "border-primary/40 ring-1 ring-primary/30 shadow-[var(--elevation-2)]" : ""}`}
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-full bg-primary/10 text-primary">
-                {skill.icon}
+      <div className="glass-panel rounded-2xl p-6 sm:p-8">
+        <div className="space-y-4">
+          {skills.map((skill) => (
+            <div
+              key={skill.category}
+              className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-4"
+            >
+              <div className="flex items-center gap-2 sm:w-56 shrink-0">
+                <span className="text-primary">{skill.icon}</span>
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-foreground">
+                  {skill.category}
+                </h3>
               </div>
-              <h3 className="text-xl font-semibold min-h-[28px]">
-                {skill.category}
-              </h3>
-            </div>
 
-            <ul className="space-y-2">
-              {skill.items.map((item) => (
-                <li key={item} className="flex items-center gap-2 min-h-[24px]">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+              {/* role="list" restores list semantics that list-style removal
+                  strips in some screen readers. */}
+              <ul role="list" className="flex flex-wrap gap-2">
+                {skill.items.map((item) => (
+                  <li key={item}>
+                    <Badge
+                      variant="secondary"
+                      className="bg-primary/15 hover:bg-primary/25 text-xs whitespace-nowrap"
+                    >
+                      {item}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

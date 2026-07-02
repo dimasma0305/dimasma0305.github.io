@@ -17,9 +17,9 @@ type NavItem = { name: string; path: string }
 const sectionItems: NavItem[] = [
   { name: "About", path: "/#about" },
   { name: "Skills", path: "/#skills" },
-  { name: "Experience", path: "/#experience" },
-  { name: "Projects", path: "/#projects" },
   { name: "CTF", path: "/#ctf" },
+  { name: "Projects", path: "/#projects" },
+  { name: "Experience", path: "/#experience" },
 ]
 
 // Site areas — always present.
@@ -77,7 +77,7 @@ export function Header() {
       return
     }
 
-    const ids = ["about", "skills", "experience", "projects", "ctf", "blog"]
+    const ids = ["about", "skills", "ctf", "projects", "experience", "blog"]
     const HEADER_LINE = 90 // header height (64) + a little slack past the 80px scroll offset
 
     const compute = () => {

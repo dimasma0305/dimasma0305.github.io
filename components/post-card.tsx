@@ -23,10 +23,12 @@ const CoverImage = memo(({
   coverImage,
   title,
   iconEmoji,
+  notionUrl,
 }: {
   coverImage: string
   title: string
   iconEmoji?: string
+  notionUrl?: string | null
 }) => {
   // Only apply withBasePath to internal/relative paths, not external URLs
   const imageSrc = coverImage?.startsWith('http')
@@ -53,6 +55,14 @@ const CoverImage = memo(({
       {iconEmoji && (
         <div className="absolute flex items-center justify-center w-10 h-10 text-xl rounded-full bg-background/90 border border-border top-4 right-4 shadow-sm">
           {iconEmoji}
+        </div>
+      )}
+      {/* Bottom-right keeps the badge clear of cover-art titles and banner
+          strips (typically top/left); z-10 keeps it clickable above the
+          card's stretched link overlay. */}
+      {notionUrl && (
+        <div className="absolute bottom-3 right-3 z-10">
+          <NotionLinkButton notionUrl={notionUrl} variant="badge" />
         </div>
       )}
     </div>
@@ -146,6 +156,7 @@ function PostCard({ post }: PostCardProps) {
             coverImage={post.coverImage}
             title={post.title}
             iconEmoji={post.iconEmoji}
+            notionUrl={post.notionUrl}
           />
         ) : (
           /* Branded header keeps the grid rhythm when a post has no cover. */
@@ -156,6 +167,11 @@ function PostCard({ post }: PostCardProps) {
             {post.iconEmoji && (
               <div className="absolute flex items-center justify-center w-10 h-10 text-xl rounded-full bg-background/90 border border-border top-4 right-4 shadow-sm">
                 {post.iconEmoji}
+              </div>
+            )}
+            {post.notionUrl && (
+              <div className="absolute bottom-3 right-3 z-10">
+                <NotionLinkButton notionUrl={post.notionUrl} variant="badge" />
               </div>
             )}
           </div>
@@ -186,12 +202,6 @@ function PostCard({ post }: PostCardProps) {
         aria-label={post.title}
         className="absolute inset-0 z-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       />
-
-      {post.notionUrl && (
-        <div className="absolute top-4 left-4 z-10">
-          <NotionLinkButton notionUrl={post.notionUrl} variant="badge" />
-        </div>
-      )}
     </div>
   )
 }

@@ -139,7 +139,6 @@ const teams = [
     description: "A merging of Project Sekai and r3kapig",
     link: "https://ctftime.org/team/58979/",
     level: "80",
-    members: "-",
     specialties: [
       "Web Security",
       "Binary Exploitation",
@@ -158,7 +157,6 @@ const teams = [
       "SEKAI{I5_A_CTF_t3Am_w/_38+_mbRs,_p4r71CiP4t1ng_in_164+_c0nt3Stz}",
     link: "https://ctftime.org/team/58979/",
     level: "75",
-    members: "-",
     specialties: [
       "Web Security",
       "Binary Exploitation",
@@ -177,7 +175,6 @@ const teams = [
       "TCP1P is Indonesian CTF community dedicated to organizing engaging Capture The Flag events and collaborating with local competitions. Our mission is to elevate the quality of CTF challenges in Indonesia and foster a thriving cybersecurity ecosystem through knowledge sharing.",
     link: "https://github.com/TCP1P",
     level: "25",
-    members: "-",
     specialties: [
       "Web Security",
       "Binary Exploitation",
@@ -196,7 +193,6 @@ const teams = [
       "Indonesian CTF Team that rarely participate in CTF competitions in 2025",
     link: "https://ctftime.org/team/211952/",
     level: "70",
-    members: "-",
     specialties: [
       "Web Security",
       "Binary Exploitation",
@@ -215,7 +211,6 @@ const teams = [
       "CTF Team from ITS, often participate in CTF competitions on CTFTime",
     link: "https://ctftime.org/team/70159/",
     level: "40",
-    members: "-",
     specialties: [
       "Web Security",
       "Binary Exploitation",
@@ -465,25 +460,6 @@ export function CTFSection() {
                           {team.description}
                         </p>
 
-                        <div className="grid grid-cols-2 gap-2 mb-3">
-                          <div className="p-2 text-center rounded-lg bg-muted/50">
-                            <div className="text-xs text-muted-foreground">
-                              Members
-                            </div>
-                            <div className="text-sm font-bold">
-                              {team.members}
-                            </div>
-                          </div>
-                          <div className="p-2 text-center rounded-lg bg-muted/50">
-                            <div className="text-xs text-muted-foreground">
-                              Specialties
-                            </div>
-                            <div className="text-sm font-bold">
-                              {team.specialties.length}
-                            </div>
-                          </div>
-                        </div>
-
                         <div className="flex flex-wrap gap-1">
                           {team.specialties.slice(0, 6).map((specialty) => (
                             <Badge
@@ -561,25 +537,6 @@ export function CTFSection() {
                               {team.description}
                             </p>
 
-                            <div className="grid grid-cols-2 gap-2 mb-3">
-                              <div className="p-2 text-center rounded-lg bg-muted/50">
-                                <div className="text-xs text-muted-foreground">
-                                  Members
-                                </div>
-                                <div className="text-sm font-bold">
-                                  {team.members}
-                                </div>
-                              </div>
-                              <div className="p-2 text-center rounded-lg bg-muted/50">
-                                <div className="text-xs text-muted-foreground">
-                                  Specialties
-                                </div>
-                                <div className="text-sm font-bold">
-                                  {team.specialties.length}
-                                </div>
-                              </div>
-                            </div>
-
                             <div className="flex flex-wrap gap-1">
                               {team.specialties.slice(0, 6).map((specialty) => (
                                 <Badge
@@ -621,9 +578,9 @@ export function CTFSection() {
             </div>
           </div>
 
-          {/* The page's night finale: a faint hearth-glow gathers the CTA
-              under the stars. Warm hue is ambient light only (the fireflies'
-              family) — the interactive layer stays blue. */}
+          {/* A faint warm hearth-glow gathers the CTA after the proof
+              sections. Warm hue is ambient light only — the interactive
+              layer stays blue. */}
           <div
             className="relative overflow-hidden p-6 sm:p-8 mt-16 text-center rounded-2xl border border-border/60"
             style={{
