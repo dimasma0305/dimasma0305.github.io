@@ -12,9 +12,44 @@ GitHub Pages. Canonical domain is **dimasc.tf**; `dimasma0305.github.io` 301-red
 ## Commands
 - Dev server:       `bun run dev`
 - Build (→ `out/`): `bun run build`        # static export
-- Lint:             `bun run lint`
+- Type check:       `bun run typecheck`    # tsc --noEmit
+- Lint:             `bun run lint`         # next lint, .eslintrc.json
+- Unit tests:       `bun test`             # bun:test, files colocated as `*.test.ts`
 - Regenerate content: `bun run refresh-content`   # Notion → posts + index + RSS; needs NOTION_TOKEN, NOTION_DATABASE_ID
-- No test suite configured.
+
+## Development Workflow
+This repo pushes **directly to `main`** — no feature branches or PRs. Every push to `main`
+runs CI (`.github/workflows/deploy.yml`) and, if it passes, **deploys straight to
+production** (dimasc.tf). There is no PR review to catch a broken push after the fact, so
+the local pre-push checklist below is the only gate — run it for real, every time:
+
+1. `bun run typecheck` — must be 0 errors.
+2. `bun run lint` — must have 0 errors (warnings are fine; see below). CI runs this as a
+   blocking gate.
+3. `bun test` — must be 0 failures. Add/extend a `*.test.ts` next to the file you changed
+   for any change to `lib/` logic (renderers, utils, content pipeline) — see
+   `lib/notion-content-utils.test.ts` for the pattern (XSS-sink coverage is treated as
+   load-bearing there, not optional).
+4. `bun run build` — must succeed (exit 0) and should be the *last* check, since it's what
+   CI actually deploys.
+
+**Lint rules that are intentionally warnings, not errors** (`.eslintrc.json`): `curly`,
+`no-unused-vars`, `no-explicit-any`, `no-console`, `react/no-unescaped-entities`. Don't
+introduce new warnings gratuitously, but don't block a push over an existing one either —
+`next lint` only fails CI on errors.
+
+**Typecheck/lint/tests are necessary but not sufficient for UI/CSS changes.** They verify
+the code compiles and the logic is correct — they do not verify anything actually renders
+correctly on screen. A real production bug shipped past all three checks in this repo: a
+CSS animation on the homepage silently blanked the entire lower half of the page (correct
+DOM, correct layout geometry, zero console errors, zero failed network requests — just
+never painted) due to a browser compositor interaction with `content-visibility: auto`.
+For any change touching layout, animation, `position: fixed`, `content-visibility`, or
+`transform`, verify by actually rendering the page and looking at it (build → serve `out/`
+locally → screenshot or open it), not just by reading the diff. Prefer **viewport-sized**
+screenshots at the real scroll position over a single full-page "beyond viewport" capture —
+the latter can itself show false-blank content for `content-visibility: auto` sections that
+are far from the current scroll position, which looks identical to a real bug but isn't.
 
 ## Notes
 - **Static export**: no server runtime or API routes. Keep links/canonicals consistent with `trailingSlash: true`.
