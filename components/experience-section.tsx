@@ -15,24 +15,68 @@ import { SectionHeader } from "@/components/section-header";
 
 const experiences = [
   {
-    title: "Founder",
-    company: "TCP1P",
-    location: "Indonesia · Remote",
-    period: "Aug 2022 - Present",
+    title: "Security Researcher · Bug Bounty",
+    company: "Patchstack Alliance",
+    location: "Remote",
+    period: "2024 - Present",
     description:
-      "Founded and lead TCP1P, a cybersecurity team focused on CTF competitions and security research.",
-    skills: ["Communication", "Leadership", "Team Management", "CTF"],
-    link: "https://github.com/TCP1P",
+      "Reported 170+ validated WordPress CVEs across plugins and themes, including CVE-2025-26909 (CVSS 9.6), a critical LFI-to-RCE flaw in WP Ghost affecting 200,000+ sites. Built AI-assisted tooling to accelerate CVE hunting across large plugin codebases.",
+    skills: [
+      "Vulnerability Research",
+      "WordPress Security",
+      "CVE Discovery",
+      "AI Tooling",
+    ],
+    type: "Freelance",
     highlight: true,
   },
   {
-    title: "Challenge Author",
-    company: "IntechFest · TECHCOMFEST · CTF IT Festival · HOLOGY UB",
+    title: "Content Creator",
+    company: "HackTheBox",
     location: "Remote",
-    period: "Sep 2023 - Sep 2024",
+    period: "2025 - Present",
     description:
-      "Designed and built web-security CTF challenges for four national competitions, and served on the jury for HOLOGY 6.0 at Universitas Brawijaya.",
-    skills: ["Web Security", "Challenge Design", "CTF", "Jury"],
+      "Develop original security training content and challenges for the HackTheBox platform.",
+    skills: ["Challenge Design", "Training Content", "Web Security"],
+    type: "Contract",
+  },
+  {
+    title: "DevSecOps Intern",
+    company: "ArchonLabs SSD",
+    location: "Jakarta · Remote",
+    period: "Aug 2025 - Jan 2026",
+    description:
+      "Built container automation with HashiCorp Nomad to orchestrate containerized workflows, and helped secure and harden container-based deployments.",
+    skills: ["HashiCorp Nomad", "Container Security", "DevSecOps"],
+  },
+  {
+    title: "Founder & Infrastructure Engineer",
+    company: "TCP1P",
+    location: "Indonesia",
+    period: "Aug 2022 - Present",
+    description:
+      "Founded and lead TCP1P, Indonesia's #1 nationally ranked CTF team on CTFtime (top 6 every year since 2022). Organized TCP1P CTF 2023 and 2024, internationally rated events sponsored by OffSec, Ottersec, and Google SecLab Indonesia.",
+    skills: ["Leadership", "CTF Infrastructure", "Community", "Event Organizing"],
+    link: "https://github.com/TCP1P",
+  },
+  {
+    title: "Cloud Engineer & Challenge Author",
+    company: "C2C & Cyber Jawara",
+    location: "Indonesia",
+    period: "Dec 2025 - Feb 2026",
+    description:
+      "Engineered and operated cloud-based CTF infrastructure and authored challenges for two of Indonesia's national cybersecurity competitions.",
+    skills: ["Cloud Infrastructure", "Challenge Design", "CTF"],
+    type: "Contract",
+  },
+  {
+    title: "Challenge Author & Infrastructure Engineer",
+    company: "Project Sekai · IntechFest · TECHCOMFEST · HOLOGY",
+    location: "Remote",
+    period: "2022 - 2026",
+    description:
+      "Authored web exploitation challenges for Project Sekai CTF, an internationally recognized competition, and designed challenges and deployment infrastructure for national events across multiple annual editions.",
+    skills: ["Web Security", "Challenge Design", "Infrastructure"],
     type: "Freelance",
   },
 ];

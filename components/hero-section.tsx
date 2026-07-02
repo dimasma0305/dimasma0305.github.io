@@ -34,11 +34,11 @@ export function HeroSection() {
       title: "Cybersecurity Researcher",
       subtitle: "CTF Player & Source Code Pentester",
       description:
-        "I break things to understand how to secure them. I hunt vulnerabilities across web and Linux, then turn what I find into shippable fixes.",
+        "I break things to understand how to secure them. I hunt vulnerabilities in the software everyone uses, then turn what I find into shippable fixes.",
       stats: [
-        { label: "Years of Experience", value: "3+" },
-        { label: "Security Tools", value: "10+" },
-        { label: "CVEs", value: "172+" },
+        { label: "Validated CVEs", value: "170+" },
+        { label: "1st Place Wins", value: "8" },
+        { label: "Podium Finishes", value: "20+" },
       ],
     },
     builder: {
@@ -280,7 +280,7 @@ export function HeroSection() {
                       <p>• Web Exploitation</p>
                       <p>• Reverse Engineering</p>
                       <p>• Cryptography</p>
-                      <p>• OSINT</p>
+                      <p>• CVE Hunting</p>
                     </div>
 
                     <p className="mt-4">

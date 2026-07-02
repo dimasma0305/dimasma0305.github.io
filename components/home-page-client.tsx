@@ -55,30 +55,30 @@ const AboutSection = memo(() => (
     <div className="grid gap-8 md:grid-cols-2 glass-panel p-8 rounded-2xl">
       <div className="space-y-4">
         <p className="text-lg">
-          I'm a cybersecurity enthusiast and CTF player based in Denpasar, Bali,
-          Indonesia. Currently exploring cyber security and computer science
-          with a focus on Linux OS and security.
+          I'm a security researcher and award-winning competitive hacker based
+          in Denpasar, Bali, Indonesia. I've discovered 170+ CVEs in widely used
+          software, including CVE-2025-26909, a critical flaw that affected
+          200,000+ WordPress sites.
         </p>
         <p className="text-lg">
-          I'm a member of{" "}
+          I founded{" "}
           <Link
             href="https://github.com/TCP1P"
             className="text-primary hover:underline"
           >
             @TCP1P
-          </Link>{" "}
-          and
+          </Link>
+          , Indonesia's #1 nationally ranked CTF team on CTFtime, and compete
+          internationally with{" "}
           <Link
             href="https://github.com/project-sekai-ctf"
             className="text-primary hover:underline"
           >
-            {" "}
             @project-sekai-ctf
           </Link>{" "}
-          teams, as well as{" "}
+          as well as the{" "}
           <span className="text-primary font-semibold">SKSD</span> and{" "}
-          <span className="text-primary font-semibold">HCS</span> teams, where I
-          participate in various CTF competitions and security research.
+          <span className="text-primary font-semibold">HCS</span> teams.
         </p>
         <p className="text-lg">
           I enjoy creating CTF challenges, developing security tools, and

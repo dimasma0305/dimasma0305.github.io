@@ -1,44 +1,57 @@
 "use client";
 
-import { Shield, Terminal, Server, Code, Database, Globe } from "lucide-react";
+import { Shield, Code, Bot, Server, BadgeCheck } from "lucide-react";
 import { SectionHeader } from "@/components/section-header";
 import { Badge } from "@/components/ui/badge";
 
 const skills = [
   {
-    category: "Cybersecurity",
+    category: "Offensive Security",
     icon: <Shield className="w-4 h-4" />,
     items: [
       "Penetration Testing",
-      "Vulnerability Assessment",
-      "CTF Competitions",
-      "Security Research",
+      "Web Exploitation",
+      "Vulnerability Research",
+      "Exploit Development",
+      "Reverse Engineering",
+      "Binary Exploitation",
+      "Cryptography",
+      "CVE Discovery",
+      "Secure Code Review",
+      "SAST & DAST",
     ],
-  },
-  {
-    category: "Operating Systems",
-    icon: <Terminal className="w-4 h-4" />,
-    items: ["Linux", "Windows", "Kali Linux", "Ubuntu"],
-  },
-  {
-    category: "Infrastructure",
-    icon: <Server className="w-4 h-4" />,
-    items: ["Docker", "Kubernetes", "AWS", "Networking"],
   },
   {
     category: "Programming",
     icon: <Code className="w-4 h-4" />,
-    items: ["Python", "JavaScript", "PHP", "Bash", "Go"],
+    items: ["Python", "Go", "JavaScript", "TypeScript", "PHP", "Solidity", "Bash"],
   },
   {
-    category: "Databases",
-    icon: <Database className="w-4 h-4" />,
-    items: ["MySQL", "PostgreSQL", "MongoDB", "SQLite"],
+    category: "Security Automation",
+    icon: <Bot className="w-4 h-4" />,
+    items: [
+      "AI-assisted Vulnerability Triage",
+      "CVE-hunting Tooling",
+      "Custom Exploit Scripts",
+    ],
   },
   {
-    category: "Web Technologies",
-    icon: <Globe className="w-4 h-4" />,
-    items: ["HTML/CSS", "React", "Node.js", "Web Security"],
+    category: "Cloud & Infrastructure",
+    icon: <Server className="w-4 h-4" />,
+    items: [
+      "AWS",
+      "Docker",
+      "Kubernetes",
+      "HashiCorp Nomad",
+      "CI/CD",
+      "Linux Administration",
+      "Wazuh (SIEM/IDS)",
+    ],
+  },
+  {
+    category: "Certifications",
+    icon: <BadgeCheck className="w-4 h-4" />,
+    items: ["Certified AppSec Pentester (CAPen) · with Merit", "CompTIA Linux+ ce"],
   },
 ];
 

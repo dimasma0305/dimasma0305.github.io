@@ -92,6 +92,16 @@ const achievements = [
     difficulty: "Epic",
   },
   {
+    title: "1st Place",
+    event: "WorldSkills ASEAN Cyber Security 2024 · National & Regional Selection",
+    team: "Individual",
+    date: "2024",
+    icon: <Trophy className="w-6 h-6 text-primary" />,
+    issuer: "WorldSkills",
+    points: 4400,
+    difficulty: "Epic",
+  },
+  {
     title: "2nd Place",
     event: "TPCTF 2025",
     team: "Project Sekai",
@@ -129,6 +139,92 @@ const achievements = [
     issuer: "KASPERSKY",
     points: 3500,
     difficulty: "Rare",
+  },
+  {
+    title: "2nd Place",
+    event: "Patchstack End-of-Year Alliance CTF 2025",
+    team: "Individual",
+    date: "December 2025",
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
+    issuer: "Patchstack",
+    points: 3600,
+    difficulty: "Rare",
+  },
+  {
+    title: "2nd Place",
+    event: "Patchstack Alliance CTF S01E01",
+    team: "Individual",
+    date: "2024",
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
+    issuer: "Patchstack",
+    points: 3400,
+    difficulty: "Rare",
+  },
+  {
+    title: "2nd Place",
+    event: "WRECKIT 5.0",
+    team: "Team",
+    date: "2024",
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
+    points: 3300,
+    difficulty: "Rare",
+  },
+  {
+    title: "2nd Place",
+    event: "CTF ARA 5.0 2024",
+    team: "Team",
+    date: "2024",
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
+    points: 3300,
+    difficulty: "Rare",
+  },
+  {
+    title: "2nd Place",
+    event: "Patchstack January 2024 Bug Bounty",
+    team: "Individual",
+    date: "January 2024",
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
+    issuer: "Patchstack",
+    points: 3200,
+    difficulty: "Rare",
+  },
+  {
+    title: "3rd Place",
+    event: "AlpacaHack Round 2 (Web)",
+    team: "Individual",
+    date: "2024",
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
+    points: 3000,
+    difficulty: "Uncommon",
+  },
+  {
+    title: "3rd Place",
+    event: "Patchstack WCUS CTF 2024",
+    team: "Individual",
+    date: "2024",
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
+    issuer: "Patchstack",
+    points: 2900,
+    difficulty: "Uncommon",
+  },
+  {
+    title: "3rd Place",
+    event: "Cyber Jawara International 2023",
+    team: "Team",
+    date: "2023",
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
+    points: 2900,
+    difficulty: "Uncommon",
+  },
+  {
+    title: "3rd Place",
+    event: "Patchstack February 2024 Bug Bounty",
+    team: "Individual",
+    date: "February 2024",
+    icon: <Award className="w-6 h-6 text-muted-foreground" />,
+    issuer: "Patchstack",
+    points: 2800,
+    difficulty: "Uncommon",
   },
 ];
 
@@ -172,7 +268,7 @@ const teams = [
     name: "TCP1P",
     role: "Founder",
     description:
-      "TCP1P is Indonesian CTF community dedicated to organizing engaging Capture The Flag events and collaborating with local competitions. Our mission is to elevate the quality of CTF challenges in Indonesia and foster a thriving cybersecurity ecosystem through knowledge sharing.",
+      "Indonesia's #1 nationally ranked CTF community on CTFtime. We organize internationally rated events (TCP1P CTF 2023 & 2024, sponsored by OffSec, Ottersec, and Google SecLab Indonesia) and maintain open-source CTF infrastructure.",
     link: "https://github.com/TCP1P",
     level: "25",
     specialties: [
@@ -261,7 +357,7 @@ export function CTFSection() {
           <SectionHeader
             eyebrow="Competitions"
             title="CTF Achievements"
-            subtitle="Battle-tested in the digital arena."
+            subtitle="8 first-place and 20+ podium finishes, national and international."
           />
 
           <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">

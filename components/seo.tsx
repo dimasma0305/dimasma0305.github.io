@@ -565,17 +565,24 @@ export function HomepageStructuredData() {
       "https://github.com/dimasma0305",
       "https://linkedin.com/in/solderet"
     ],
-    jobTitle: "Cybersecurity Researcher",
-    description: "Cybersecurity enthusiast and CTF player specializing in penetration testing, vulnerability analysis, and security research",
+    jobTitle: "Security Researcher",
+    description: "Security researcher and award-winning competitive hacker. Discovered 170+ CVEs in widely used software. Founder of TCP1P, Indonesia's #1 nationally ranked CTF team on CTFtime.",
     knowsAbout: [
-      "Cybersecurity",
-      "Penetration Testing",
       "Web Security",
-      "CTF Challenges",
-      "Vulnerability Analysis",
-      "Ethical Hacking",
-      "Linux Security",
-      "Security Research"
+      "Penetration Testing",
+      "Vulnerability Research",
+      "CVE Discovery",
+      "Secure Code Review",
+      "WordPress Security",
+      "Exploit Development",
+      "Reverse Engineering",
+      "CTF Competitions",
+      "Security Automation"
+    ],
+    award: [
+      "170+ validated WordPress CVEs via the Patchstack Alliance",
+      "Discovered CVE-2025-26909 (CVSS 9.6) affecting 200,000+ sites",
+      "8 first-place finishes in national and international CTF competitions"
     ],
     worksFor: {
       "@type": "Organization",
@@ -588,9 +595,25 @@ export function HomepageStructuredData() {
         url: "https://github.com/TCP1P"
       },
       {
-        "@type": "Organization", 
+        "@type": "Organization",
         name: "Project Sekai CTF",
         url: "https://github.com/project-sekai-ctf"
+      }
+    ],
+    alumniOf: {
+      "@type": "CollegeOrUniversity",
+      name: "Politeknik Negeri Bali"
+    },
+    hasCredential: [
+      {
+        "@type": "EducationalOccupationalCredential",
+        name: "Certified AppSec Pentester (CAPen)",
+        credentialCategory: "certification"
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        name: "CompTIA Linux+ ce",
+        credentialCategory: "certification"
       }
     ],
     address: {
