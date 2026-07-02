@@ -9,17 +9,22 @@ import { usePathname } from "next/navigation";
  * seamless. The progress bar (NavigationLoader) + warmed caches
  * (BackgroundPreloader) mean content is usually ready by the time it fades in.
  *
- * The home route renders a position:fixed ScrollSky; a `transform` on its
- * ancestor would re-anchor that fixed layer and make the sky jump. So home
- * cross-fades (opacity only) while content routes also get a subtle rise.
- * Reduced-motion users get an instant swap via the global reset in globals.css.
+ * The home route skips the enter animation entirely. It used to cross-fade
+ * (opacity only, to avoid a `transform` re-anchoring the fixed ScrollSky
+ * background), but that hit a real compositor bug on home's very tall,
+ * content-visibility-heavy layout: the wrapper gets promoted to its own layer
+ * for the animation, and content still resolving below the fold at that
+ * moment never gets painted after demotion — a permanently blank lower half.
+ * Confirmed to disappear once the animation was removed, and to persist with
+ * `will-change: opacity` alone. Content routes are shorter and use
+ * `page-enter-rise` (transform + opacity, with `will-change`) without issue.
  */
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
   return (
-    <div key={pathname} className={isHome ? "page-enter-fade" : "page-enter-rise"}>
+    <div key={pathname} className={isHome ? "" : "page-enter-rise"}>
       {children}
     </div>
   );
