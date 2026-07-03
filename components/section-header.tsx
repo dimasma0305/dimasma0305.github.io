@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 interface SectionHeaderProps {
   /** Small uppercase kicker above the title (accent-colored). */
   eyebrow?: string;
+  /** Editorial section index ("01"), rendered in mono before the eyebrow. */
+  index?: string;
   title: string;
   /** Heading level for the title. Page-level headers should pass "h1". */
   titleAs?: "h1" | "h2";
@@ -20,6 +22,7 @@ interface SectionHeaderProps {
  */
 export function SectionHeader({
   eyebrow,
+  index,
   title,
   titleAs: TitleTag = "h2",
   subtitle,
@@ -40,6 +43,14 @@ export function SectionHeader({
              clears every sky phase and card surface; same hue/chroma, so it
              reads as a lightness ramp, not a second accent. */
           <p className="text-sm font-semibold uppercase tracking-widest text-primary-bright">
+            {index && (
+              <span className="font-mono font-normal text-primary-bright/60">
+                {index}
+                <span aria-hidden className="mx-2">
+                  /
+                </span>
+              </span>
+            )}
             {eyebrow}
           </p>
         )}

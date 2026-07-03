@@ -141,12 +141,15 @@ export function CodeDiffDemo() {
         <span className="h-3 w-3 rounded-full bg-red-400/70" />
         <span className="h-3 w-3 rounded-full bg-yellow-400/70" />
         <span className="h-3 w-3 rounded-full bg-emerald-400/70" />
-        <span className="ml-2 font-mono text-xs text-muted-foreground">
+        {/* min-w-0 + truncate let the filename give way on narrow screens;
+            otherwise this row's min-content width (long mono filename + pill)
+            forces the whole card, and with it the page, wider than a phone. */}
+        <span className="ml-2 min-w-0 flex-1 truncate font-mono text-xs text-muted-foreground">
           {example.file}
         </span>
 
         {/* Status pill: cross-fades problem → fixed, settling on "fixed" */}
-        <span className="relative ml-auto grid h-6 place-items-center">
+        <span className="relative ml-auto grid h-6 shrink-0 place-items-center">
           <span
             className={`col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold [animation:diff-status-vuln_5.5s_ease-in-out_infinite_both] ${badPillClass(
               example.bad.tone,

@@ -9,6 +9,7 @@ import PostCard from "@/components/post-card";
 import { CardSkeleton } from "@/components/card-skeleton";
 import { FallbackImage } from "@/components/fallback-image";
 import { SectionHeader } from "@/components/section-header";
+import { AchievementTicker } from "@/components/achievement-ticker";
 import { Parallax } from "@/components/parallax";
 import { ScrollSky } from "@/components/scroll-sky";
 
@@ -51,7 +52,7 @@ const AboutSection = memo(() => (
     id="about"
     className="container px-4 section-y mx-auto max-w-7xl scroll-mt-20"
   >
-    <SectionHeader eyebrow="Introduction" title="About Me" />
+    <SectionHeader index="01" eyebrow="Introduction" title="About Me" />
     <div className="grid gap-8 md:grid-cols-2 glass-panel p-8 rounded-2xl">
       <div className="space-y-4">
         <p className="text-lg">
@@ -117,6 +118,7 @@ const BlogSection = memo(
       className="container px-4 section-y mx-auto max-w-7xl scroll-mt-20"
     >
       <SectionHeader
+        index="08"
         eyebrow="Writing"
         title="Latest Blog Posts"
         action={
@@ -196,6 +198,8 @@ function HomePageClient() {
       <Suspense fallback={<SectionFallback />}>
         <HeroSection />
       </Suspense>
+
+      <AchievementTicker />
 
       <AboutSection />
 

@@ -89,6 +89,7 @@ export function ExperienceSection() {
       <div className="max-w-4xl mx-auto">
         <div className="ml-4 pl-8">
           <SectionHeader
+            index="07"
             eyebrow="Journey"
             title="Professional Experience"
             subtitle="My journey in the cybersecurity realm."

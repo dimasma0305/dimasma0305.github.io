@@ -59,6 +59,7 @@ export function PhotoGallerySection() {
       className="container px-4 section-y mx-auto max-w-7xl scroll-mt-20"
     >
       <SectionHeader
+        index="04"
         eyebrow="In person"
         title="On the CTF Floor"
         subtitle="Moments from international CTF finals with Project Sekai, across Bali, Vietnam, and China."

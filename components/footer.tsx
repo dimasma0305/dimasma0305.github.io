@@ -9,6 +9,27 @@ export function Footer() {
   return (
     <footer className="py-12 border-t border-border/60 bg-transparent">
       <div className="container px-4 mx-auto max-w-7xl">
+        {/* Oversized signature: the typographic full stop every page ends on.
+            One line of display type, one action (mail). */}
+        <div className="mb-14">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary-bright">
+            Open to security research roles
+          </p>
+          <a
+            href="mailto:dimasmaulana0305@gmail.com"
+            className="group block max-w-4xl text-4xl font-bold tracking-tight text-foreground transition-colors duration-[var(--dur-base)] hover:text-primary-bright sm:text-5xl lg:text-6xl"
+          >
+            Let&apos;s build something secure
+            <span className="text-primary">.</span>
+          </a>
+          <p className="mt-4 text-sm text-muted-foreground">
+            <span className="link-underline text-foreground">
+              dimasmaulana0305@gmail.com
+            </span>{" "}
+            · Discord <span className="text-foreground">@dimasmaulana</span>
+          </p>
+        </div>
+
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <h3 className="mb-4 text-lg font-semibold text-foreground">Dimas Maulana</h3>
@@ -22,17 +43,17 @@ export function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/#about" className="text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
+                <Link href="/#about" className="link-underline text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/#projects" className="text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
+                <Link href="/#projects" className="link-underline text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
                   Projects
                 </Link>
               </li>
               <li>
-                <Link href="/#experience" className="text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
+                <Link href="/#experience" className="link-underline text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
                   Experience
                 </Link>
               </li>

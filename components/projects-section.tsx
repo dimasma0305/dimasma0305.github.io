@@ -183,6 +183,7 @@ export function ProjectsSection() {
     <section id="projects" className="section-y scroll-mt-20">
       <div className="container px-4 mx-auto max-w-7xl">
         <SectionHeader
+          index="05"
           eyebrow="Work"
           title="Featured Projects"
           subtitle="Open-source tools and projects I've built."

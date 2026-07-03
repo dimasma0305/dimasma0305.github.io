@@ -58,6 +58,7 @@ export function SkillsSection() {
   return (
     <div className="container px-4 section-y mx-auto max-w-7xl scroll-mt-20" id="skills">
       <SectionHeader
+        index="02"
         eyebrow="Toolkit"
         title="Skills & Expertise"
         subtitle="The stack behind the research, tools, and writeups below."

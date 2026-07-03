@@ -355,6 +355,7 @@ export function CTFSection() {
       <div className="max-w-7xl mx-auto">
         <div className="relative z-10 w-full px-4">
           <SectionHeader
+            index="03"
             eyebrow="Competitions"
             title="CTF Achievements"
             subtitle="8 first-place and 20+ podium finishes, national and international."

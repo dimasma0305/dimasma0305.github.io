@@ -20,6 +20,7 @@ export function ServicesSection() {
       id="services"
     >
       <SectionHeader
+        index="06"
         eyebrow="Services"
         title="Source Code Security Review"
         subtitle="An AI agent reviews your code for vulnerabilities, I triage what's real, check the program still runs, and hand you back suggested fixes."
@@ -34,8 +35,10 @@ export function ServicesSection() {
         }
       />
 
+      {/* min-w-0 on both columns: grid items default to min-width auto, so any
+          intrinsically wide child (the code demo) would widen the page. */}
       <div className="grid items-center gap-10 lg:grid-cols-2">
-        <div>
+        <div className="min-w-0">
           <ul className="space-y-3">
             {highlights.map((item) => (
               <li key={item} className="flex items-center gap-3">
@@ -64,7 +67,7 @@ export function ServicesSection() {
           </Link>
         </div>
 
-        <div className="space-y-3">
+        <div className="min-w-0 space-y-3">
           <CodeDiffDemo />
           <p className="text-center text-xs text-muted-foreground">
             Real findings from a scan of this very site, already patched.
