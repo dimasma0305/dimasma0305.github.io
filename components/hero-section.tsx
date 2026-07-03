@@ -279,7 +279,7 @@ export function HeroSection() {
                     <div className="pl-4 border-l-2 border-green-500/20 my-2 text-green-200/80">
                       <p>• Web Exploitation</p>
                       <p>• Reverse Engineering</p>
-                      <p>• Cryptography</p>
+                      <p>• Binary Exploitation</p>
                       <p>• CVE Hunting</p>
                     </div>
 

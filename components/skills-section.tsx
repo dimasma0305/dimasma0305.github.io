@@ -15,7 +15,6 @@ const skills = [
       "Exploit Development",
       "Reverse Engineering",
       "Binary Exploitation",
-      "Cryptography",
       "CVE Discovery",
       "Secure Code Review",
       "SAST & DAST",
