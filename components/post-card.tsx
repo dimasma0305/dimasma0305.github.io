@@ -16,6 +16,9 @@ import { fetchPostBySlug } from "@/lib/posts-loader"
 
 interface PostCardProps {
   post: Post
+  /** Eager-load the cover (first row of an above-the-fold grid): a lazy
+      LCP image starts downloading only after layout, wrecking LCP. */
+  priority?: boolean
 }
 
 // Memoized cover image component
@@ -24,11 +27,13 @@ const CoverImage = memo(({
   title,
   iconEmoji,
   notionUrl,
+  priority,
 }: {
   coverImage: string
   title: string
   iconEmoji?: string
   notionUrl?: string | null
+  priority?: boolean
 }) => {
   // Only apply withBasePath to internal/relative paths, not external URLs
   const imageSrc = coverImage?.startsWith('http')
@@ -49,6 +54,7 @@ const CoverImage = memo(({
         src={imageSrc}
         alt={title}
         fill
+        priority={priority}
         className="object-contain transition-transform duration-300 group-hover:scale-105"
         fallbackSrc={withBasePath("/placeholder.svg?height=192&width=384")}
       />
@@ -107,7 +113,7 @@ PostFooter.displayName = 'PostFooter'
 
 // CSS-based hover effect only
 
-function PostCard({ post }: PostCardProps) {
+function PostCard({ post, priority }: PostCardProps) {
   // Memoize post URL
   const postUrl = useMemo(() => `/posts/${post.slug}`, [post.slug])
   const router = useRouter()
@@ -157,6 +163,7 @@ function PostCard({ post }: PostCardProps) {
             title={post.title}
             iconEmoji={post.iconEmoji}
             notionUrl={post.notionUrl}
+            priority={priority}
           />
         ) : (
           /* Branded header keeps the grid rhythm when a post has no cover. */

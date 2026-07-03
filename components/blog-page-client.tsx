@@ -84,8 +84,10 @@ const PostsGrid = memo(({ posts }: { posts: Post[] }) => {
   return (
     <>
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {displayedPosts.map((post) => (
-          <PostCard key={post.id} post={post} />
+        {/* First row loads eagerly: the top-left cover is this page's LCP
+            element, and a lazy LCP image tanks the metric. */}
+        {displayedPosts.map((post, index) => (
+          <PostCard key={post.id} post={post} priority={index < 3} />
         ))}
       </div>
       {visiblePosts < posts.length && (
