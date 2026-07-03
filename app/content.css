@@ -1,0 +1,542 @@
+/* Post/notes CONTENT styles: Notion-rendered HTML, prose, Prism syntax
+   highlighting, code-block chrome, and the table-of-contents scrollbar.
+   Split out of globals.css so routes that never render long-form content
+   (homepage, blog index, services, tools) do not pay for these bytes in
+   their render-blocking CSS. Imported by post-page-client.tsx and
+   note-page-client.tsx (Next bundles it into those route chunks). */
+/* Notion-like content styling */
+.notion-paragraph {
+  @apply mb-4 leading-relaxed text-foreground;
+}
+
+.notion-heading-1 {
+  @apply text-3xl font-bold text-foreground mb-6 mt-8;
+}
+
+.notion-heading-2 {
+  @apply text-2xl font-semibold text-foreground mb-4 mt-6;
+}
+
+.notion-heading-3 {
+  @apply text-xl font-medium text-foreground mb-3 mt-5;
+}
+
+.notion-list-item {
+  @apply mb-2 ml-6 text-foreground;
+  list-style-type: disc;
+}
+
+.notion-numbered-item {
+  @apply mb-2 ml-6 text-foreground;
+  list-style-type: decimal;
+}
+
+.notion-code-block code {
+  @apply text-sm font-mono text-foreground;
+}
+
+.notion-inline-code {
+  @apply bg-muted px-2 py-1 rounded text-sm font-mono text-primary;
+}
+
+.notion-quote {
+  @apply border-l-4 border-border pl-4 italic text-muted-foreground my-4 bg-muted/40 py-3 rounded-r;
+}
+
+.notion-callout {
+  @apply flex items-start gap-3 p-4 rounded-lg border bg-primary/10 border-primary/30 my-4;
+}
+
+.notion-callout-icon {
+  @apply text-lg flex-shrink-0 mt-0.5;
+}
+
+.notion-callout-content {
+  @apply flex-1 text-foreground;
+}
+
+.notion-divider {
+  @apply border-border my-8;
+}
+
+.notion-image {
+  @apply my-8;
+}
+
+.notion-image-content {
+  @apply rounded-lg shadow-lg w-full h-auto;
+}
+
+.notion-image-caption {
+  @apply text-sm text-muted-foreground text-center mt-2 italic;
+}
+
+.notion-video {
+  @apply my-8;
+}
+
+.notion-video-content {
+  @apply rounded-lg w-full h-auto;
+}
+
+.notion-embed {
+  @apply my-8;
+}
+
+.notion-embed-content {
+  @apply w-full h-96 rounded-lg;
+}
+
+.notion-bookmark {
+  @apply border rounded-lg p-4 mb-4 hover:bg-muted/50 transition-colors;
+}
+
+.notion-bookmark-link {
+  @apply no-underline text-foreground;
+}
+
+.notion-bookmark-title {
+  @apply font-medium text-foreground mb-2;
+}
+
+.notion-bookmark-url {
+  @apply text-sm text-muted-foreground;
+}
+
+.notion-file {
+  @apply rounded-xl border border-border bg-card/40 mb-4 transition-colors hover:border-primary/50 hover:bg-primary/5;
+}
+
+.notion-file-link {
+  @apply flex items-center gap-3 px-4 py-3 no-underline text-foreground;
+}
+
+.notion-file-icon {
+  @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary;
+}
+
+.notion-file-icon svg {
+  @apply h-5 w-5;
+}
+
+.notion-file-info {
+  @apply flex min-w-0 flex-1 flex-col;
+}
+
+.notion-file-name {
+  @apply font-medium text-foreground;
+}
+
+.notion-file-size {
+  @apply text-sm text-muted-foreground;
+}
+
+.notion-file-dl {
+  @apply shrink-0 text-muted-foreground/60 transition-colors;
+}
+
+.notion-file-link:hover .notion-file-dl {
+  @apply text-primary;
+}
+
+.notion-file-dl svg {
+  @apply h-4 w-4;
+}
+
+.notion-audio {
+  @apply my-8;
+}
+
+.notion-audio-content {
+  @apply w-full;
+}
+
+.notion-table-wrapper {
+  @apply my-6 overflow-x-auto rounded-lg border shadow-sm;
+}
+
+.notion-table {
+  @apply w-full divide-y divide-border;
+}
+
+.notion-table-header {
+  @apply bg-muted/50;
+}
+
+.notion-table-cell {
+  @apply px-4 py-3 text-left text-sm;
+}
+
+.notion-table-cell:first-child {
+  @apply font-medium text-foreground;
+}
+
+.notion-table-cell:not(:first-child) {
+  @apply text-muted-foreground;
+}
+
+.notion-table-row:nth-child(even) {
+  @apply bg-muted/5;
+}
+
+.notion-table-row:hover {
+  @apply bg-muted/10 transition-colors;
+}
+
+.notion-toggle {
+  @apply border rounded-lg p-4 mb-4;
+}
+
+.notion-toggle-summary {
+  @apply font-medium cursor-pointer hover:text-primary;
+}
+
+.notion-toggle[open] .notion-toggle-summary {
+  @apply mb-2;
+}
+
+.notion-toggle-content {
+  @apply mt-2 pl-4;
+}
+
+.notion-link {
+  @apply text-primary hover:text-primary/80 underline underline-offset-4;
+}
+
+/* Enhanced prose styling - Fix heading colors */
+.prose {
+  @apply max-w-none;
+}
+
+.prose h1 {
+  @apply text-foreground font-bold;
+}
+
+.prose h2 {
+  @apply text-foreground font-semibold;
+}
+
+.prose h3 {
+  @apply text-foreground font-medium;
+}
+
+.prose h4 {
+  @apply text-foreground font-medium;
+}
+
+.prose h5 {
+  @apply text-foreground font-medium;
+}
+
+.prose h6 {
+  @apply text-foreground font-medium;
+}
+
+.prose a {
+  @apply text-primary hover:text-primary/80;
+}
+
+.prose code {
+  @apply text-primary bg-muted;
+}
+
+.prose blockquote {
+  @apply border-primary text-muted-foreground;
+}
+
+/* Reading measure: cap text at a comfortable ~72ch; media stays full-width. */
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  max-width: 72ch;
+}
+
+/* Explicit leading scale: airy body, tight headings. */
+.prose p,
+.prose li {
+  line-height: 1.7;
+}
+
+.prose p {
+  margin-bottom: 1.5rem;
+}
+
+.prose h1 {
+  line-height: 1.15;
+}
+
+.prose h2 {
+  line-height: 1.25;
+}
+
+.prose h3,
+.prose h4 {
+  line-height: 1.3;
+}
+
+/* List improvements for Notion content */
+ul.notion-list {
+  @apply list-disc list-inside space-y-1 my-4;
+}
+
+ol.notion-list {
+  @apply list-decimal list-inside space-y-1 my-4;
+}
+
+/* Each consecutive run of list items is wrapped in its own <ul>/<ol> so a
+   numbered list restarts at 1 instead of continuing the document-wide list-item
+   counter from an earlier, unrelated list. The marker + indent live on the <li>
+   (.notion-list-item / .notion-numbered-item), so the wrapper only needs
+   spacing; the <ol> boundary itself is what resets the numbering. */
+.notion-bulleted-list,
+.notion-numbered-list {
+  @apply my-4;
+  list-style: none;
+  padding-left: 0;
+}
+
+/* Quote styling */
+blockquote {
+  @apply border-l-4 border-border pl-4 italic text-muted-foreground my-4;
+}
+
+/* Divider styling */
+hr {
+  @apply border-border my-8;
+}
+
+/* Prism.js Syntax Highlighting Styles */
+/* Enhanced theme that works with the imported Prism theme */
+code[class*="language-"],
+pre[class*="language-"] {
+  font-family:
+    var(--font-jetbrains-mono), "JetBrains Mono", "SF Mono", Monaco,
+    "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+  font-size: 0.875rem;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow: auto;
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted));
+}
+
+/* Long writeups have many code blocks. Let the browser skip rendering the
+   off-screen ones (no style/layout/paint until they scroll near the viewport)
+   so highlighting + a large token DOM doesn't stutter the whole page. The
+   intrinsic-size is a placeholder height to keep the scrollbar stable. */
+.mdx pre {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
+}
+
+/* Inline code (token-based) */
+:not(pre) > code[class*="language-"] {
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  white-space: normal;
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
+}
+
+/* Line numbers support */
+pre.line-numbers {
+  position: relative;
+  padding-left: 3.8em;
+  counter-reset: linenumber;
+}
+
+pre.line-numbers > code {
+  position: relative;
+  white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: -3.8em;
+  width: 3em;
+  letter-spacing: -1px;
+  border-right: 1px solid hsl(var(--border));
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+}
+
+.line-numbers-rows > span:before {
+  content: counter(linenumber);
+  color: hsl(var(--muted-foreground));
+  display: block;
+  padding-right: 0.8em;
+  text-align: right;
+}
+
+/* Copy button styling */
+.copy-button {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  z-index: 10;
+  opacity: 1;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+/* Optional: Add a subtle hover effect for better UX */
+.copy-button:hover {
+  opacity: 0.8;
+}
+
+/* Enhanced notion code block styling */
+.notion-code-block {
+  @apply relative;
+  background: hsl(var(--muted)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: var(--radius) !important;
+  overflow-x: auto !important;
+  margin: 1.5rem 0 !important;
+  padding: 1rem !important;
+}
+
+.notion-code-block code {
+  background: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+
+/* Language label for code blocks */
+.notion-code-block::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.5rem;
+  right: 3rem;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* Scrollbar styling for code blocks */
+.notion-code-block::-webkit-scrollbar {
+  height: 8px;
+}
+
+.notion-code-block::-webkit-scrollbar-track {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+.notion-code-block::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 4px;
+}
+
+.notion-code-block::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+/* Table of Contents Scroll Styling */
+.toc-scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) hsl(var(--background));
+}
+
+.toc-scroll-area::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.toc-scroll-area::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+  margin: 4px 0;
+}
+
+.toc-scroll-area::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+  border: 1px solid hsl(var(--background));
+  transition: all 0.2s ease;
+}
+
+.toc-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--foreground) / 0.4);
+  transform: scaleY(1.1);
+}
+
+.toc-scroll-area::-webkit-scrollbar-thumb:active {
+  background: hsl(var(--primary));
+}
+
+.toc-scroll-area::-webkit-scrollbar-corner {
+  background: hsl(var(--background));
+}
+
+/* Custom scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  right: 2px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--primary) / 0.1) 0%,
+    hsl(var(--primary) / 0.3) 50%,
+    hsl(var(--primary) / 0.1) 100%
+  );
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.toc-scroll-area:hover .scroll-indicator {
+  opacity: 1;
+}
+
+/* Scrolling state animation */
+.toc-scroll-area.scrolling::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.8);
+}
+
+.toc-scroll-area.scrolling .scroll-indicator {
+  opacity: 1;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--primary) / 0.3) 0%,
+    hsl(var(--primary) / 0.6) 50%,
+    hsl(var(--primary) / 0.3) 100%
+  );
+}

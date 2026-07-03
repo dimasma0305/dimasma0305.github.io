@@ -83,9 +83,11 @@ export function SkillsSection() {
               <ul role="list" className="flex flex-wrap gap-2">
                 {skill.items.map((item) => (
                   <li key={item}>
+                    {/* No whitespace-nowrap: the long certification chip must
+                        be able to wrap at 320px instead of widening the page. */}
                     <Badge
                       variant="secondary"
-                      className="bg-primary/15 hover:bg-primary/25 text-xs whitespace-nowrap"
+                      className="max-w-full bg-primary/15 hover:bg-primary/25 text-xs"
                     >
                       {item}
                     </Badge>

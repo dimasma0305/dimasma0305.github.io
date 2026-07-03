@@ -43,8 +43,10 @@ export function SectionHeader({
              clears every sky phase and card surface; same hue/chroma, so it
              reads as a lightness ramp, not a second accent. */
           <p className="text-sm font-semibold uppercase tracking-widest text-primary-bright">
+            {/* Full accent brightness: at reduced opacity this small text
+                fails WCAG contrast against the lighter sky phases. */}
             {index && (
-              <span className="font-mono font-normal text-primary-bright/60">
+              <span className="font-mono font-normal text-primary-bright">
                 {index}
                 <span aria-hidden className="mx-2">
                   /

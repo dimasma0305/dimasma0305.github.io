@@ -38,13 +38,13 @@ export default function NoteCard({ note, className }: NoteCardProps) {
           )}
 
           {/* Title */}
-          <h3 className="text-xl font-bold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="text-xl font-bold mb-2 line-clamp-2 [overflow-wrap:anywhere] group-hover:text-primary transition-colors">
             {note.title}
           </h3>
 
           {/* Excerpt */}
           {note.excerpt && (
-            <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{note.excerpt}</p>
+            <p className="text-sm text-muted-foreground mb-4 line-clamp-3 [overflow-wrap:anywhere]">{note.excerpt}</p>
           )}
 
           {/* Footer */}

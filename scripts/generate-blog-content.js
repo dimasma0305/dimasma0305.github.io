@@ -352,6 +352,56 @@ function sniffRasterImageExt(buf) {
   return null;
 }
 
+// Build-time image optimizer: downscale oversized rasters and re-encode so the
+// site never ships multi-MB originals (Notion exports are frequently full-res
+// screenshots/photos). Two modes:
+//   - mode 'webp': for anything rendered in-page (inline images, covers).
+//   - mode 'jpeg': for og:image copies — some link-preview scrapers still
+//     mishandle WebP, so the social card always gets a JPEG (transparency is
+//     flattened onto the site background).
+// GIFs (possibly animated) and unrecognized formats pass through untouched.
+// NEVER fatal: any sharp failure (or sharp missing entirely) falls back to the
+// original buffer so an optimizer problem can't break the content build.
+const MAX_IMAGE_WIDTH = 1600;
+const IMAGE_QUALITY = 82;
+const OG_FLATTEN_BACKGROUND = '#080d1a'; // matches the site's --background
+let sharp = null;
+try {
+  sharp = require('sharp');
+} catch (error) {
+  console.warn(`⚠️  sharp unavailable (${error.message}) — images will be saved unoptimized`);
+}
+
+async function optimizeRasterImage(buffer, ext, mode = 'webp') {
+  const e = String(ext || '').toLowerCase();
+  if (!sharp || !['jpg', 'jpeg', 'png', 'webp'].includes(e)) return { buffer, ext };
+  try {
+    // .rotate() bakes EXIF orientation in before the metadata is stripped.
+    const base = sharp(buffer)
+      .rotate()
+      .resize({ width: MAX_IMAGE_WIDTH, withoutEnlargement: true });
+    let out;
+    let outExt;
+    if (mode === 'jpeg') {
+      out = await base
+        .flatten({ background: OG_FLATTEN_BACKGROUND })
+        .jpeg({ quality: IMAGE_QUALITY, mozjpeg: true })
+        .toBuffer();
+      outExt = 'jpg';
+    } else {
+      out = await base.webp({ quality: IMAGE_QUALITY }).toBuffer();
+      outExt = 'webp';
+    }
+    // Keep the original when re-encoding doesn't actually help (small images),
+    // except for og copies, which must come out as JPEG regardless.
+    if (mode !== 'jpeg' && out.length >= buffer.length) return { buffer, ext };
+    return { buffer: out, ext: outExt };
+  } catch (error) {
+    console.warn(`⚠️  Image optimize failed (${error.message}) — keeping original`);
+    return { buffer, ext };
+  }
+}
+
 // Helper function to download image. `assertFn` selects the guard: cover/featured
 // images use the strict host allowlist; inline content images use the looser
 // (still anti-SSRF) inline guard.
@@ -613,14 +663,15 @@ async function localizeImagesInBlocks(blocks, postDir, folderName) {
         // Determine the type from the bytes, not the URL/Content-Type. Anything
         // that is not a real raster image (e.g. SVG, which would execute scripts
         // same-origin if opened directly) is left as its external URL.
-        const ext = sniffRasterImageExt(buffer);
-        if (!ext) {
+        const sniffedExt = sniffRasterImageExt(buffer);
+        if (!sniffedExt) {
           console.log(`↪︎  Kept external (not a raster image): ${srcUrl}`);
           continue;
         }
+        const { buffer: outBuffer, ext } = await optimizeRasterImage(buffer, sniffedExt, 'webp');
         const safeId = String(block.id || '').replace(/[^a-zA-Z0-9]/g, '') || 'img';
         const filename = `media-${safeId}.${ext}`;
-        fs.writeFileSync(path.join(postDir, filename), buffer);
+        fs.writeFileSync(path.join(postDir, filename), outBuffer);
         block.content.url = getImagePath(folderName, filename);
         // The expiry no longer applies to a local copy.
         delete block.content.expiry_time;
@@ -1056,14 +1107,21 @@ async function processSinglePage(page, pageIndex, totalPages) {
       try {
         const coverUrl = blogPost.cover.external?.url || blogPost.cover.file?.url;
         const { buffer, contentTypeExt } = await downloadImageWithRetry(coverUrl);
-        const imageExtension = contentTypeExt || getCleanFileExtension(coverUrl);
+        const rawExtension = contentTypeExt || getCleanFileExtension(coverUrl);
+        // Two derivatives: a WebP for everything rendered in-page, and a JPEG
+        // og:image copy for link-preview scrapers that mishandle WebP.
+        const { buffer: outBuffer, ext: imageExtension } =
+          await optimizeRasterImage(buffer, rawExtension, 'webp');
         const imagePath = path.join(postDir, `cover.${imageExtension}`);
-        fs.writeFileSync(imagePath, buffer);
+        fs.writeFileSync(imagePath, outBuffer);
         console.log(`📸 Saved cover image: ${imagePath}`);
-
-        // Use cover image as both featured and OG image with correct base path
         blogPost.featured_image = getImagePath(folderName, `cover.${imageExtension}`);
-        blogPost.og_image = blogPost.featured_image;
+
+        const { buffer: ogBuffer, ext: ogExtension } =
+          await optimizeRasterImage(buffer, rawExtension, 'jpeg');
+        const ogPath = path.join(postDir, `cover-og.${ogExtension}`);
+        fs.writeFileSync(ogPath, ogBuffer);
+        blogPost.og_image = getImagePath(folderName, `cover-og.${ogExtension}`);
 
         // The cover is now a local file, so the retained raw `cover` no longer
         // needs the expiring Notion signed URL. Strip it from a `file`-type
@@ -1082,14 +1140,20 @@ async function processSinglePage(page, pageIndex, totalPages) {
       try {
         const featuredImageUrl = blogPost.properties.featured_image[0].url;
         const { buffer, contentTypeExt } = await downloadImageWithRetry(featuredImageUrl);
-        const imageExtension = contentTypeExt || getCleanFileExtension(featuredImageUrl);
+        const rawExtension = contentTypeExt || getCleanFileExtension(featuredImageUrl);
+        // Same dual treatment as covers: WebP for the page, JPEG for og:image.
+        const { buffer: outBuffer, ext: imageExtension } =
+          await optimizeRasterImage(buffer, rawExtension, 'webp');
         const imagePath = path.join(postDir, `featured-image.${imageExtension}`);
-        fs.writeFileSync(imagePath, buffer);
+        fs.writeFileSync(imagePath, outBuffer);
         console.log(`📸 Saved featured image: ${imagePath}`);
-
-        // Update the featured image path in the post metadata
         blogPost.featured_image = getImagePath(folderName, `featured-image.${imageExtension}`);
-        blogPost.og_image = blogPost.featured_image;
+
+        const { buffer: ogBuffer, ext: ogExtension } =
+          await optimizeRasterImage(buffer, rawExtension, 'jpeg');
+        const ogPath = path.join(postDir, `featured-og.${ogExtension}`);
+        fs.writeFileSync(ogPath, ogBuffer);
+        blogPost.og_image = getImagePath(folderName, `featured-og.${ogExtension}`);
       } catch (error) {
         console.error(`❌ Failed to save featured image for ${folderName}:`, error.message);
       }
@@ -1108,9 +1172,14 @@ async function processSinglePage(page, pageIndex, totalPages) {
       if (firstImage && firstImage.url) {
         try {
           const { buffer, contentTypeExt } = await downloadImageWithRetry(firstImage.url);
-          const imageExtension = contentTypeExt || getCleanFileExtension(firstImage.url);
+          const rawExtension = contentTypeExt || getCleanFileExtension(firstImage.url);
+          // Single JPEG here: this file exists primarily to be the og:image
+          // (and the in-page copy of this image is already localized as WebP
+          // by localizeImagesInBlocks).
+          const { buffer: outBuffer, ext: imageExtension } =
+            await optimizeRasterImage(buffer, rawExtension, 'jpeg');
           const imagePath = path.join(postDir, `og-image.${imageExtension}`);
-          fs.writeFileSync(imagePath, buffer);
+          fs.writeFileSync(imagePath, outBuffer);
           console.log(`📸 Saved OG image: ${imagePath}`);
 
           // Add the image path to the post metadata

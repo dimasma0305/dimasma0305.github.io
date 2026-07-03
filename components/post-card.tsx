@@ -178,13 +178,15 @@ function PostCard({ post }: PostCardProps) {
         )}
 
         <CardHeader className="pb-2">
-          <h3 className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
+          {/* overflow-wrap:anywhere lets long unbreakable tokens (file paths,
+              CVE ids) break instead of forcing the card wider than a phone. */}
+          <h3 className="text-xl font-bold line-clamp-2 [overflow-wrap:anywhere] group-hover:text-primary transition-colors">
             {post.title}
           </h3>
         </CardHeader>
 
         <CardContent>
-          <p className="text-muted-foreground line-clamp-3 leading-relaxed">
+          <p className="text-muted-foreground line-clamp-3 leading-relaxed [overflow-wrap:anywhere]">
             {post.excerpt}
           </p>
         </CardContent>

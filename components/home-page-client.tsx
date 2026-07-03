@@ -2,7 +2,7 @@
 
 import { memo, useMemo, Suspense, lazy, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import { handleHashOnPageLoad } from "@/lib/scroll-utils";
 import { usePosts } from "@/hooks/use-posts";
 import PostCard from "@/components/post-card";
@@ -11,11 +11,12 @@ import { FallbackImage } from "@/components/fallback-image";
 import { SectionHeader } from "@/components/section-header";
 import { Parallax } from "@/components/parallax";
 import { ScrollSky } from "@/components/scroll-sky";
+// The hero owns the LCP element (its description paragraph), so it must NOT
+// be lazy: a lazy chunk delays the largest paint behind an extra fetch and
+// suspense churn. Everything below the fold stays lazy.
+import { HeroSection } from "@/components/hero-section";
 
-// Lazy load heavy sections for better initial page load
-const HeroSection = lazy(() =>
-  import("@/components/hero-section").then((m) => ({ default: m.HeroSection })),
-);
+// Lazy load below-the-fold sections for better initial page load
 const ProjectsSection = lazy(() =>
   import("@/components/projects-section").then((m) => ({
     default: m.ProjectsSection,
@@ -156,6 +157,41 @@ const BlogSection = memo(
 
 BlogSection.displayName = "BlogSection";
 
+// Closing CTA: repeats the hero's primary action near the end of the page so
+// a visitor who scrolled the whole story never has to scroll back up to act.
+// One compact panel, one primary action.
+const ContactCTA = memo(() => (
+  <section className="container px-4 pb-20 mx-auto max-w-7xl">
+    <div className="glass-panel rounded-2xl p-8 sm:p-10 text-center">
+      <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+        Need a security researcher?
+      </h2>
+      <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+        I&apos;m open to security research roles, source code reviews, and CTF
+        collaborations.
+      </p>
+      <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a
+          href="mailto:dimasmaulana0305@gmail.com"
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 transition-colors hover:bg-primary/90 focus-ring sm:w-auto"
+        >
+          <Mail className="h-4 w-4" aria-hidden />
+          Hire Me
+        </a>
+        <Link
+          href="/services"
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md border border-primary/50 px-6 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10 focus-ring sm:w-auto"
+        >
+          See services & pricing
+          <ArrowRight className="h-4 w-4" aria-hidden />
+        </Link>
+      </div>
+    </div>
+  </section>
+));
+
+ContactCTA.displayName = "ContactCTA";
+
 // Loading fallback for lazily-loaded sections
 const SectionFallback = memo(() => (
   <div className="container px-4 section-y mx-auto max-w-7xl">
@@ -194,9 +230,7 @@ function HomePageClient() {
 
       {/* Section order: proof first (CTF wins + photos) right after the intro,
           then the pitch (projects/services); experience and blog close the page. */}
-      <Suspense fallback={<SectionFallback />}>
-        <HeroSection />
-      </Suspense>
+      <HeroSection />
 
       <AboutSection />
 
@@ -225,6 +259,8 @@ function HomePageClient() {
       </Suspense>
 
       <BlogSection posts={latestPosts} loading={loading} />
+
+      <ContactCTA />
     </div>
   );
 }

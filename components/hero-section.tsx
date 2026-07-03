@@ -10,7 +10,6 @@ import {
   Code2,
   ScanSearch,
   Check,
-  BookOpen,
   Shield,
   ChevronDown,
   Sunrise,
@@ -140,44 +139,46 @@ export function HeroSection() {
                   <div className="text-xl sm:text-2xl font-bold mb-1 font-mono text-foreground">
                     {stat.value}
                   </div>
-                  <div className="text-[11px] sm:text-xs text-muted-foreground font-mono font-medium uppercase tracking-wide">
+                  {/* 12px floor: 11px uppercase micro-labels are hard to read
+                      on small phones. */}
+                  <div className="text-xs text-muted-foreground font-mono font-medium uppercase tracking-wide">
                     {stat.label}
                   </div>
                 </div>
               ))}
             </div>
 
+            {/* Primary CTA above the fold: hiring/contact is the site's main
+                goal, so the mail action gets the primary button. */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Link href="#projects" className="w-full sm:w-auto">
+              <a
+                href="mailto:dimasmaulana0305@gmail.com"
+                className="w-full sm:w-auto"
+              >
                 <Button
                   size="lg"
                   className="w-full gap-2 group bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-colors"
                 >
-                  View Projects
+                  <Mail className="w-4 h-4" />
+                  Hire Me
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Button>
-              </Link>
-              <Link href="/blog" className="w-full sm:w-auto">
+              </a>
+              <Link href="#projects" className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="outline"
                   className="w-full gap-2 group glass border-border hover:bg-card/90"
                 >
-                  Read My Blog
-                  <BookOpen className="w-4 h-4" />
+                  View Projects
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Open to security research roles and CTF collaborations.{" "}
-              <a
-                href="mailto:dimasmaulana0305@gmail.com"
-                className="font-medium text-primary hover:underline"
-              >
-                Get in touch
-              </a>
-              .
+              Open to security research roles, source code reviews, and CTF
+              collaborations.
             </p>
 
             <div className="flex items-center gap-2 sm:gap-3 text-muted-foreground">

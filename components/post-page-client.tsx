@@ -1,5 +1,8 @@
 "use client";
 
+// Long-form content styles (notion/prose/prism/TOC) live in a separate
+// stylesheet so only post/note routes ship them.
+import "@/app/content.css";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { format } from "date-fns";
 import { ArrowLeft, Calendar, Tag, Clock, Share2, Folder } from "lucide-react";

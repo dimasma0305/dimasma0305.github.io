@@ -151,14 +151,14 @@ export function CodeDiffDemo() {
         {/* Status pill: cross-fades problem → fixed, settling on "fixed" */}
         <span className="relative ml-auto grid h-6 shrink-0 place-items-center">
           <span
-            className={`col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold [animation:diff-status-vuln_5.5s_ease-in-out_infinite_both] ${badPillClass(
+            className={`col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold [animation:diff-status-vuln_5.5s_ease-in-out_infinite_both] ${badPillClass(
               example.bad.tone,
             )}`}
           >
             <BadIcon className="h-3 w-3" />
             {example.bad.label}
           </span>
-          <span className="col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 [animation:diff-status-fixed_5.5s_ease-in-out_infinite_both]">
+          <span className="col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300 [animation:diff-status-fixed_5.5s_ease-in-out_infinite_both]">
             <GoodIcon className="h-3 w-3" />
             {example.good.label}
           </span>

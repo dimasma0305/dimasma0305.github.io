@@ -28,7 +28,7 @@ export function NotionLinkButton({
         rel="noopener noreferrer"
         aria-label="View on Notion"
         onClick={(e) => e.stopPropagation()}
-        className={`inline-flex items-center rounded-full border border-border bg-secondary/80 backdrop-blur px-2.5 py-0.5 text-xs font-medium text-secondary-foreground transition-colors hover:bg-primary/20 ${className}`}
+        className={`inline-flex items-center rounded-full border border-border bg-secondary/80 backdrop-blur px-2.5 py-1 text-xs font-medium text-secondary-foreground transition-colors hover:bg-primary/20 ${className}`}
       >
         <ExternalLink className="w-3 h-3 mr-1" />
         Notion
