@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { Note, fetchNotes } from '@/lib/notes-client'
 
 // Shared cache so a warmed list (see warmNotesCache) lets the notes page render
@@ -30,10 +30,21 @@ export async function warmNotesCache(): Promise<void> {
 }
 
 export function useNotes() {
-  const [notes, setNotes] = useState<Note[]>(sharedNotesCache || [])
-  const [loading, setLoading] = useState(!isNotesCacheValid())
+  // HYDRATION SAFETY: start from the empty/loading state the static HTML was
+  // built with; adopt the warm cache in a pre-paint layout effect instead of
+  // the useState initializer (same reasoning as usePosts — a warm initializer
+  // makes late-hydrating consumers mismatch the server HTML).
+  const [notes, setNotes] = useState<Note[]>([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const mountedRef = useRef(true)
+
+  useLayoutEffect(() => {
+    if (isNotesCacheValid()) {
+      setNotes(sharedNotesCache!)
+      setLoading(false)
+    }
+  }, [])
 
   const loadNotes = async (force = false) => {
     try {

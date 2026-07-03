@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react"
+import { useState, useEffect, useLayoutEffect, useCallback, useRef, useMemo } from "react"
 import { fetchAllPosts, prefetchPosts, invalidateCache } from "@/lib/posts-loader"
 import type { Post } from "@/lib/posts-client"
 
@@ -48,12 +48,30 @@ interface RequestManager {
 }
 
 export function usePosts(): UsePostsReturn {
+  // HYDRATION SAFETY: the initial state must always be the empty/loading one,
+  // because that is what the build rendered into the static HTML (the cache
+  // can't be warm at build time). Seeding useState from the warm cache made
+  // lazy-loaded consumers (blog sidebar) mismatch the server HTML whenever the
+  // cache warmed before their chunk hydrated — React error #418 and a full
+  // client re-render. The warm cache is adopted in the layout effect below,
+  // which runs BEFORE paint, so client-side navigations still show content
+  // instantly with no skeleton flash.
   const [state, setState] = useState<PostsState>({
-    posts: sharedPostsCache || [],
-    loading: !sharedPostsCache,
+    posts: [],
+    loading: true,
     refreshing: false,
     error: null,
   })
+
+  useLayoutEffect(() => {
+    if (sharedPostsCache && Date.now() - cacheTimestamp < CACHE_DURATION) {
+      setState((prev) =>
+        prev.loading
+          ? { ...prev, posts: sharedPostsCache!, loading: false }
+          : prev,
+      )
+    }
+  }, [])
 
   const mountedRef = useRef(true)
   const requestManagerRef = useRef<RequestManager>({

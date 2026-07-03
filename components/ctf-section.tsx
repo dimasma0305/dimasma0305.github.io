@@ -9,7 +9,6 @@ import {
   Star,
   Zap,
   ExternalLink,
-  Sparkles,
 } from "lucide-react";
 import {
   Card,
@@ -20,7 +19,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
 import { SectionHeader } from "@/components/section-header";
 
 const achievements = [
@@ -675,47 +673,6 @@ export function CTFSection() {
             </div>
           </div>
 
-          {/* A faint warm hearth-glow gathers the CTA after the proof
-              sections. Warm hue is ambient light only — the interactive
-              layer stays blue. */}
-          <div
-            className="relative overflow-hidden p-6 sm:p-8 mt-16 text-center rounded-2xl border border-border/60"
-            style={{
-              background:
-                "radial-gradient(120% 90% at 50% 100%, hsl(32 70% 45% / 0.10), hsl(38 80% 55% / 0.04) 45%, transparent 70%), hsl(var(--card) / 0.5)",
-            }}
-          >
-            <div className="relative max-w-md mx-auto">
-              <div className="relative w-16 h-16 mx-auto mb-4">
-                <Image
-                  src="https://avatars.githubusercontent.com/u/92920739"
-                  alt="Dimas Maulana Profile"
-                  width={64}
-                  height={64}
-                  className="w-16 h-16 rounded-full border-2 border-primary/50 shadow-lg"
-                />
-                <div className="absolute -top-1 -right-1">
-                  <Sparkles className="w-6 h-6 text-primary" />
-                </div>
-              </div>
-              <h3 className="mb-2 text-xl font-semibold">Let&apos;s work together</h3>
-              <p className="mb-4 text-sm text-muted-foreground">
-                Open to CTF collaborations, challenge-authoring, and security
-                research.
-              </p>
-              <p className="text-sm text-muted-foreground">
-                <a
-                  href="mailto:dimasmaulana0305@gmail.com"
-                  className="font-medium text-primary hover:underline"
-                >
-                  dimasmaulana0305@gmail.com
-                </a>
-                <span className="mx-2 text-muted-foreground/50">·</span>
-                Discord{" "}
-                <span className="font-medium text-foreground">@dimasmaulana</span>
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
