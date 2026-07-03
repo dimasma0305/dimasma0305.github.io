@@ -1163,60 +1163,6 @@ body::after {
   background-size: 160px 160px;
 }
 
-/* --- Achievement ticker (components/achievement-ticker.tsx) ---------------
-   Kinetic-type strip under the hero. The track holds two identical copies of
-   the list and slides exactly one copy's width (-50%), so the loop point is
-   invisible. Transform-only on its own layer; pauses on hover so items can
-   be read. The global reduced-motion block collapses it to a static row
-   (iteration-count 1 at -50% lands on the duplicate copy, which is aligned
-   1:1 with the original, so the strip still reads correctly). */
-@keyframes ticker-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.ticker-track {
-  display: flex;
-  width: max-content;
-  animation: ticker-scroll 40s linear infinite;
-  will-change: transform;
-}
-
-.ticker:hover .ticker-track,
-.ticker:focus-within .ticker-track {
-  animation-play-state: paused;
-}
-
-/* --- Underline reveal ------------------------------------------------------
-   Awwwards-style link hover: a hairline draws in from the left and exits to
-   the right (transform-origin swap). Transform-only. */
-.link-underline {
-  position: relative;
-}
-
-.link-underline::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -2px;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform var(--dur-base) var(--ease-out);
-}
-
-.link-underline:hover::after,
-.link-underline:focus-visible::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
 /* Brand-colored text selection: the one accent, everywhere. */
 ::selection {
   background: hsl(var(--primary) / 0.35);

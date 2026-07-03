@@ -9,7 +9,6 @@ import PostCard from "@/components/post-card";
 import { CardSkeleton } from "@/components/card-skeleton";
 import { FallbackImage } from "@/components/fallback-image";
 import { SectionHeader } from "@/components/section-header";
-import { AchievementTicker } from "@/components/achievement-ticker";
 import { Parallax } from "@/components/parallax";
 import { ScrollSky } from "@/components/scroll-sky";
 
@@ -198,8 +197,6 @@ function HomePageClient() {
       <Suspense fallback={<SectionFallback />}>
         <HeroSection />
       </Suspense>
-
-      <AchievementTicker />
 
       <AboutSection />
 

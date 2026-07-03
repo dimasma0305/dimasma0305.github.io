@@ -1,175 +1,38 @@
 import Link from "next/link"
-import { Github, Twitter, Linkedin, Mail, MapPin, FileText, Wrench, ShieldCheck, StickyNote } from "lucide-react"
-import { withBasePath } from "@/lib/utils"
+import { Github, Twitter, Linkedin, Mail } from "lucide-react"
+
+const socials = [
+  { name: "GitHub", href: "https://github.com/dimasma0305", icon: Github },
+  { name: "Twitter", href: "https://twitter.com/dimasma__", icon: Twitter },
+  { name: "LinkedIn", href: "https://www.linkedin.com/in/solderet/", icon: Linkedin },
+  { name: "Email", href: "mailto:dimasmaulana0305@gmail.com", icon: Mail },
+]
 
 export function Footer() {
-  // Transparent on the homepage so the page ends in the night landscape
-  // (hills, fireflies, stars); on other routes the body background shows
-  // through identically to before, minus the slab.
+  // One quiet bar: copyright + socials. Transparent so the homepage ends in
+  // the night landscape (hills, fireflies, stars); on other routes the body
+  // background shows through identically.
   return (
-    <footer className="py-12 border-t border-border/60 bg-transparent">
-      <div className="container px-4 mx-auto max-w-7xl">
-        {/* Oversized signature: the typographic full stop every page ends on.
-            One line of display type, one action (mail). */}
-        <div className="mb-14">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary-bright">
-            Open to security research roles
-          </p>
-          <a
-            href="mailto:dimasmaulana0305@gmail.com"
-            className="group block max-w-4xl text-4xl font-bold tracking-tight text-foreground transition-colors duration-[var(--dur-base)] hover:text-primary-bright sm:text-5xl lg:text-6xl"
-          >
-            Let&apos;s build something secure
-            <span className="text-primary">.</span>
-          </a>
-          <p className="mt-4 text-sm text-muted-foreground">
-            <span className="link-underline text-foreground">
-              dimasmaulana0305@gmail.com
-            </span>{" "}
-            · Discord <span className="text-foreground">@dimasmaulana</span>
-          </p>
-        </div>
+    <footer className="border-t border-border/60 bg-transparent">
+      <div className="container mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row">
+        <p className="text-sm text-muted-foreground">
+          © {new Date().getFullYear()} Dimas Maulana
+        </p>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <h3 className="mb-4 text-lg font-semibold text-foreground">Dimas Maulana</h3>
-            <p className="text-sm text-muted-foreground">
-              Cybersecurity researcher, CTF player, and source code pentester based in Denpasar, Bali, Indonesia.
-            </p>
-          </div>
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Quick Links
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/#about" className="link-underline text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/#projects" className="link-underline text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
-                  Projects
-                </Link>
-              </li>
-              <li>
-                <Link href="/#experience" className="link-underline text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
-                  Experience
-                </Link>
-              </li>
-              <li>
-                <Link href={"/services"} className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
-                  <ShieldCheck className="w-4 h-4" />
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link href={"/blog"} className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
-                  <FileText className="w-4 h-4" />
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href={"/notes"} className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
-                  <StickyNote className="w-4 h-4" />
-                  Notes
-                </Link>
-              </li>
-              <li>
-                <Link href={"/tools"} className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground">
-                  <Wrench className="w-4 h-4" />
-                  Tools
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Connect
-            </h3>
-            <div className="grid grid-cols-2 gap-4">
-              <Link
-                href="https://github.com/dimasma0305"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
-              >
-                <Github className="w-5 h-5" />
-                <span>GitHub</span>
-              </Link>
-              <Link
-                href="https://twitter.com/dimasma__"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
-              >
-                <Twitter className="w-5 h-5" />
-                <span>Twitter</span>
-              </Link>
-              <Link
-                href="https://www.linkedin.com/in/solderet/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
-              >
-                <Linkedin className="w-5 h-5" />
-                <span>LinkedIn</span>
-              </Link>
-              <Link
-                href="mailto:dimasmaulana0305@gmail.com"
-                className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
-              >
-                <Mail className="w-5 h-5" />
-                <span>Email</span>
-              </Link>
-            </div>
-          </div>
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              CTF Teams
-            </h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="https://github.com/TCP1P"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
-                >
-                  <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
-                  TCP1P
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://github.com/project-sekai-ctf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
-                >
-                  <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
-                  Project Sekai CTF
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://ctftime.org/team/58979/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground"
-                >
-                  <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
-                  P1G SEKAI
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="pt-8 mt-8 text-center border-t border-border/60">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Dimas Maulana. All rights reserved.
-          </p>
+        <div className="flex items-center gap-1">
+          {socials.map(({ name, href, icon: Icon }) => (
+            <Link
+              key={name}
+              href={href}
+              {...(href.startsWith("http")
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
+              aria-label={name}
+              className="grid h-11 w-11 place-items-center rounded-full text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <Icon aria-hidden className="h-5 w-5" />
+            </Link>
+          ))}
         </div>
       </div>
     </footer>
