@@ -132,13 +132,20 @@ EmptyState.displayName = "EmptyState"
 // Memoized sidebar with lazy loaded components
 const Sidebar = memo(() => {
   return (
-    <div className="w-full lg:w-1/4 space-y-6">
-      <Suspense fallback={<div className="h-32 bg-muted/20 rounded-lg animate-pulse" />}>
-        <BlogStats />
-      </Suspense>
-      <Suspense fallback={<div className="h-48 bg-muted/20 rounded-lg animate-pulse" />}>
-        <BlogCategories />
-      </Suspense>
+    <div className="w-full lg:w-1/4">
+      {/* Same sticky pattern as the post/note sidebars: the outer flex child
+          stretches to the row's full height, the inner block follows the
+          scroll below the fixed header and scrolls internally if it is ever
+          taller than the viewport. Desktop only — on mobile the sidebar
+          stacks below the posts. */}
+      <div className="space-y-6 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto sidebar-scroll-area">
+        <Suspense fallback={<div className="h-32 bg-muted/20 rounded-lg animate-pulse" />}>
+          <BlogStats />
+        </Suspense>
+        <Suspense fallback={<div className="h-48 bg-muted/20 rounded-lg animate-pulse" />}>
+          <BlogCategories />
+        </Suspense>
+      </div>
     </div>
   )
 })
