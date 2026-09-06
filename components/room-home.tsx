@@ -5,6 +5,7 @@ import { cornerTour } from "@/lib/room/tour.js";
 import { createSceneSummary } from "@/lib/room/content.js";
 import { getRoomPortfolio } from "@/lib/room/portfolio";
 import "@/lib/room/room.css";
+import "@/lib/room/mobile.css";
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],

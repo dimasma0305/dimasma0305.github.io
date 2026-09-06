@@ -23,8 +23,9 @@ function plainText(html: string): string {
     .replace(
       /&(#x[\da-f]+|#\d+|amp|lt|gt|quot|apos|nbsp);/gi,
       (match, entity: string) => {
-        if (!entity.startsWith("#"))
-          {return entities[entity.toLowerCase()] || match;}
+        if (!entity.startsWith("#")) {
+          return entities[entity.toLowerCase()] || match;
+        }
         const number =
           entity[1].toLowerCase() === "x"
             ? parseInt(entity.slice(2), 16)
@@ -68,18 +69,25 @@ export function prepareArticle(content: string) {
     : 2;
   const sections: ArticleSection[] = [];
   for (const heading of headings) {
-    if (heading.level === rootLevel || !sections.length)
-      {sections.push({ ...heading, children: [] });}
-    else {sections[sections.length - 1].children.push(heading);}
+    if (heading.level === rootLevel || !sections.length) {
+      sections.push({ ...heading, children: [] });
+    } else {
+      sections[sections.length - 1].children.push(heading);
+    }
   }
   let index = 0;
   let chapter = 0;
+  const levels = [...new Set(headings.map((heading) => heading.level))].sort(
+    (a, b) => a - b,
+  );
   const html = content.replace(pattern, (_match, level, attrs, body) => {
     const heading = headings[index++];
     // One page h1; preserve all relative levels in the article body.
-    const tag = Math.min(6, Number(level) + (rootLevel === 1 ? 1 : 0));
+    const tag = Math.min(6, 2 + levels.indexOf(Number(level)));
     const isChapter = heading.level === rootLevel;
-    if (isChapter) {chapter++;}
+    if (isChapter) {
+      chapter++;
+    }
     const attributes = attrs.replace(/\s+id="[^"]*"/i, "");
     return `<h${tag}${attributes} id="${attribute(heading.id)}" tabindex="-1"${isChapter ? ` data-article-chapter="${String(chapter).padStart(2, "0")}"` : ""}>${body}</h${tag}>`;
   });

@@ -58,6 +58,7 @@ export default async function NotePage({ params }: { params: Promise<{ slug: str
           except the vestigial NotionBlock branch of the `content` union (content is
           always an HTML string at runtime). Cast to the component's own prop type. */}
       <NotePageClient
+        key={slug}
         slug={slug}
         initialNote={
           (initialNote ?? undefined) as ComponentProps<typeof NotePageClient>["initialNote"]

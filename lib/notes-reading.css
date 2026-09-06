@@ -1,0 +1,46 @@
+.note-kind {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: hsl(var(--primary));
+  font:
+    11px/1.8 var(--font-jetbrains-mono),
+    monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.note-topics {
+  margin-top: 18px;
+}
+.content-shell .notes-reading .reading-hero h1 {
+  font-size: clamp(36px, 4.5vw, 56px);
+}
+.notes-reading .reading-hero {
+  padding-top: 24px;
+}
+.note-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.note-tags a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 5px;
+  color: hsl(var(--primary));
+  font-size: 12px;
+}
+.note-footer .blog-article-share {
+  padding-bottom: 18px;
+}
+@media (max-width: 560px) {
+  .content-shell .notes-reading .reading-hero h1 {
+    font-size: 36px;
+  }
+  .notes-reading .blog-reading-meta {
+    font-size: 11px;
+  }
+}

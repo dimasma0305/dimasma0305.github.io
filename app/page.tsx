@@ -1,22 +1,32 @@
-import { Metadata } from "next"
-import { HomepageStructuredData } from "@/components/seo"
-import { RoomHome } from "@/components/room-home"
-import { siteSocial, socialImage } from "@/lib/social-metadata"
+import { Metadata } from "next";
+import { HomepageStructuredData } from "@/components/seo";
+import { RoomHome } from "@/components/room-home";
+import { siteSocial, socialImage } from "@/lib/social-metadata";
+import { siteUrls } from "@/lib/site-seo";
 
 // Environment variables with fallbacks
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf"
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
-const fullUrl = `${baseUrl}${basePath}`
+const fullUrl = siteUrls.page();
 
 export const metadata: Metadata = {
-  title: { absolute: siteSocial.title },
+  title: { absolute: "Dimas Maulana — Security Researcher | dimasc.tf" },
   description: siteSocial.description,
-  keywords: ["cybersecurity", "CTF", "capture the flag", "security research", "vulnerability", "bug bounty", "hacking", "Indonesia", "Dimas Maulana"],
+  keywords: [
+    "cybersecurity",
+    "CTF",
+    "capture the flag",
+    "security research",
+    "vulnerability",
+    "bug bounty",
+    "hacking",
+    "Indonesia",
+    "Dimas Maulana",
+  ],
   authors: [{ name: "Dimas Maulana", url: fullUrl }],
   creator: "Dimas Maulana",
   publisher: "Dimas Maulana",
   alternates: {
     canonical: fullUrl,
+    types: { "application/rss+xml": siteUrls.asset("/rss.xml") },
   },
   openGraph: {
     type: "website",
@@ -41,12 +51,12 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-}
+};
 
 export default function HomePage() {
   return (
@@ -54,5 +64,5 @@ export default function HomePage() {
       <HomepageStructuredData />
       <RoomHome />
     </>
-  )
+  );
 }

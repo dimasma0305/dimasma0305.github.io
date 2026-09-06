@@ -158,10 +158,14 @@ try {
   );
   await saver.locator('a[href="/notes/"]').first().click();
   await saver.locator(".note-card").first().waitFor();
+  assert.ok(
+    new URL(saver.url()).pathname.endsWith("/notes/"),
+    "data saving must not block actual navigation",
+  );
   assert.equal(
     saverRequests.filter((url) => url.endsWith("/notes-index.json")).length,
-    1,
-    "data saving must not block actual navigation",
+    0,
+    "pre-rendered Notes do not need an index request, even with data saving",
   );
   await saver.close();
   console.log(

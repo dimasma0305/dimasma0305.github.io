@@ -78,7 +78,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         updatedAt: post.last_edited_time,
         coverImage: post.featured_image || "",
         iconEmoji: "",
-        categories: post.properties?.tags || [],
+        categories: post.categories || [],
         verification: {
           state: "unverified" as const,
           verified_by: null,
@@ -129,7 +129,7 @@ export default async function PostPage({ params }: PostPageProps) {
         updatedAt: foundPost.last_edited_time,
         coverImage: foundPost.featured_image || "",
         iconEmoji: "",
-        categories: foundPost.properties?.tags || [],
+        categories: foundPost.categories || [],
         content: "", // Will be loaded client-side
         verification: {
           state: "unverified" as const,

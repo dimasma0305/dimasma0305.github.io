@@ -1,43 +1,32 @@
 "use client";
 
-// Long-form content styles (notion/prose/prism/TOC) live in a separate
-// stylesheet so only post/note routes ship them.
 import "@/app/content.css";
-import { useState, useEffect, lazy, Suspense, memo } from "react";
-import { format } from "date-fns";
+import "@/lib/blog.css";
+import "@/lib/article.css";
+import "@/lib/notes-reading.css";
+import { useEffect, useMemo, useState, lazy, Suspense } from "react";
 import {
   ArrowLeft,
-  Calendar,
-  Tag,
+  ArrowDown,
+  ArrowUpRight,
   Clock,
-  Share2,
-  Folder,
-  BookOpen,
+  NotebookPen,
 } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import dynamic from "next/dynamic";
 import { withBasePath } from "@/lib/utils";
-import { handleHashOnPageLoad } from "@/lib/scroll-utils";
-import { Separator } from "@/components/ui/separator";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { LoadingSpinner } from "@/components/loading-spinner";
-import { NotionLinkButton } from "@/components/notion-link-button";
-import { useLazyLoadingReady } from "@/hooks/use-lazy-loading-ready";
+import { getHeaderOffset, handleHashOnPageLoad } from "@/lib/scroll-utils";
 import {
   convertNotionContentToHtml,
   type NotionBlock,
 } from "@/lib/notion-content-utils";
-import { TableOfContents } from "@/components/table-of-contents";
+import { fetchNoteBySlug, type Note as NoteMetadata } from "@/lib/notes-client";
+import { formatBlogDate } from "@/lib/blog-archive";
+import { prepareArticle } from "@/lib/article-outline";
+import { ArticleOutline } from "@/components/article-outline";
+import { ArticleImageViewer } from "@/components/article-image-viewer";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
-// Server-render the note body so it lands in the static export (SSG). Mdx's
-// render output is a pure `dangerouslySetInnerHTML` div (no browser APIs at
-// render time — document/window/Prism all live inside useEffect), so it is
-// SSR-safe. Keeping `ssr: false` here would exclude the body from the
-// prerendered HTML and defeat the build-time `initialNote` we now pass.
 const Mdx = dynamic(() => import("@/components/mdx").then((m) => m.Mdx));
 const ShareButtons = lazy(() =>
   import("@/components/share-buttons").then((m) => ({
@@ -49,635 +38,259 @@ const NoteNavigation = lazy(() =>
     default: m.NoteNavigation,
   })),
 );
-
-// Memoized error component
-const ErrorDisplay = memo(({ error }: { error: string }) => (
-  <div className="container px-4 py-12 mx-auto max-w-7xl">
-    <div className="text-center py-12">
-      <h1 className="text-2xl font-bold mb-4">Note Not Found</h1>
-      <p className="text-muted-foreground mb-4">{error}</p>
-      <Link href={"/notes"}>
-        <Button>
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Notes
-        </Button>
-      </Link>
-    </div>
-  </div>
-));
-
-ErrorDisplay.displayName = "ErrorDisplay";
-
-// Memoized hero section
-const NoteHero = memo(({ note }: { note: Note }) => {
-  const createdDate = note.created_time ? new Date(note.created_time) : null;
-  const updatedDate = note.last_edited_time
-    ? new Date(note.last_edited_time)
-    : null;
-
-  return (
-    <div className="reading-hero bg-gradient-to-b from-muted/30 to-background border-b overflow-x-hidden">
-      <div className="container max-w-7xl mx-auto px-4 py-6 lg:py-8">
-        <div className="max-w-4xl">
-          {/* Back Button */}
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="mb-4 lg:mb-6 -ml-2"
-          >
-            <Link href={"/notes"}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to all notes
-            </Link>
-          </Button>
-
-          {/* Categories */}
-          {note.categories && note.categories.length > 0 && (
-            <div className="reading-categories mb-4 lg:mb-6">
-              <div className="reading-category-label flex items-center gap-2 mb-3">
-                <Folder className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium text-muted-foreground">
-                  Categories
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {note.categories.map((category) => (
-                  <Link
-                    key={category}
-                    href={`/categories/${encodeURIComponent(category.toLowerCase())}`}
-                  >
-                    <Badge
-                      variant="default"
-                      className="text-sm px-3 py-1 hover:bg-primary/90 transition-colors cursor-pointer max-w-[200px] truncate"
-                      title={category}
-                    >
-                      {category}
-                    </Badge>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Title */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-4 lg:mb-6 leading-tight break-words">
-            {note.title}
-          </h1>
-
-          {/* Excerpt */}
-          {note.excerpt && (
-            <p className="reading-excerpt text-lg lg:text-xl text-muted-foreground mb-6 lg:mb-8 leading-relaxed max-w-3xl break-words">
-              {note.excerpt}
-            </p>
-          )}
-
-          {/* Meta Information */}
-          <div className="flex flex-wrap items-center gap-3 md:gap-4 lg:gap-6 text-sm">
-            {/* Date */}
-            <div className="flex items-center gap-2 min-w-0">
-              <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-              <div className="min-w-0">
-                <time
-                  dateTime={note.created_time}
-                  suppressHydrationWarning
-                  className="font-medium whitespace-nowrap"
-                >
-                  {createdDate && !isNaN(createdDate.getTime())
-                    ? format(createdDate, "MMMM d, yyyy")
-                    : "Invalid Date"}
-                </time>
-                <p className="text-muted-foreground text-xs">Created</p>
-              </div>
-            </div>
-
-            {/* Updated Date */}
-            {note.last_edited_time && (
-              <>
-                <Separator
-                  orientation="vertical"
-                  className="h-12 hidden sm:block"
-                />
-                <div className="flex items-center gap-2 min-w-0">
-                  <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                  <div className="min-w-0">
-                    <time
-                      dateTime={note.last_edited_time}
-                      suppressHydrationWarning
-                      className="font-medium whitespace-nowrap"
-                    >
-                      {updatedDate && !isNaN(updatedDate.getTime())
-                        ? format(updatedDate, "MMMM d, yyyy")
-                        : "Invalid Date"}
-                    </time>
-                    <p className="text-muted-foreground text-xs">Updated</p>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* Reading Time */}
-            {note.content && (
-              <>
-                <Separator
-                  orientation="vertical"
-                  className="h-12 hidden sm:block"
-                />
-                <div className="flex items-center gap-2 min-w-0">
-                  <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="font-medium whitespace-nowrap">
-                      {typeof note.content === "string"
-                        ? estimateReadingTime(note.content)
-                        : 0}{" "}
-                      min read
-                    </p>
-                    <p className="text-muted-foreground text-xs">
-                      Reading time
-                    </p>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* Categories Count */}
-            {note.categories && note.categories.length > 0 && (
-              <>
-                <Separator
-                  orientation="vertical"
-                  className="h-12 hidden sm:block"
-                />
-                <div className="flex items-center gap-2 min-w-0">
-                  <Tag className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="font-medium whitespace-nowrap">
-                      {note.categories.length} categories
-                    </p>
-                    <p className="text-muted-foreground text-xs">
-                      Topics covered
-                    </p>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3 lg:gap-4 mt-6 lg:mt-8">
-            {note.public_url && (
-              <NotionLinkButton notionUrl={note.public_url} />
-            )}
-            <Suspense fallback={<div>Loading Share Buttons...</div>}>
-              <ShareButtons
-                title={note.title}
-                slug={note.slug}
-                excerpt={note.excerpt}
-                categories={note.categories}
-                type="notes"
-              />
-            </Suspense>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-});
-
-NoteHero.displayName = "NoteHero";
-
-// Helper function to estimate reading time
-const estimateReadingTime = (content: string) => {
-  const wordsPerMinute = 200;
-  const words = content.replace(/<[^>]*>/g, "").split(/\s+/).length;
-  return Math.ceil(words / wordsPerMinute);
+type Note = Omit<NoteMetadata, "content"> & { content?: string };
+type NoteFile = {
+  post: Pick<
+    Note,
+    "title" | "created_time" | "last_edited_time" | "url" | "public_url"
+  > & { content: NotionBlock[] };
 };
-
-interface Note {
-  id: string;
-  title: string;
-  slug: string;
-  folder: string;
-  excerpt?: string;
-  featured_image?: string;
-  created_time: string;
-  last_edited_time: string;
-  reading_time?: number;
-  url: string;
-  public_url?: string;
-  archived: boolean;
-  categories: string[];
-  tags: string[];
-  properties: {
-    published: boolean;
-    featured: boolean;
-    author: string;
-  };
-  content?: string | NotionBlock[];
-}
-
-interface NotesIndex {
-  meta: {
-    generated_at: string;
-    total_posts: number;
-    published_posts: number;
-    draft_posts: number;
-    featured_posts: number;
-    total_tags: number;
-    total_categories: number;
-    posts_directory: string;
-  };
-  taxonomy: {
-    categories: Array<{
-      name: string;
-      count: number;
-      slug: string;
-    }>;
-    tags: Array<{
-      name: string;
-      count: number;
-      slug: string;
-    }>;
-  };
-  posts: {
-    all: Note[];
-  };
-}
-
-interface NoteData {
-  meta: {
-    generated_at: string;
-    notion_api_version: string;
-    includes_content: boolean;
-    folder: string;
-    slug: string;
-  };
-  post: NotePost;
-}
-
-interface NotePost {
-  id: string;
-  created_time: string;
-  last_edited_time: string;
-  url: string;
-  public_url?: string;
-  archived: boolean;
-  icon?: any;
-  cover?: any;
-  properties: any;
-  title: string;
-  content: NotionBlock[];
-}
-
-// Separate component for Table of Contents rendering
-const NoteTOC = memo(({ content }: { content: string | NotionBlock[] }) => {
-  const [tocContent, setTocContent] = useState<string>("");
-
-  useEffect(() => {
-    async function processContent() {
-      let htmlContent: string;
-      if (typeof content === "string") {
-        htmlContent = content;
-      } else {
-        htmlContent = await convertNotionContentToHtml(content);
-      }
-      setTocContent(htmlContent);
-    }
-
-    processContent();
-  }, [content]);
-
-  if (!tocContent) return null;
-
-  return <TableOfContents content={tocContent} />;
-});
-
-NoteTOC.displayName = "NoteTOC";
 
 export default function NotePageClient({
   slug,
   initialNote,
 }: {
   slug: string;
-  // Pre-rendered note built at build time (SSG). When provided, the body HTML
-  // is already in the static markup; we skip the client fetch entirely.
   initialNote?: Note;
 }) {
   const [note, setNote] = useState<Note | null>(initialNote ?? null);
-  const [isLoading, setIsLoading] = useState(!initialNote);
-  const [error, setError] = useState<string | null>(null);
-  // Seed the TOC from the pre-rendered note so it renders on the SSG path too
-  // (the fetch effect that normally fills it early-returns when initialNote is
-  // present). content is always an HTML string on both paths.
-  const [tocContent, setTocContent] = useState<string>(
-    typeof initialNote?.content === "string" ? initialNote.content : "",
+  const [loading, setLoading] = useState(!initialNote);
+  const [error, setError] = useState("");
+  const [coverError, setCoverError] = useState(false);
+  const article = useMemo(
+    () => prepareArticle(note?.content || ""),
+    [note?.content],
   );
-  const isReady = useLazyLoadingReady();
 
   useEffect(() => {
-    // When the note was pre-rendered at build time, its content is already
-    // render-ready, so skip the client fetch and avoid any double-processing.
     if (initialNote) {
       return;
     }
-
-    async function fetchNote() {
+    const controller = new AbortController();
+    async function load() {
       try {
-        setIsLoading(true);
-        setError(null);
-
-        const indexResponse = await fetch(withBasePath("/notes-index.json"));
-        if (!indexResponse.ok) {
-          throw new Error("Failed to fetch notes index");
+        const info = await fetchNoteBySlug(slug);
+        if (!info) {
+          throw new Error("The requested note could not be found.");
         }
-
-        const notesIndex: NotesIndex = await indexResponse.json();
-        const noteInfo = notesIndex.posts.all.find(
-          (note) => note.slug === slug,
+        const response = await fetch(
+          withBasePath(`/notes/${info.folder}/post.json`),
+          { signal: controller.signal },
         );
-
-        if (!noteInfo) {
-          throw new Error("Note not found in index");
+        if (!response.ok) {
+          throw new Error("The note could not be loaded. Please try again.");
         }
-
-        const noteResponse = await fetch(
-          withBasePath(`/notes/${noteInfo.folder}/post.json`),
-        );
-        if (!noteResponse.ok) {
-          throw new Error(
-            `Failed to fetch note content: ${noteResponse.status}`,
+        const data: NoteFile = await response.json();
+        const content = await convertNotionContentToHtml(data.post.content);
+        if (!controller.signal.aborted) {
+          setNote({
+            ...info,
+            title: data.post.title || info.title,
+            created_time: data.post.created_time || info.created_time,
+            last_edited_time:
+              data.post.last_edited_time || info.last_edited_time,
+            url: data.post.url || info.url,
+            public_url: data.post.public_url || info.public_url,
+            content,
+          });
+        }
+      } catch (failure) {
+        if (!controller.signal.aborted) {
+          setError(
+            failure instanceof Error
+              ? failure.message
+              : "The note could not be loaded.",
           );
         }
-
-        const noteData: NoteData = await noteResponse.json();
-        const htmlContent = await convertNotionContentToHtml(
-          noteData.post.content,
-        );
-
-        const fullNote: Note = {
-          ...noteInfo,
-          content: htmlContent,
-          title: noteData.post.title,
-          created_time: noteData.post.created_time,
-          last_edited_time: noteData.post.last_edited_time,
-          url: noteData.post.url,
-          public_url: noteData.post.public_url,
-        };
-
-        setNote(fullNote);
-
-        // Process TOC content
-        const tocHtmlContent = fullNote.content
-          ? typeof fullNote.content === "string"
-            ? fullNote.content
-            : await convertNotionContentToHtml(fullNote.content)
-          : "";
-        setTocContent(tocHtmlContent);
-      } catch (err) {
-        console.error("Error fetching note:", err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to load note. Please try again later.",
-        );
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     }
-
-    if (slug) {
-      fetchNote();
-    }
+    void load();
+    return () => controller.abort();
   }, [slug, initialNote]);
 
-  // Handle scroll to hash on page load with lazy loading awareness
   useEffect(() => {
-    if (!isLoading && note) {
+    if (!loading && note) {
       handleHashOnPageLoad({
         behavior: "smooth",
         lazyLoadDelay: 250,
+        headerOffset: getHeaderOffset() + (window.innerWidth < 1024 ? 64 : 0),
       });
     }
-  }, [isLoading, note]);
+  }, [loading, note]);
 
-  // On the SSG path (initialNote present) bypass the loading gate so the
-  // pre-rendered body lands in the static HTML — `isReady`/`isLoading` are
-  // effect-driven and never settle during the server prerender. The
-  // client-fetch path keeps its original spinner timing (including the
-  // isReady delay) unchanged.
-  if (!initialNote && (isLoading || !isReady)) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
   }
-
   if (error || !note) {
     return (
-      <ErrorDisplay error={error || "The requested note could not be found."} />
+      <div className="container py-12">
+        <h1 className="text-3xl">Note not found</h1>
+        <p className="mt-4">
+          {error || "The requested note could not be found."}
+        </p>
+        <Link className="blog-return-link" href="/notes/" prefetch={false}>
+          <ArrowLeft size={16} aria-hidden="true" />
+          Back to all notes
+        </Link>
+      </div>
     );
   }
+  const minutes =
+    note.reading_time ||
+    Math.max(
+      1,
+      Math.ceil(
+        (note.content || "").replace(/<[^>]*>/g, "").split(/\s+/).length / 200,
+      ),
+    );
+  const topics = [...new Set(note.categories || [])];
 
   return (
-    <div className="reading-page min-h-screen">
-      <NoteHero note={note} />
-
-      {/* Cover Image */}
-      {note.featured_image && (
-        <div className="container max-w-7xl mx-auto px-4 py-6 lg:py-8 overflow-x-hidden">
-          <div className="relative w-full h-[180px] sm:h-[260px] lg:h-[320px] overflow-hidden rounded-xl bg-card border border-border">
-            <Image
-              src={note.featured_image || "/placeholder.svg"}
-              alt={note.title}
-              width={1200}
-              height={600}
-              priority
-              sizes="(max-width: 1024px) 100vw, 1152px"
-              className="object-contain w-full h-full"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Main Content */}
-      <div className="container max-w-7xl mx-auto px-4 py-6 lg:py-8">
-        <div className="reading-layout grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-12 relative">
-          {/* Article Content */}
-          <div className="reading-column lg:col-span-3 min-w-0 overflow-x-hidden">
-            {/* Table of Contents - Mobile */}
-            {tocContent && (
-              <div className="lg:hidden mb-8">
-                <Suspense fallback={<div>Loading Table of Contents...</div>}>
-                  <TableOfContents content={tocContent} />
-                </Suspense>
+    <div className="reading-page blog-reading notes-reading">
+      <header id="article-top" tabIndex={-1} className="reading-hero">
+        <div className="container">
+          <Link className="blog-return-link" href="/notes/" prefetch={false}>
+            <ArrowLeft size={15} aria-hidden="true" />
+            Back to all notes
+          </Link>
+          <div
+            className={
+              note.featured_image && !coverError
+                ? "blog-reading-intro"
+                : "blog-reading-intro blog-reading-intro-text"
+            }
+          >
+            <div>
+              <p className="note-kind">
+                <NotebookPen size={15} aria-hidden="true" />
+                From the notebook
+              </p>
+              <h1>{note.title}</h1>
+              <div className="blog-reading-meta">
+                <span>
+                  <Clock size={14} aria-hidden="true" />
+                  {minutes} min read
+                </span>
+                <time dateTime={note.created_time}>
+                  Created {formatBlogDate(note.created_time)}
+                </time>
+                {note.last_edited_time &&
+                  formatBlogDate(note.last_edited_time) !==
+                    formatBlogDate(note.created_time) && (
+                    <time dateTime={note.last_edited_time}>
+                      Updated {formatBlogDate(note.last_edited_time)}
+                    </time>
+                  )}
               </div>
-            )}
-
-            {/* Article Body */}
-            <article className="prose prose-lg dark:prose-invert max-w-none prose-pre:overflow-x-auto prose-code:break-words prose-p:break-words prose-headings:break-words">
-              <div className="reading-body bg-card rounded-xl p-4 md:p-8 shadow-sm border overflow-hidden">
-                {note.content && <NotionContent content={note.content} />}
-              </div>
-            </article>
-
-            {/* Note Footer */}
-            <div className="mt-8 lg:mt-12 space-y-6 lg:space-y-8">
-              {/* Categories - Detailed Section */}
-              {note.categories && note.categories.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Folder className="w-5 h-5" />
-                      Categories & Topics
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-sm text-muted-foreground">
-                        This note is categorized under the following topics.
-                        Click on any category to explore more related content.
-                      </p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {note.categories.map((category) => (
-                          <Link
-                            key={category}
-                            href={`/categories/${encodeURIComponent(category.toLowerCase())}`}
-                          >
-                            <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors cursor-pointer group min-w-0">
-                              <div className="p-2 bg-primary/10 rounded-md group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                                <Tag className="w-4 h-4 text-primary" />
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <p
-                                  className="font-medium group-hover:text-primary transition-colors truncate"
-                                  title={category}
-                                >
-                                  {category}
-                                </p>
-                              </div>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Share Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Share2 className="w-5 h-5" />
-                    Share this note
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Suspense fallback={<div>Loading Share Buttons...</div>}>
-                    <ShareButtons
-                      title={note.title}
-                      slug={note.slug}
-                      excerpt={note.excerpt}
-                      categories={note.categories}
-                      type="notes"
-                    />
-                  </Suspense>
-                </CardContent>
-              </Card>
-
-              {/* Note Navigation */}
-              <Suspense fallback={<div>Loading note navigation...</div>}>
-                <NoteNavigation currentSlug={slug} />
-              </Suspense>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="reading-sidebar sticky top-20 space-y-4 lg:space-y-6 max-h-[calc(100vh-6rem)] overflow-y-auto sidebar-scroll-area">
-              {/* Table of Contents - Desktop */}
-              {tocContent && (
-                <div className="hidden lg:block">
-                  <Suspense fallback={<div>Loading Table of Contents...</div>}>
-                    <TableOfContents content={tocContent} />
-                  </Suspense>
+              {topics.length > 0 && (
+                <div className="blog-reading-topics note-topics">
+                  {topics.map((topic) => (
+                    <Link
+                      key={topic}
+                      href={`/notes/?topic=${encodeURIComponent(topic)}`}
+                      prefetch={false}
+                    >
+                      {topic}
+                    </Link>
+                  ))}
                 </div>
               )}
-
-              {/* Categories Sidebar */}
-              {note.categories && note.categories.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Folder className="w-5 h-5" />
-                      Categories
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {note.categories.map((category) => (
-                      <Link
-                        key={category}
-                        href={`/categories/${encodeURIComponent(category.toLowerCase())}`}
-                      >
-                        <div className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group min-w-0">
-                          <div className="flex items-center gap-2 min-w-0 flex-1">
-                            <Tag className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
-                            <span
-                              className="font-medium group-hover:text-primary transition-colors truncate"
-                              title={category}
-                            >
-                              {category}
-                            </span>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </CardContent>
-                </Card>
-              )}
+              <div className="blog-reading-actions">
+                <a href="#article-body">
+                  Read the note <ArrowDown size={15} aria-hidden="true" />
+                </a>
+                {note.public_url && (
+                  <a
+                    href={note.public_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Original on Notion{" "}
+                    <ArrowUpRight size={14} aria-hidden="true" />
+                  </a>
+                )}
+              </div>
             </div>
+            {note.featured_image && !coverError && (
+              <div className="blog-reading-cover">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={note.featured_image}
+                  alt=""
+                  loading="lazy"
+                  onError={() => setCoverError(true)}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+      <div className="container blog-reading-content">
+        <div className="reading-layout">
+          <ArticleOutline sections={article.sections} />
+          <div className="reading-column">
+            <article
+              id="article-body"
+              tabIndex={-1}
+              className="reading-body"
+              aria-label={note.title}
+            >
+              {note.content ? (
+                <Mdx content={article.html} readingTools />
+              ) : (
+                <p>No content is available for this note yet.</p>
+              )}
+            </article>
+            <ArticleImageViewer />
+            <footer className="blog-article-footer note-footer">
+              <div className="blog-article-share">
+                <h2>Share this note</h2>
+                <Suspense fallback={null}>
+                  <ShareButtons
+                    title={note.title}
+                    slug={note.slug}
+                    excerpt={note.excerpt}
+                    categories={topics}
+                    type="notes"
+                  />
+                </Suspense>
+              </div>
+              {note.tags?.length > 0 && (
+                <nav className="note-tags" aria-label="Related note tags">
+                  {[...new Set(note.tags)].map((tag) => (
+                    <Link
+                      key={tag}
+                      href={`/notes/?q=${encodeURIComponent(tag)}`}
+                      prefetch={false}
+                    >
+                      #{tag}
+                    </Link>
+                  ))}
+                </nav>
+              )}
+              <Suspense fallback={null}>
+                <NoteNavigation currentSlug={slug} />
+              </Suspense>
+              <Link
+                className="blog-return-link"
+                href="/notes/"
+                prefetch={false}
+              >
+                <ArrowLeft size={15} aria-hidden="true" />
+                Back to all notes
+              </Link>
+            </footer>
           </div>
         </div>
       </div>
     </div>
   );
-}
-
-// Separate component for rendering Notion content
-function NotionContent({
-  content,
-  renderToc,
-}: {
-  content: string | NotionBlock[];
-  renderToc?: (content: string) => React.ReactNode;
-}) {
-  // Seed from the content when it is already an HTML string so the body renders
-  // during the static prerender (SSG). For NotionBlock[] input the conversion
-  // still happens in the effect below. This is what lets the pre-rendered note
-  // body land in the static HTML instead of an effect-gated empty `null`.
-  const [renderedContent, setRenderedContent] = useState<string>(
-    typeof content === "string" ? content : "",
-  );
-
-  useEffect(() => {
-    async function processContent() {
-      let htmlContent: string;
-      if (typeof content === "string") {
-        htmlContent = content;
-      } else {
-        htmlContent = await convertNotionContentToHtml(content);
-      }
-      setRenderedContent(htmlContent);
-    }
-
-    processContent();
-  }, [content]);
-
-  // If renderToc is provided, return the TOC rendering
-  if (renderToc) {
-    return renderToc(renderedContent);
-  }
-
-  // Otherwise, render the Mdx content
-  return renderedContent ? <Mdx content={renderedContent} /> : null;
 }

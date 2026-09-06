@@ -1,286 +1,354 @@
 import portfolio from "@/lib/portfolio-data.json";
 import Link from "next/link";
 import {
-  Sparkles,
+  ArrowDown,
+  ArrowUpRight,
   Check,
+  Minus,
   FileText,
-  FileCode2,
+  Mail,
   MessageCircle,
   Lock,
-  Send,
-  ScanSearch,
-  FileCheck2,
+  FileCode2,
 } from "lucide-react";
-import { CodeDiffDemo } from "@/components/code-diff-demo";
 import { withBasePath } from "@/lib/utils";
 import { faqs } from "@/lib/services-data";
+import { ServiceBrief } from "@/components/service-brief";
+import "@/lib/services.css";
 
-// Downloadable sample so clients see the exact deliverable before they buy.
-const SAMPLE_PDF = withBasePath(
+const samplePdf = withBasePath(
   "/sample-report/source-code-pentest-sample-report.pdf",
 );
-const SAMPLE_MD = withBasePath(
+const sampleMarkdown = withBasePath(
   "/sample-report/source-code-pentest-sample-report.md",
 );
+const deliverables = [
+  {
+    title: "Reviewed findings",
+    text: "AI-assisted codebase coverage with personal triage. Genuine issues, potential risks, and hardening notes are clearly distinguished.",
+    label: "Human-reviewed",
+  },
+  {
+    title: "Suggested fixes",
+    text: "A suggested patch for each finding, alongside dynamic checks that the program runs and behaves correctly.",
+    label: "Actionable changes",
+  },
+  {
+    title: "A report you can use",
+    text: "Plain-English PDF and Markdown reports, plus one free re-test after you apply the fixes.",
+    label: "PDF + Markdown + re-test",
+  },
+];
+const process = [
+  {
+    title: "Agree on scope",
+    text: "Tell me about your project. We agree on scope and price, then arrange a private repo invite or ZIP.",
+  },
+  {
+    title: "Review and check",
+    text: "An AI agent reviews the code. I triage the findings and run the program to check its behavior.",
+  },
+  {
+    title: "Report and follow up",
+    text: "Receive the report and suggested fixes. Apply and test them, then use your included re-test.",
+  },
+];
 
-// Contact endpoints for the "Start a review" CTA.
-const WHATSAPP_URL = portfolio.services.whatsapp;
-const DISCORD_URL = portfolio.services.discord;
-
-// lucide-react has no Discord glyph, so inline the brand mark.
-function DiscordIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3.2a.074.074 0 0 0-.079.037c-.34.6-.717 1.385-.98 2.003a18.27 18.27 0 0 0-5.005 0 12.6 12.6 0 0 0-.997-2.003.077.077 0 0 0-.078-.037A19.74 19.74 0 0 0 5.66 4.369a.07.07 0 0 0-.032.027C2.273 9.36 1.36 14.214 1.81 19.006a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127c-.598.349-1.22.645-1.873.891a.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.539-.838-10.353-3.549-14.61a.061.061 0 0 0-.031-.028ZM8.02 15.331c-1.182 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z" />
-    </svg>
-  );
-}
-
-const features = portfolio.services.features;
-
-const steps = portfolio.services.steps.map((item, i) => ({
-  ...item,
-  icon: [Send, ScanSearch, FileCheck2][i],
-}));
-
-const included = portfolio.services.included;
-
-const limits = portfolio.services.limits;
-
-/**
- * Full details for the Source Code Pentest service. Lives on the dedicated
- * /services page; the homepage shows only a compact teaser that links here.
- */
 export function ServicesDetail() {
   return (
-    <div className="services-content">
-      {/* Pitch + live demo */}
-      <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
-        <div className="min-w-0">
-          <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-primary-bright">
-            <Sparkles className="w-3.5 h-3.5" />
-            AI-automated review
-          </span>
-
-          <p className="mt-4 text-sm text-muted-foreground">
-            By Dimas Maulana, CTF player and security researcher.
+    <div className="services-content service-redesign">
+      <header className="service-hero">
+        <div className="service-intro">
+          <p className="service-eyebrow">Services / The review desk</p>
+          <h1>
+            Source code security review<span>.</span>
+          </h1>
+          <p className="service-lead">
+            Understand the risks in your code—and what to do next.
           </p>
-
-          <p className="mt-4 max-w-xl text-lg text-muted-foreground leading-relaxed">
-            An AI agent reviews your whole codebase for potential
-            vulnerabilities. I triage what it finds, flag the ones that are
-            actually exploitable, and send back suggested fixes. I also run the
-            program to confirm it works correctly and that the fixes don&apos;t
-            break anything, so you don&apos;t just get a list, you get patches
-            you can merge with confidence.
+          <p className="service-description">
+            AI-assisted review, personally triaged by me. Get reviewed findings,
+            suggested fixes, and a plain-English report you can act on.
           </p>
-
-          <ul className="mt-6 space-y-3">
-            {features.map((feature) => (
-              <li key={feature} className="flex items-center gap-3">
-                <span className="grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-primary/15 text-primary">
-                  <Check className="h-3.5 w-3.5" />
-                </span>
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-7">
-            <div className="flex flex-wrap items-baseline gap-x-2">
-              <span className="text-sm text-muted-foreground">Starting at</span>
-              <span className="service-price text-3xl font-bold tracking-tight">
-                {portfolio.services.price}
-              </span>
-            </div>
-            <p className="mt-1 text-muted-foreground">
-              {portfolio.services.localPrice}
-              <span className="ml-2 text-sm">
-                · per project, scoped to your codebase size
-              </span>
+          <div className="service-author">
+            <span aria-hidden="true">DM</span>
+            <p>
+              Dimas Maulana<small>Security researcher & CTF player</small>
             </p>
           </div>
-
-          <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-3">
-            <Link
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors duration-[var(--dur-base)] ease-[var(--ease-out)] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              <MessageCircle className="h-4 w-4" aria-hidden />
-              Start a review
-            </Link>
-            <Link
-              href="#start-a-review"
-              className="rounded-sm text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              See all contact options
-            </Link>
-          </div>
-
-          <div className="mt-7">
-            <p className="text-sm font-medium">
-              Every project ships as a full report, in Markdown and PDF:
-            </p>
-            <div className="mt-3 flex flex-wrap gap-3">
-              <Link
-                href={SAMPLE_PDF}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border border-primary/50 px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                <FileText className="h-4 w-4" aria-hidden />
-                Sample report (PDF)
-              </Link>
-              <Link
-                href={SAMPLE_MD}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                <FileCode2 className="h-4 w-4" aria-hidden />
-                Sample report (Markdown)
-              </Link>
-            </div>
-          </div>
+          <Link href="/blog/" prefetch={false} className="service-text-link">
+            Explore my security write-ups{" "}
+            <ArrowUpRight size={15} aria-hidden="true" />
+          </Link>
         </div>
-
-        <div className="min-w-0 space-y-3">
-          <CodeDiffDemo />
-          <p className="text-center text-xs text-muted-foreground">
-            Real findings from a scan of this very site, already patched.
+        <aside
+          className="service-review-card"
+          aria-label="Review pricing and summary"
+        >
+          <div className="service-card-heading">
+            <span>Project review</span>
+            <FileCode2 size={20} aria-hidden="true" />
+          </div>
+          <p className="service-price-label">Starting at</p>
+          <p className="service-price">
+            {portfolio.services.price}
+            <span> / project</span>
           </p>
-        </div>
-      </div>
-
-      {/* How it works */}
-      <div className="mt-16">
-        <h2 className="text-xl font-semibold">How it works</h2>
-        <div className="mt-6 grid gap-6 md:grid-cols-3">
-          {steps.map((step) => (
-            <div key={step.title} className="p-6 rounded-lg glass-card">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <step.icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-4 font-semibold">{step.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                {step.text}
-              </p>
+          <p className="service-local-price">{portfolio.services.localPrice}</p>
+          <p className="service-price-note">
+            Final scope and price agreed before work begins.
+          </p>
+          <a
+            href="#start-a-review"
+            className="service-button service-button-primary"
+          >
+            Discuss your project <ArrowDown size={16} aria-hidden="true" />
+          </a>
+          <dl className="service-facts">
+            <div>
+              <dt>Delivery</dt>
+              <dd>PDF + Markdown report</dd>
             </div>
+            <div>
+              <dt>Follow-up</dt>
+              <dd>One free re-test</dd>
+            </div>
+            <div>
+              <dt>Typical timing</dt>
+              <dd>
+                1–2 days<small>Subject to scope and availability</small>
+              </dd>
+            </div>
+          </dl>
+          <a
+            href={samplePdf}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="service-text-link"
+          >
+            View sample report (PDF){" "}
+            <ArrowUpRight size={15} aria-hidden="true" />
+          </a>
+        </aside>
+      </header>
+      <nav className="service-jump-nav" aria-label="Service page sections">
+        {[
+          ["deliverables", "What you get"],
+          ["scope", "Scope & limits"],
+          ["process", "How it works"],
+          ["questions", "Questions"],
+          ["start-a-review", "Contact"],
+        ].map(([id, title]) => (
+          <a key={id} href={`#${id}`}>
+            {title}
+          </a>
+        ))}
+      </nav>
+      <section
+        id="deliverables"
+        className="service-section"
+        aria-labelledby="deliverables-heading"
+      >
+        <div className="service-section-heading">
+          <div>
+            <p className="service-eyebrow">01 / Deliverables</p>
+            <h2 id="deliverables-heading">Clarity, fixes, and a next step.</h2>
+          </div>
+          <p>A reviewed result—not a raw scanner export.</p>
+        </div>
+        <div className="service-deliverables">
+          {deliverables.map((item, index) => (
+            <article key={item.title}>
+              <span className="service-item-number" aria-hidden="true">
+                0{index + 1}
+              </span>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              <span className="service-deliverable-label">
+                <Check size={14} aria-hidden="true" />
+                {item.label}
+              </span>
+            </article>
           ))}
         </div>
-      </div>
-
-      {/* What's included + scope/limits */}
-      <div className="mt-12 grid gap-6 md:grid-cols-2">
-        <div className="p-6 rounded-2xl glass-panel">
-          <h2 className="font-semibold">What you get</h2>
-          <ul className="mt-4 space-y-2.5">
-            {included.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-sm">
-                <span className="mt-0.5 grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-primary/15 text-primary">
-                  <Check className="h-3.5 w-3.5" />
-                </span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="p-6 rounded-2xl glass-panel">
-          <h2 className="font-semibold">Scope and limits</h2>
-          <ul className="mt-4 space-y-2.5">
-            {limits.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-3 text-sm text-muted-foreground"
+        <div className="service-sample">
+          <div>
+            <FileText size={24} aria-hidden="true" />
+            <h3>See the report before we talk.</h3>
+            <p>
+              Browse the published sample’s structure, findings, and suggested
+              fixes to see whether the format fits your project.
+            </p>
+            <div className="service-sample-links">
+              <a
+                className="service-button"
+                href={samplePdf}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-muted-foreground/50" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+                Sample PDF <ArrowUpRight size={15} aria-hidden="true" />
+              </a>
+              <a
+                className="service-text-link"
+                href={sampleMarkdown}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Markdown version <ArrowUpRight size={15} aria-hidden="true" />
+              </a>
+            </div>
+          </div>
+          <div
+            className="service-report-outline"
+            aria-label="Sample report contents"
+          >
+            <p>
+              Inside the sample report <span>PDF / MD</span>
+            </p>
+            <ol>
+              {[
+                "Executive summary",
+                "Scope & methodology",
+                "Findings & suggested fixes",
+                "Hardening & next steps",
+              ].map((text, index) => (
+                <li key={text}>
+                  <span aria-hidden="true">0{index + 1}</span>
+                  {text}
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
-      </div>
-
-      {/* Confidentiality */}
-      <div className="mt-6 flex items-start gap-4 rounded-2xl glass-card p-6">
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <Lock className="h-5 w-5" />
+      </section>
+      <section
+        id="scope"
+        className="service-section service-scope"
+        aria-labelledby="scope-heading"
+      >
+        <div>
+          <p className="service-eyebrow">02 / Scope</p>
+          <h2 id="scope-heading">Know exactly what’s covered.</h2>
+          <p className="service-section-description">
+            This is a source code review with program checks. It is not a live
+            production or infrastructure pentest.
+          </p>
+          <div className="service-privacy">
+            <Lock size={19} aria-hidden="true" />
+            <div>
+              <h3>Private by arrangement</h3>
+              <p>
+                Isolated review workspace. NDA and code deletion after delivery
+                are available on request. Agree on access before sharing your
+                repository.
+              </p>
+            </div>
+          </div>
+        </div>
+        <ul className="service-scope-list">
+          {portfolio.services.limits.map((limit) => (
+            <li key={limit}>
+              <Minus size={16} aria-hidden="true" />
+              <span>{limit}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section
+        id="process"
+        className="service-section"
+        aria-labelledby="process-heading"
+      >
+        <div className="service-section-heading">
+          <div>
+            <p className="service-eyebrow">03 / Process</p>
+            <h2 id="process-heading">A straightforward handoff.</h2>
+          </div>
+        </div>
+        <ol className="service-process">
+          {process.map((step, index) => (
+            <li key={step.title}>
+              <span aria-hidden="true">0{index + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <section
+        id="questions"
+        className="service-section service-faq"
+        aria-labelledby="questions-heading"
+      >
+        <div>
+          <p className="service-eyebrow">04 / Questions</p>
+          <h2 id="questions-heading">Before we start.</h2>
+          <p className="service-section-description">
+            Not sure whether your project fits? Send a short overview and we can
+            discuss the scope.
+          </p>
+          <a href="#start-a-review" className="service-text-link">
+            Ask about your project <ArrowDown size={14} aria-hidden="true" />
+          </a>
         </div>
         <div>
-          <h2 className="font-semibold">Your code stays private</h2>
-          <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
-            I review your code in an isolated workspace, never share it, and
-            delete it after delivery on request. NDA available on request, and
-            you can send your code however is easiest, a repo invite or a zip
-            over email.
-          </p>
-        </div>
-      </div>
-
-      {/* FAQ */}
-      <div className="mt-12">
-        <h2 className="text-xl font-semibold">Questions</h2>
-        <div className="mt-6 space-y-3">
           {faqs.map((faq) => (
-            <details
-              key={faq.q}
-              className="group rounded-lg glass-card px-5 py-4 [&_summary]:cursor-pointer"
-            >
-              <summary className="flex items-center justify-between gap-4 rounded-sm font-medium list-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+            <details key={faq.q}>
+              <summary>
                 {faq.q}
-                <span
-                  aria-hidden="true"
-                  className="text-primary transition-transform group-open:rotate-45"
-                >
-                  +
-                </span>
+                <span aria-hidden="true">+</span>
               </summary>
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                {faq.a}
-              </p>
+              <p>{faq.a}</p>
             </details>
           ))}
         </div>
-      </div>
-
-      {/* CTA */}
-      <div
+      </section>
+      <section
         id="start-a-review"
-        className="mt-12 flex scroll-mt-24 flex-col items-center gap-3 text-center"
+        className="service-contact"
+        aria-labelledby="contact-heading"
       >
-        <h2 className="text-xl font-semibold">Start a review</h2>
-        <p className="max-w-md text-sm text-muted-foreground">
-          Message me to scope your project, then share your code however is
-          easiest, a repo invite or a zip over email.
-        </p>
-        <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors duration-[var(--dur-base)] ease-[var(--ease-out)] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            <MessageCircle className="w-4 h-4" aria-hidden />
-            WhatsApp
-          </Link>
-          <Link
-            href={DISCORD_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-md border border-primary/50 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:border-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            <DiscordIcon className="w-4 h-4" />
-            Discord
-          </Link>
+        <div>
+          <p className="service-eyebrow">Let’s work together</p>
+          <h2 id="contact-heading">Start with a conversation.</h2>
+          <p>
+            Send your stack, approximate codebase size, concerns, and preferred
+            timeline. We’ll agree on scope and price before you share access.
+          </p>
+          <div className="service-contact-links">
+            <a
+              className="service-button service-button-primary"
+              href={portfolio.services.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MessageCircle size={16} aria-hidden="true" />
+              WhatsApp <ArrowUpRight size={14} aria-hidden="true" />
+            </a>
+            <a
+              className="service-button"
+              href={`mailto:${portfolio.email}?subject=Source%20code%20security%20review`}
+            >
+              <Mail size={16} aria-hidden="true" />
+              Email
+            </a>
+            <a
+              className="service-text-link"
+              href={portfolio.services.discord}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Discord <ArrowUpRight size={14} aria-hidden="true" />
+            </a>
+          </div>
+          <p className="service-contact-note">
+            Choose whichever channel works for you.
+          </p>
         </div>
-      </div>
+        <ServiceBrief />
+      </section>
     </div>
   );
 }

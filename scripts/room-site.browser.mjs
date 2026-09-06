@@ -31,9 +31,11 @@ async function ready(page) {
   );
 }
 async function go(page, id) {
-  await page
-    .locator(`.tour-nav a[href="#${id}"]`)
-    .evaluate((el) => el.focus({ preventScroll: true }));
+  const headerLink = page.locator(`.tour-nav a[href="#${id}"]`);
+  const link = (await headerLink.isVisible())
+    ? headerLink
+    : page.locator(`.tour-room-index a[href="#${id}"]`);
+  await link.evaluate((el) => el.focus({ preventScroll: true }));
   await page.keyboard.press("Enter");
   await page.waitForFunction(
     (id) => document.querySelector(".tour-page").dataset.chapter === id,
@@ -188,9 +190,9 @@ try {
   );
   await page.close();
 
-  for (const width of [390, 320]) {
+  for (const width of [390, 320, 844]) {
     const mobile = await browser.newPage({
-      viewport: { width, height: 844 },
+      viewport: { width, height: width === 844 ? 390 : 844 },
       isMobile: true,
       hasTouch: true,
     });

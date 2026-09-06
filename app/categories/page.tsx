@@ -1,65 +1,54 @@
-"use client"
+import Link from "next/link";
+import { Folder } from "lucide-react";
+import { getAllCategories, getPostsByCategory } from "@/lib/posts-client";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { SectionHeader } from "@/components/section-header";
+import { getPublishedPostSummaries } from "@/lib/content-index.server";
+import { pageMetadata } from "@/lib/site-seo";
+import { BreadcrumbStructuredData } from "@/components/seo";
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { Folder } from "lucide-react"
-import { fetchAllPosts } from "@/lib/posts-loader"
-import { getAllCategories, getPostsByCategory } from "@/lib/posts-client"
-import type { Post } from "@/lib/posts-client"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { CardSkeleton } from "@/components/card-skeleton"
-import { SectionHeader } from "@/components/section-header"
+export const metadata = pageMetadata({
+  title: "Research Categories",
+  path: "/categories/",
+  description:
+    "Browse Dimas Maulana’s security research and CTF writeups by topic, including web security, WordPress, and programming.",
+});
 
 export default function CategoriesPage() {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const allPosts = await fetchAllPosts()
-        setPosts(allPosts)
-      } catch (error) {
-        console.error("Error loading posts:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadPosts()
-  }, [])
+  const posts = getPublishedPostSummaries();
 
   // Build one summary per category (count + latest post), biggest topics first
   // so the page leads with what the site is actually about.
   const summaries = getAllCategories(posts)
     .map((category) => {
-      const categoryPosts = getPostsByCategory(posts, category)
-      return { category, count: categoryPosts.length, latest: categoryPosts[0] }
+      const categoryPosts = getPostsByCategory(posts, category);
+      return {
+        category,
+        count: categoryPosts.length,
+        latest: categoryPosts[0],
+      };
     })
-    .sort((a, b) => b.count - a.count || a.category.localeCompare(b.category))
+    .sort((a, b) => b.count - a.count || a.category.localeCompare(b.category));
 
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
+      <BreadcrumbStructuredData
+        items={[{ name: "Categories", path: "/categories/" }]}
+      />
       <SectionHeader
         titleAs="h1"
         eyebrow="Browse"
         title="Categories"
-        subtitle="Pick a topic to explore related writeups and notes."
+        subtitle="Pick a topic to explore related research and writeups."
       />
 
-      {loading ? (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <CardSkeleton key={i} />
-          ))}
-        </div>
-      ) : summaries.length > 0 ? (
+      {summaries.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {summaries.map(({ category, count, latest }) => (
             <Link
               key={category}
-              href={`/categories/${encodeURIComponent(category.toLowerCase())}`}
+              href={`/categories/${encodeURIComponent(category.toLowerCase())}/`}
               prefetch={false}
               className="group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
@@ -96,5 +85,5 @@ export default function CategoriesPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

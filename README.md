@@ -118,6 +118,19 @@ falls back to the same views; without JavaScript the portfolio and photo album
 remain readable. On mobile, a compact chapter bar preserves reading space and
 the visitor can explicitly expand the room without changing scroll position.
 
+The phone homepage uses a two-row header with all four site destinations visible,
+full-width reading cards, larger album thumbnails, and an “All corners” shortcut
+beside the room toggle. Landscape phones use a single-row header. Responsive
+overrides live in `lib/room/mobile.css`; measured scene/header dimensions keep
+the existing still/live camera framing aligned. No extra scroll animation loop
+or mobile UI dependency is added.
+
+Run `bun run test:mobile` against the exported preview with `PLAYWRIGHT_MODULE`
+and optionally `AXE_MODULE` set as above. It checks 320–844px phone/tablet and
+landscape viewports, actual touch drags, room expand/collapse without scroll
+jumps, directory links, search, disclosures, photos, and the no-JavaScript view.
+These are Chromium device-emulation checks, not physical iPhone/Android tests.
+
 Scrolling stays native. The renderer sleeps when idle or collapsed, limits
 in-flight GPU work, lowers resolution during movement, and draws one sharper
 settled frame. Persistently slow devices switch to stills. There are no continuous
@@ -165,15 +178,15 @@ Article pages keep one contents rail, the original Notion reference, sharing,
 related reading and clearly labeled newer/older links. The article component is
 keyed by slug to prevent stale content on client-side adjacent navigation. Original
 article prose, code examples and legacy heading anchors are preserved. The
-post-only reading layer normalizes heading levels beneath the page title and
+shared reading layer normalizes heading levels beneath the page title and
 numbers the main sections. Its build-rendered outline uses native anchor links
 and disclosures; mobile readers get a sticky section menu. Scroll progress is
 passively observed, without intercepting normal scrolling.
 
-Post code blocks offer keyboard scrolling, line wrapping and copy feedback
+Article and note code blocks offer keyboard scrolling, line wrapping and copy feedback
 (including text selection when clipboard permission is unavailable). Screenshots
-open in an accessible image viewer with Escape and focus restoration. Notes do
-not opt into this reading layer.
+open in an accessible image viewer with Escape and focus restoration. Notes use
+the same reader, with compact metadata and original deep-link anchors preserved.
 
 `bun run test:blog` uses the browser environment variables above to verify search,
 combined filters, ordering, persistent results, keyboard operation, reading anchors,
@@ -181,6 +194,20 @@ adjacent navigation, no-JavaScript content, mobile layouts and optional axe chec
 `bun run test:article` additionally checks the long PatchStack article at four
 viewport widths, section navigation, code controls, denied clipboard behavior,
 image-viewer keyboard operation and no-JavaScript heading anchors.
+
+## Services and notebook pages
+
+Services presents one pricing summary, deliverables, an actual sample-report link,
+scope and limits, native FAQ disclosures, and direct contact options. Existing
+service terms and FAQ structured data are retained. The copyable first-message
+template is read-only: it does not submit, store, or transmit visitor information.
+If clipboard access is unavailable, it selects the text for manual copying.
+
+`bun run test:services-notes` checks Services and the Path Traversal note at four
+viewport widths, including the original deep link, keyboard navigation, code
+wrapping, contact destinations, sample downloads, clipboard fallback, and
+no-JavaScript content. Set `AXE_MODULE` to include automated accessibility checks.
+Technical note prose and code remain unchanged by the shared presentation layer.
 
 ## Link previews
 
@@ -197,6 +224,38 @@ releasing a new design, advance the filename in the generator and metadata
 together. Commit those JPEGs. External services control their own preview caches.
 
 ## Publishing
+
+### Search metadata and crawlability
+
+`lib/site-seo.ts` centralizes canonical URLs, the dimasc.tf identity, plain-text
+descriptions, social images and safe JSON-LD serialization. `NEXT_PUBLIC_BASE_URL`
+defaults to `https://dimasc.tf`; the optional base path is applied consistently.
+The sitemap lists only published canonical routes, with real content dates where
+available. Static utility pages do not receive a made-up last-modified date.
+
+Notes and category directories render their links at build time without waiting
+for JavaScript. Note-only topics and tags link into the Notes directory rather
+than nonexistent blog taxonomy routes. Filtered pages point back to their base
+canonical URL. Search is crawlable but has explicit `noindex` directives for both
+generic crawlers and Googlebot. The port 4001 inspection server separately sends
+`X-Robots-Tag: noindex, nofollow`; keep that preview protection in place.
+
+Run `bun run generate-rss`, `bun run build`, then `bun run test:seo` with the
+Playwright environment above. The check inspects every sitemap page's exported
+HTML, metadata, internal navigation, local social images, JSON-LD and RSS, plus
+no-JavaScript directories and their hydrated filters. It is not a Google ranking,
+indexing, or Rich Results Test certification.
+
+After an approved production deployment, submit `https://dimasc.tf/sitemap.xml`
+in Google Search Console and inspect representative URLs. No verification code,
+DNS record, or Search Console submission is fabricated or changed by the build.
+
+References: [Google's canonical URL guidance](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls),
+[sitemap dates](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap),
+[noindex](https://developers.google.com/search/docs/crawling-indexing/block-indexing),
+and [structured data guidelines](https://developers.google.com/search/docs/appearance/structured-data/sd-policies).
+
+### Deployment
 
 The existing GitHub Pages workflow validates, refreshes content, builds, and
 deploys from `main`. Local changes and export previews do not publish themselves;

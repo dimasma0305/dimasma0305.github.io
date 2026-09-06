@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search, Filter } from "lucide-react";
 
 import Link from "next/link";
@@ -16,13 +16,53 @@ import {
 import NoteCard from "@/components/note-card";
 import { SectionHeader } from "@/components/section-header";
 import { useNotes } from "@/hooks/use-notes";
+import type { Note } from "@/lib/notes-client";
 
-export default function NotesPageClient() {
+export default function NotesPageClient({
+  initialNotes,
+}: {
+  initialNotes: Note[];
+}) {
   // useNotes shares a module cache that BackgroundPreloader warms during idle,
   // so arriving here from another page renders content with no skeleton flash.
-  const { notes: loadedNotes, loading: isLoading, error, refresh } = useNotes();
+  const {
+    notes: loadedNotes,
+    loading: isLoading,
+    error,
+    refresh,
+  } = useNotes(initialNotes);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    // Filter links from note topics/tags target this real directory, including
+    // note-only subjects that do not have a blog category or tag route.
+    const restore = () => {
+      const query = new URLSearchParams(window.location.search);
+      setSearchQuery((query.get("q") || "").slice(0, 200));
+      setSelectedCategory(query.get("topic"));
+    };
+    restore();
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
+  }, []);
+
+  const updateFilters = (query: string, topic: string | null) => {
+    setSearchQuery(query);
+    setSelectedCategory(topic);
+    const url = new URL(window.location.href);
+    if (query) {
+      url.searchParams.set("q", query);
+    } else {
+      url.searchParams.delete("q");
+    }
+    if (topic) {
+      url.searchParams.set("topic", topic);
+    } else {
+      url.searchParams.delete("topic");
+    }
+    window.history.replaceState(window.history.state, "", url);
+  };
 
   // Newest first.
   const notes = useMemo(
@@ -50,7 +90,10 @@ export default function NotesPageClient() {
       filtered = filtered.filter(
         (note) =>
           note.title.toLowerCase().includes(query) ||
-          (note.excerpt && note.excerpt.toLowerCase().includes(query)),
+          (note.excerpt && note.excerpt.toLowerCase().includes(query)) ||
+          [...note.categories, ...note.tags].some((topic) =>
+            topic.toLowerCase().includes(query),
+          ),
       );
     }
 
@@ -64,7 +107,7 @@ export default function NotesPageClient() {
   }, [notes, searchQuery, selectedCategory]);
 
   const handleCategoryChange = (value: string) => {
-    setSelectedCategory(value === "all-categories" ? null : value);
+    updateFilters(searchQuery, value === "all-categories" ? null : value);
   };
 
   return (
@@ -77,7 +120,7 @@ export default function NotesPageClient() {
         subtitle={
           <>
             Short reference notes and cheatsheets.{" "}
-            <Link href="/blog" className="text-primary hover:underline">
+            <Link href="/blog/" className="text-primary hover:underline">
               Read the blog →
             </Link>
           </>
@@ -114,7 +157,7 @@ export default function NotesPageClient() {
               placeholder="Search notes..."
               className="pl-10"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => updateFilters(e.target.value, selectedCategory)}
             />
           </div>
         </div>
@@ -187,8 +230,7 @@ export default function NotesPageClient() {
           </p>
           <Button
             onClick={() => {
-              setSearchQuery("");
-              setSelectedCategory(null);
+              updateFilters("", null);
             }}
           >
             Clear filters

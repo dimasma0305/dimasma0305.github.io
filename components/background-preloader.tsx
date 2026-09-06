@@ -41,19 +41,11 @@ export function BackgroundPreloader() {
         /* Navigation can still fetch normally. */
       }
       const pathname = target.split("?")[0];
-      // Categories/search need JSON caches. The blog archive and article bodies
-      // are already statically built; do not download their data twice.
-      if (
-        /^\/categories(?:\/|$)/.test(pathname) ||
-        /^\/search\/?$/.test(pathname)
-      ) {
+      // Only search needs a JSON cache. Blog, Notes, categories and article
+      // bodies now arrive in the built route payload; don't fetch them twice.
+      if (/^\/search\/?$/.test(pathname)) {
         void import("@/hooks/use-posts")
           .then((m) => m.warmPostsCache())
-          .catch(() => {});
-      }
-      if (/^\/(?:notes|search)\/?$/.test(pathname)) {
-        void import("@/hooks/use-notes")
-          .then((m) => m.warmNotesCache())
           .catch(() => {});
       }
     };

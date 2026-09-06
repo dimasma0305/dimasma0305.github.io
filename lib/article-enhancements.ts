@@ -13,7 +13,7 @@ export function enhanceArticle(root: HTMLElement) {
       const wrapper = document.createElement("div");
       wrapper.className = "article-code-block";
       // The legacy Notion class uses !important spacing/background rules. The
-      // post wrapper now owns this chrome; Notes keep the original class/styles.
+      // reading wrapper now owns this chrome when reading tools are enabled.
       pre.classList.remove("notion-code-block");
       pre.before(wrapper);
       wrapper.append(pre);

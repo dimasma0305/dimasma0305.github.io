@@ -204,11 +204,12 @@ try {
     assert.equal(await page.locator(".diff-scan").isVisible(), false);
 
     await page.goto(`${base}/notes/node-js/`, { waitUntil: "networkidle" });
-    if (width < 1024)
-      await page.getByRole("button", { name: /Table of Contents/ }).click();
-    const toc = page.locator("[data-toc-id]:visible").first();
+    if (width < 1024) {
+      await page.locator(".article-outline-mobile > summary").click();
+    }
+    const toc = page.locator(".article-outline-list a:visible").first();
     await toc.waitFor();
-    const target = await toc.getAttribute("data-toc-id");
+    const target = (await toc.getAttribute("href")).slice(1);
     await toc.click();
     await page.waitForFunction((id) => {
       const heading = document.getElementById(id);
@@ -216,7 +217,7 @@ try {
       const top = heading?.getBoundingClientRect().top;
       return (
         top >= header.getBoundingClientRect().bottom &&
-        top < header.getBoundingClientRect().bottom + 60
+        top < header.getBoundingClientRect().bottom + 130
       );
     }, target);
     await page.evaluate(
@@ -234,8 +235,9 @@ try {
       target,
     );
     assert.ok(
-      nativeClearance >= 20 && nativeClearance <= 40,
-      "Native anchors clear the header without a doubled offset",
+      nativeClearance >= (width < 1024 ? 80 : 20) &&
+        nativeClearance <= (width < 1024 ? 104 : 40),
+      "Native anchors clear the responsive header and mobile note outline",
     );
     await page.screenshot({ path: `${output}/reading-anchor-${width}.png` });
     console.log(

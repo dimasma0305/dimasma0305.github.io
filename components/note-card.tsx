@@ -84,7 +84,7 @@ export default function NoteCard({ note, className }: NoteCardProps) {
 
       {/* Stretched primary link — sits above the card but below the Notion badge */}
       <Link
-        href={`/notes/${note.slug}`}
+        href={`/notes/${note.slug}/`}
         prefetch={false}
         aria-label={note.title}
         className="absolute inset-0 z-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"

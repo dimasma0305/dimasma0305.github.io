@@ -11,6 +11,7 @@ import NavigationLoader from "@/components/navigation-loader";
 import { RouteAnnouncer } from "@/components/route-announcer";
 import { roomSans, roomHeading } from "@/lib/site-fonts";
 import { siteSocial, socialImage } from "@/lib/social-metadata";
+import { siteUrls } from "@/lib/site-seo";
 
 // Two curated families: Inter for UI/body, JetBrains Mono for code.
 const inter = Inter({
@@ -38,11 +39,10 @@ export const viewport: Viewport = {
   themeColor: "#111915",
 };
 
-const baseUrl =
-  (process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf") +
-  (process.env.NEXT_PUBLIC_BASE_PATH || "");
+const baseUrl = siteUrls.baseUrl;
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
+  alternates: { types: { "application/rss+xml": siteUrls.asset("/rss.xml") } },
   title: {
     default: siteSocial.title,
     template: "%s | dimasc.tf",

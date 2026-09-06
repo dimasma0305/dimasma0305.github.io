@@ -1,4 +1,4 @@
-/* Post-only reading surface; Notes retain their existing renderer and outline. */
+/* Shared reading surface for blog articles and notebook pages. */
 .content-shell .blog-reading .reading-hero {
   border-bottom: 1px solid hsl(var(--border));
 }
@@ -35,7 +35,7 @@
 }
 .content-shell .article-outline-heading h2 {
   font:
-    500 15px/1.5 var(--font-room-body),
+    500 15px/1.5 var(--font-room-sans),
     sans-serif;
 }
 .article-outline-heading > span,
@@ -111,6 +111,9 @@
   background: hsl(var(--primary) / 0.08);
 }
 .article-section-number {
+  flex-shrink: 0;
+  min-width: 2ch;
+  white-space: nowrap;
   font:
     11px/1.5 var(--font-jetbrains-mono),
     monospace;
@@ -258,7 +261,7 @@
   border-bottom: 1px solid hsl(var(--border));
   background: hsl(var(--card));
   min-height: 49px;
-  font-family: var(--font-room-body), sans-serif;
+  font-family: var(--font-room-sans), sans-serif;
 }
 .content-shell .blog-reading .article-code-toolbar .language-label {
   color: hsl(var(--primary));
@@ -344,7 +347,7 @@
   background: hsl(var(--background));
   color: hsl(var(--foreground));
   font:
-    12px/1.5 var(--font-room-body),
+    12px/1.5 var(--font-room-sans),
     sans-serif;
 }
 .article-image-dialog {

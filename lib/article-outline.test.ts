@@ -50,4 +50,13 @@ describe("article reading structure", () => {
       sections: [],
     });
   });
+  test("normalizes sparse source headings beneath the page title", () => {
+    const result = prepareArticle("<h3>Reference</h3><h5>Details</h5>");
+    expect(result.html).toContain('<h2 id="0-reference"');
+    expect(result.html).toContain('<h3 id="1-details"');
+    expect(result.headings.map((heading) => heading.id)).toEqual([
+      "0-reference",
+      "1-details",
+    ]);
+  });
 });

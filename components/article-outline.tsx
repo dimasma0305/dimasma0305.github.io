@@ -10,6 +10,7 @@ export function ArticleOutline({ sections }: { sections: ArticleSection[] }) {
   const [progress, setProgress] = useState(0);
   const [interactive, setInteractive] = useState(false);
   const mobile = useRef<HTMLDetailsElement>(null);
+  const sectionCount = `${sections.length} ${sections.length === 1 ? "section" : "sections"}`;
 
   useEffect(() => {
     setInteractive(true);
@@ -159,7 +160,7 @@ export function ArticleOutline({ sections }: { sections: ArticleSection[] }) {
       <div className="article-outline-desktop">
         <div className="article-outline-heading">
           <h2>On this page</h2>
-          <span>{sections.length} sections</span>
+          <span>{sectionCount}</span>
         </div>
         <div className="article-reading-progress">
           <progress value={progress} max={100} aria-label="Reading progress" />
@@ -186,7 +187,7 @@ export function ArticleOutline({ sections }: { sections: ArticleSection[] }) {
       >
         <summary>
           <span>
-            On this page <small>{sections.length} sections</small>
+            On this page <small>{sectionCount}</small>
           </span>
           <span>
             {progress}% <ChevronDown size={16} aria-hidden="true" />

@@ -1,0 +1,454 @@
+/* The phone layout is a reading surface with a room, not a scaled desktop.
+   Keep these overrides together, after room.css. Camera/scroll geometry still
+   comes from the measured scene and header, in both live and still modes. */
+.tour-room-directory-link {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .theme-corner-tour {
+    --tour-mobile-room: clamp(240px, 38svh, 380px);
+    --tour-phone-gutter: max(
+      20px,
+      env(safe-area-inset-left),
+      env(safe-area-inset-right)
+    );
+  }
+
+  .tour-page .tour-chapter,
+  .tour-page[data-production]:not([data-enhanced])
+    .tour-chapter:not(.tour-welcome) {
+    width: min(640px, calc(100% - 2 * var(--tour-phone-gutter)));
+    padding-block: 28px;
+  }
+
+  .tour-page .tour-welcome {
+    padding-top: calc(var(--tour-mobile-room) + 16px);
+    padding-bottom: 24px;
+  }
+
+  .tour-page :is(.tour-copy, .tour-room-caption) {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .tour-page :is(.tour-card, .tour-room-caption) {
+    padding: 28px 0 0;
+  }
+
+  .tour-page .tour-room-reveal {
+    padding-top: 8px;
+  }
+
+  .tour-page .tour-intro > .tour-kicker {
+    font-size: 10px;
+    letter-spacing: 0.65px;
+    gap: 8px;
+  }
+
+  .tour-page .tour-intro h1 {
+    font-size: clamp(52px, 14vw, 72px);
+    line-height: 1;
+    margin: 12px 0 18px;
+    letter-spacing: -1.8px;
+  }
+
+  .tour-page .tour-lede {
+    max-width: none;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  .tour-page .tour-site-nav a {
+    min-width: 44px;
+    justify-content: center;
+  }
+
+  .tour-intro-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .tour-page .tour-intro-actions a {
+    justify-content: center;
+    gap: 12px;
+    min-height: 48px;
+    margin: 0;
+    padding: 10px;
+    border: 1px solid #69745e;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .tour-page .tour-intro-actions .tour-start {
+    background: #e4ac83;
+    border-color: #e4ac83;
+    color: #172019;
+  }
+
+  .tour-page .tour-intro-proof {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+    margin-top: 22px;
+    padding-block: 16px;
+  }
+
+  .tour-intro-proof a + a {
+    border-left: 1px solid #43523d;
+    padding-left: 16px;
+  }
+
+  .tour-page .tour-intro-proof strong {
+    font-size: 25px;
+  }
+
+  .tour-page .tour-intro-proof span,
+  .tour-page .tour-signature > div > span {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .tour-page .tour-intro-note {
+    font-size: 13px;
+  }
+
+  .tour-page .tour-signature {
+    margin-top: 14px;
+  }
+
+  .tour-page .tour-signature strong {
+    font-size: 14px;
+  }
+
+  .tour-page .tour-card h2 {
+    font-size: clamp(34px, 8.8vw, 42px);
+    line-height: 1.12;
+    letter-spacing: -0.7px;
+    margin-block: 14px 20px;
+    overflow-wrap: anywhere;
+  }
+
+  .tour-page .tour-room-caption h2 {
+    font-size: 36px;
+  }
+
+  .tour-page .tour-room-index {
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .tour-page .tour-room-index a {
+    min-height: 52px;
+    padding: 12px;
+    border: 1px solid #43523d;
+    border-radius: 6px;
+    background: #1c281f;
+    font-size: 14px;
+  }
+
+  .tour-page .tour-section-intro {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .tour-page .tour-stats > span {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .tour-page .tour-stats strong {
+    font-size: 30px;
+  }
+
+  .tour-page :is(.tour-index-help, .tour-collection-count) {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .tour-page .tour-entry summary {
+    padding: 16px;
+    min-height: 80px;
+  }
+
+  .tour-page .tour-entry summary strong {
+    font-size: 16px;
+  }
+
+  .tour-page .tour-entry summary small {
+    font-size: 12px;
+  }
+
+  .tour-page :is(.tour-expansion, .tour-entry, .tour-writing-list a) {
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+
+  .tour-page .tour-library-search input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .tour-page .tour-notebook-page {
+    margin-right: 8px;
+    padding: 18px;
+  }
+
+  .tour-page .tour-notebook-page .tour-writing-list h3 {
+    font-size: 23px;
+  }
+
+  .tour-page .tour-album-stage a {
+    border-width: 6px;
+  }
+
+  .tour-page .tour-photo-feature figcaption {
+    font-size: 14px;
+    padding-inline: 0;
+  }
+
+  .tour-page .tour-album-controls {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 4px;
+    gap: 10px;
+  }
+
+  .tour-page .tour-album-controls span {
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .tour-page .tour-role-entry summary {
+    padding-inline: 0;
+  }
+
+  .tour-page .tour-role-entry summary strong {
+    font-size: 24px;
+  }
+
+  .tour-page :is(.tour-link, .tour-expandable > summary, .tour-team-summary a) {
+    min-height: 48px;
+    font-size: 14px;
+  }
+
+  .tour-page .tour-contact-socials {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 16px;
+  }
+
+  .tour-page .tour-email {
+    font-size: 16px;
+    max-width: 100%;
+  }
+
+  .tour-page .tour-footer {
+    padding-inline: var(--tour-phone-gutter);
+    padding-bottom: max(32px, env(safe-area-inset-bottom));
+  }
+
+  .tour-page .tour-footer a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14px;
+  }
+
+  .tour-page .tour-hotspot {
+    /* Keep a 44px target, but let the objects show through the smaller badge. */
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .tour-page .tour-hotspot > span:first-child {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #efc8a8;
+    box-shadow:
+      0 0 0 3px #18231ad9,
+      0 3px 10px #0007;
+    font-size: 11px;
+  }
+
+  .tour-page .tour-hotspot-name {
+    /* Names remain in aria-label; the matching numbered directory is below. */
+    display: none;
+  }
+}
+
+@media (max-width: 700px), (max-width: 900px) and (max-height: 500px) {
+  html:has(.theme-corner-tour) {
+    --tour-header: 101px;
+  }
+
+  .theme-corner-tour {
+    --tour-phone-gutter: max(
+      16px,
+      env(safe-area-inset-left),
+      env(safe-area-inset-right)
+    );
+  }
+
+  .tour-page .tour-section-bar {
+    display: none;
+  }
+
+  .tour-page .tour-header-inner {
+    width: calc(100% - 2 * var(--tour-phone-gutter));
+  }
+
+  .tour-page .tour-site-nav {
+    border-top: 1px solid #2b392f;
+    gap: 8px;
+  }
+
+  .tour-page .tour-site-nav a {
+    justify-content: center;
+    flex: 1;
+    min-width: 44px;
+    font-size: 14px;
+  }
+
+  .tour-page .tour-motion {
+    min-height: 44px;
+    font-size: 11px;
+    padding-inline: 10px;
+  }
+
+  .tour-page .tour-room-toggle:not([hidden]) {
+    width: calc(100% - 112px);
+    padding-left: var(--tour-phone-gutter);
+    padding-right: 12px;
+    gap: 8px;
+  }
+
+  .tour-page .tour-room-toggle > span:first-child {
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .tour-page .tour-room-toggle strong {
+    font-size: 12px;
+  }
+
+  .tour-page .tour-room-toggle [data-room-action] {
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+
+  .tour-page[data-enhanced="true"]:not([data-chapter="welcome"])
+    .tour-room-directory-link {
+    display: inline-flex;
+    position: absolute;
+    top: 0;
+    right: 0;
+    align-items: center;
+    justify-content: center;
+    width: 112px;
+    height: 56px;
+    padding-right: max(4px, env(safe-area-inset-right));
+    transform: translateY(
+      calc(var(--tour-room-visible, var(--tour-mobile-room)) - 56px)
+    );
+    z-index: 5;
+    pointer-events: auto;
+    border-block: 1px solid #69745e;
+    border-left: 1px solid #43523d;
+    background: #18231afc;
+    color: #edbb94;
+    font-size: 12px;
+  }
+
+  .tour-page .tour-room-directory-link:focus-visible {
+    outline-offset: -5px;
+  }
+
+  .tour-page[data-room-manual="true"] .tour-room-directory-link {
+    transition: transform 220ms ease-out;
+  }
+}
+
+@media (max-width: 480px) {
+  .tour-page .tour-album-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* A landscape phone should still have space to read below the sticky tools. */
+@media (max-width: 900px) and (max-height: 500px) {
+  .theme-corner-tour {
+    --tour-mobile-room: clamp(120px, 42svh, 200px);
+  }
+}
+
+@media (min-width: 600px) and (max-width: 900px) and (max-height: 500px) {
+  html:has(.theme-corner-tour) {
+    --tour-header: 57px;
+  }
+
+  .tour-page .tour-section-bar {
+    display: none;
+  }
+
+  .tour-page .tour-header-inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: 56px;
+    min-height: 56px;
+    gap: 16px;
+  }
+
+  .tour-page .tour-site-nav {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    border: 0;
+    gap: 8px;
+    justify-content: space-evenly;
+  }
+
+  .tour-page .tour-motion {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .theme-corner-tour {
+    --tour-mobile-room: min(320px, calc(100svh - var(--tour-header)));
+  }
+
+  .tour-page .tour-scene {
+    width: 44%;
+    left: var(--tour-phone-gutter);
+  }
+
+  .tour-page .tour-vignette {
+    width: calc(44% + var(--tour-phone-gutter));
+  }
+
+  .tour-page .tour-welcome {
+    width: calc(100% - 2 * var(--tour-phone-gutter));
+    padding-top: 24px;
+  }
+
+  .tour-page .tour-intro {
+    width: 52%;
+  }
+
+  .tour-page .tour-intro h1 {
+    font-size: 44px;
+  }
+
+  .tour-page .tour-lede {
+    font-size: 15px;
+  }
+}

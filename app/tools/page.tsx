@@ -4,31 +4,15 @@ import { Calculator, Shield, Lightbulb, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/section-header";
-import { socialImage } from "@/lib/social-metadata";
+import { pageMetadata } from "@/lib/site-seo";
+import { BreadcrumbStructuredData } from "@/components/seo";
 
-const baseUrl =
-  (process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf") +
-  (process.env.NEXT_PUBLIC_BASE_PATH || "");
-
-export const metadata: Metadata = {
-  title: "Tools",
+export const metadata: Metadata = pageMetadata({
+  title: "Cybersecurity & CTF Tools",
+  path: "/tools/",
   description:
-    "Collection of useful cybersecurity and CTF tools built by Dimas Maulana",
-  openGraph: {
-    title: "Tools | Dimas Maulana",
-    description: "Collection of useful cybersecurity and CTF tools",
-    type: "website",
-    url: `${baseUrl}/tools/`,
-    images: [socialImage(baseUrl)],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Tools | dimasc.tf",
-    description:
-      "Collection of useful cybersecurity and CTF tools built by Dimas Maulana",
-    images: [socialImage(baseUrl)],
-  },
-};
+    "Explore cybersecurity and CTF tools built by Dimas Maulana, including a challenge difficulty calculator for rating skills, complexity, and solve rate.",
+});
 
 const tools = [
   {
@@ -36,7 +20,7 @@ const tools = [
     description:
       "Calculate the difficulty rating of CTF challenges based on various factors like solvers, category, and complexity.",
     icon: Calculator,
-    href: "/tools/ctf-calculator",
+    href: "/tools/ctf-calculator/",
     category: "CTF",
     status: "Live",
   },
@@ -46,6 +30,7 @@ const tools = [
 export default function ToolsPage() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-7xl">
+      <BreadcrumbStructuredData items={[{ name: "Tools", path: "/tools/" }]} />
       <SectionHeader
         titleAs="h1"
         index="03"

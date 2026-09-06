@@ -90,6 +90,9 @@ test("static homepage has all collections, landmarks, local routes and original 
     expect(primary).toContain(`href="/portfolio/${route}/"`);
   expect(primary).not.toContain('href="#');
   expect(header).toContain('href="#services">Review desk</a>');
+  expect(html).toContain(
+    'class="tour-room-directory-link" href="#room" aria-label="Browse all room chapters"',
+  );
   const summary = createSceneSummary(p);
   expect(summary.projectCount).toBe(records.projects.length);
   expect(summary.results.items.length).toBe(records.achievements.length);

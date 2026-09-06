@@ -1,113 +1,66 @@
-"use client"
+"use client";
 
-import { useState, useMemo, useCallback } from "react"
-import { usePosts } from "@/hooks/use-posts"
-import { getAllCategories, getPostsByCategory } from "@/lib/posts-client"
-import PostCard from "@/components/post-card"
-import { SearchBar } from "@/components/search-bar"
-import { SectionHeader } from "@/components/section-header"
-import { CardSkeleton } from "@/components/card-skeleton"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { useState, useMemo, useCallback } from "react";
+import type { Post } from "@/lib/posts-client";
+import { getAllCategories, getPostsByCategory } from "@/lib/posts-client";
+import PostCard from "@/components/post-card";
+import { SearchBar } from "@/components/search-bar";
+import { SectionHeader } from "@/components/section-header";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 interface CategoryPageClientProps {
-  category: string
+  category: string;
+  posts: Post[];
 }
 
-export default function CategoryPageClient({ category }: CategoryPageClientProps) {
-  const { posts, loading, error } = usePosts()
-  const [searchQuery, setSearchQuery] = useState("")
+export default function CategoryPageClient({
+  category,
+  posts,
+}: CategoryPageClientProps) {
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Decode URL-encoded category name (e.g., "CSS%20Leak" -> "CSS Leak")
-  const decodedCategory = decodeURIComponent(category)
+  const decodedCategory = decodeURIComponent(category);
 
-  const categories = getAllCategories(posts)
-  
+  const categories = getAllCategories(posts);
+
   // Find the actual category name (case-insensitive)
-  const actualCategoryName = categories.find(cat => 
-    cat.toLowerCase() === decodedCategory.toLowerCase()
-  ) || decodedCategory
-  
-  const categoryPosts = getPostsByCategory(posts, actualCategoryName)
+  const actualCategoryName =
+    categories.find(
+      (cat) => cat.toLowerCase() === decodedCategory.toLowerCase(),
+    ) || decodedCategory;
+
+  const categoryPosts = getPostsByCategory(posts, actualCategoryName);
 
   // Filter category posts based on search query
   const filteredPosts = useMemo(() => {
     if (!searchQuery.trim()) {
-      return categoryPosts
+      return categoryPosts;
     }
 
-    const query = searchQuery.toLowerCase()
+    const query = searchQuery.toLowerCase();
     return categoryPosts.filter((post) => {
       return (
         post.title.toLowerCase().includes(query) ||
         post.excerpt.toLowerCase().includes(query) ||
         (post.content && post.content.toLowerCase().includes(query))
-      )
-    })
-  }, [categoryPosts, searchQuery])
-
-  // Check if category exists after posts are loaded (case-insensitive)
-  const categoryExists = categories.some(cat => cat.toLowerCase() === decodedCategory.toLowerCase())
+      );
+    });
+  }, [categoryPosts, searchQuery]);
 
   const handleSearch = useCallback((value: string) => {
-    setSearchQuery(value)
-  }, [])
+    setSearchQuery(value);
+  }, []);
 
   const handleClearSearch = useCallback(() => {
-    setSearchQuery("")
-  }, [])
-
-  if (loading) {
-    return (
-      <div className="container px-4 py-12 mx-auto max-w-7xl">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <CardSkeleton key={i} />
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="container px-4 py-12 mx-auto max-w-7xl">
-        <div className="text-center py-12">
-          <h1 className="text-2xl font-bold mb-4">Error Loading Posts</h1>
-          <p className="text-muted-foreground mb-4">{error}</p>
-          <Link href={"/blog"}>
-            <Button>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Blog
-            </Button>
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
-  if (!categoryExists) {
-    return (
-      <div className="container px-4 py-12 mx-auto max-w-7xl">
-        <div className="text-center py-12">
-          <h1 className="text-2xl font-bold mb-4">Category Not Found</h1>
-          <p className="text-muted-foreground mb-4">The category "{decodedCategory}" does not exist.</p>
-          <Link href={"/blog"}>
-            <Button>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Blog
-            </Button>
-          </Link>
-        </div>
-      </div>
-    )
-  }
+    setSearchQuery("");
+  }, []);
 
   return (
     <div className="container px-4 py-12 mx-auto max-w-7xl">
       <Link
-        href="/categories"
+        href="/categories/"
         className="mb-6 -ml-2 inline-flex items-center gap-2 rounded-md p-2 text-sm font-medium text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <ArrowLeft className="w-4 h-4" />
@@ -132,7 +85,8 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
       {searchQuery && (
         <div className="mb-6 flex items-center gap-2">
           <p className="text-sm text-muted-foreground">
-            {filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''} for "{searchQuery}" in {actualCategoryName}
+            {filteredPosts.length} result{filteredPosts.length !== 1 ? "s" : ""}{" "}
+            for "{searchQuery}" in {actualCategoryName}
           </p>
           <button
             onClick={handleClearSearch}
@@ -151,7 +105,9 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
         </div>
       ) : searchQuery ? (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No posts found matching "{searchQuery}" in {actualCategoryName}.</p>
+          <p className="text-muted-foreground">
+            No posts found matching "{searchQuery}" in {actualCategoryName}.
+          </p>
           <button
             onClick={handleClearSearch}
             className="mt-2 text-primary hover:underline focus-ring rounded-sm"
@@ -161,9 +117,11 @@ export default function CategoryPageClient({ category }: CategoryPageClientProps
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No posts found in this category.</p>
+          <p className="text-muted-foreground">
+            No posts found in this category.
+          </p>
         </div>
       )}
     </div>
-  )
+  );
 }
