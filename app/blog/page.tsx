@@ -1,7 +1,8 @@
 import { generateBlogMetadata, BlogStructuredData } from "@/components/seo"
-import { Suspense, lazy } from "react"
+import { Suspense } from "react"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import BlogPageClient from "@/components/blog-page-client"
+import { getBlogArchive } from "@/lib/blog-archive.server"
 
 export const metadata = generateBlogMetadata()
 
@@ -17,7 +18,7 @@ export default function BlogPage() {
           </div>
         </div>
       }>
-        <BlogPageClient />
+        <BlogPageClient entries={getBlogArchive()} />
       </Suspense>
     </>
   )

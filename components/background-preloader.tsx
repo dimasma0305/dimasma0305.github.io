@@ -41,10 +41,10 @@ export function BackgroundPreloader() {
         /* Navigation can still fetch normally. */
       }
       const pathname = target.split("?")[0];
-      // Listings need JSON caches. Article routes are already statically built;
-      // fetching raw Notion data here would download the same content twice.
+      // Categories/search need JSON caches. The blog archive and article bodies
+      // are already statically built; do not download their data twice.
       if (
-        /^\/(?:blog|categories)(?:\/|$)/.test(pathname) ||
+        /^\/categories(?:\/|$)/.test(pathname) ||
         /^\/search\/?$/.test(pathname)
       ) {
         void import("@/hooks/use-posts")

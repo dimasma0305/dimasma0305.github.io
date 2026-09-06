@@ -148,6 +148,28 @@ payloads on five page/device profiles. Its software-WebGL timings are diagnostic
 not a Lighthouse score or a prediction of real-device frame rates. Compare runs
 against the same content snapshot; production content is refreshed independently.
 
+## Blog browsing and reading
+
+The Blog renders its small archive metadata at build time, so the full article
+directory works without JavaScript and does not refetch `blog-index.json` on
+arrival. The newest article is featured once; the remaining entries use a compact
+list, with thumbnails hidden (and left unloaded) on small screens.
+
+Search matches titles, excerpts, topics and tags. Topic and date/reading-time
+filters are reflected in the URL without creating a history entry per keystroke.
+Browser Back restores those filters; article return links also recover the last
+archive filters from optional session storage. Nothing is written to an account
+or external service. The archive uses the published index's reading-time estimates.
+
+Article pages keep one contents rail, the original Notion reference, sharing,
+related reading and clearly labeled newer/older links. The article component is
+keyed by slug to prevent stale content on client-side adjacent navigation. Original
+article bodies, code examples and heading anchors are not rewritten by the UI.
+
+`bun run test:blog` uses the browser environment variables above to verify search,
+combined filters, ordering, persistent results, keyboard operation, reading anchors,
+adjacent navigation, no-JavaScript content, mobile layouts and optional axe checks.
+
 ## Link previews
 
 `lib/social-metadata.ts` owns the default share title, description and versioned

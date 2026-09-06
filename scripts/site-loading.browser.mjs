@@ -87,22 +87,18 @@ try {
   );
   const blog = page.locator('a[href="/blog/"]').first();
   await blog.focus();
-  await page.waitForFunction(() =>
-    performance
-      .getEntriesByType("resource")
-      .some((entry) => entry.name.endsWith("/blog-index.json")),
-  );
+  await page.waitForTimeout(500);
   assert.equal(
     requests.filter((url) => url.endsWith("/blog-index.json")).length,
-    1,
+    0,
   );
   await blog.click();
   await page.locator(".post-card").first().waitFor();
   await page.waitForTimeout(2000);
   assert.equal(
     requests.filter((url) => url.endsWith("/blog-index.json")).length,
-    1,
-    "navigation reuses warmed listing",
+    0,
+    "statically rendered archive does not refetch listing metadata",
   );
   assert.equal(
     requests.filter((url) => url.endsWith("/post.json")).length,
@@ -114,6 +110,7 @@ try {
     0,
   );
   const cover = page.locator(".post-cover img").first();
+  const coverSource = await cover.getAttribute("src");
   assert.ok(
     await cover.evaluate(
       (img) =>
@@ -173,35 +170,22 @@ try {
 
   // A temporarily missing generated cover falls back to the original, not a loop.
   const fallback = await browser.newPage({ reducedMotion: "reduce" });
-  const fixture = await sharp({
-    create: { width: 16, height: 16, channels: 3, background: "#111915" },
-  })
-    .png()
-    .toBuffer();
-  await fallback.route("**/blog-index.json", async (route) => {
-    const response = await route.fetch();
-    const data = await response.json();
-    data.posts.all[0].featured_image = "/posts/loading-check/cover.png";
-    await route.fulfill({ response, json: data });
-  });
-  await fallback.route("**/posts/loading-check/cover.png", (route) =>
-    route.fulfill({ contentType: "image/png", body: fixture }),
-  );
-  await fallback.route("**/*.preview.webp", (route) =>
+  await fallback.route(new URL(coverSource, base).href, (route) =>
     route.fulfill({ status: 404, body: "" }),
   );
   await fallback.goto(`${base}/blog/`, { waitUntil: "networkidle" });
   await fallback.locator(".post-cover img").first().waitFor();
-  await fallback.waitForFunction(() => {
+  await fallback.waitForFunction((initialSource) => {
     const img = document.querySelector(".post-cover img");
     return (
       img?.complete &&
-      img.naturalWidth === 16 &&
-      img.currentSrc.endsWith("/posts/loading-check/cover.png")
+      img.naturalWidth > 0 &&
+      new URL(img.currentSrc).pathname !==
+        new URL(initialSource, location.origin).pathname
     );
-  });
+  }, coverSource);
   await fallback.close();
-  console.log("PASS original-cover fallback");
+  console.log("PASS unavailable-cover fallback");
   assert.deepEqual(errors, []);
 } finally {
   await browser.close();

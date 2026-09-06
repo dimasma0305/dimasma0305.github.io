@@ -28,9 +28,10 @@ interface TocItem {
 
 interface TableOfContentsProps {
   content: string;
+  label?: string;
 }
 
-export function TableOfContents({ content }: TableOfContentsProps) {
+export function TableOfContents({ content, label = "Table of Contents" }: TableOfContentsProps) {
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
@@ -411,7 +412,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
             <Button variant="outline" className="w-full justify-between h-12">
               <div className="flex items-center gap-3">
                 <BookOpen className="w-5 h-5" />
-                <span className="font-medium">Table of Contents</span>
+                <span className="font-medium">{label}</span>
                 <Badge variant="secondary" className="text-xs">
                   {totalItems}
                 </Badge>
@@ -494,7 +495,7 @@ export function TableOfContents({ content }: TableOfContentsProps) {
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <BookOpen className="w-5 h-5" />
-                  Table of Contents
+                  {label}
                   <Badge variant="secondary" className="text-xs">
                     {totalItems}
                   </Badge>

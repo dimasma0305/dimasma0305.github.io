@@ -158,7 +158,7 @@ export default async function PostPage({ params }: PostPageProps) {
   return (
     <>
       {structuredPost && <PostStructuredData post={structuredPost} />}
-      <PostPageClient slug={slug} initialPost={initialPost ?? undefined} />
+      <PostPageClient key={slug} slug={slug} initialPost={initialPost ?? undefined} />
     </>
   )
 }

@@ -15,6 +15,7 @@ export type Post = {
   categories: string[]
   notionUrl?: string
   folder?: string
+  readingTime?: number
   verification: {
     state: 'verified' | 'unverified' | 'pending'
     verified_by: string | null
@@ -145,6 +146,7 @@ async function fetchIndex(): Promise<PostIndex> {
         createdAt: post.created_time,
         updatedAt: post.last_edited_time,
         coverImage: post.featured_image || "",
+        readingTime: post.reading_time > 0 ? post.reading_time : undefined,
         iconEmoji: "",
         categories: Array.isArray(post.categories) ? post.categories : [],
         notionUrl: post.public_url || createNotionPublicUrl(post.id),
@@ -255,6 +257,7 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
         title: notionPost.title || notionPost.properties.title || "Untitled",
         excerpt,
         content: processedHtml,
+        readingTime: postFromIndex.readingTime,
         createdAt: notionPost.created_time,
         updatedAt: notionPost.last_edited_time,
         coverImage: coverImage || "",

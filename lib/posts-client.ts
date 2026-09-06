@@ -32,6 +32,7 @@ export type Post = {
   readonly owner?: PostOwner
   readonly notionUrl?: string | null
   readonly wordCount?: number
+  readonly readingTime?: number
 }
 
 // Lightweight post type for lists and previews

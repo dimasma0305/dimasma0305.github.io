@@ -102,6 +102,7 @@ export async function getPostBySlugAtBuild(slug: string): Promise<Post | null> {
       excerpt,
       content,
       createdAt: notionPost.created_time,
+      readingTime: indexEntry.reading_time > 0 ? indexEntry.reading_time : undefined,
       updatedAt: notionPost.last_edited_time,
       coverImage: coverImage || "",
       iconEmoji: notionPost.icon?.emoji || "",
