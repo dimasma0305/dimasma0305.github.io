@@ -18,7 +18,7 @@ const DOWNLOAD_TIMEOUT_MS = 20000;
 
 // Retry/backoff tuning for transient Notion API + image-download failures.
 const RETRY_BASE_DELAY_MS = 500;   // first backoff window
-const RETRY_MAX_DELAY_MS = 8000;   // cap so a 429 hint can't stall CI forever
+const RETRY_MAX_DELAY_MS = 8000;   // cap fallback backoff, never the server's minimum wait
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -72,15 +72,25 @@ function getRetryAfterMs(error) {
   const candidates = [];
   // Notion SDK sometimes surfaces `retry_after` (seconds) on the error/body.
   if (error.retry_after != null) candidates.push(error.retry_after);
-  if (error.body && error.body.retry_after != null) candidates.push(error.body.retry_after);
+  let body = error.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch { body = null; }
+  }
+  if (body && body.retry_after != null) candidates.push(body.retry_after);
+  if (body && body.additional_data && body.additional_data.retry_after != null) {
+    candidates.push(body.additional_data.retry_after);
+  }
   // Standard HTTP header (case-insensitive); may live on error.headers.
   const headers = error.headers;
   if (headers) {
-    const raw = headers['retry-after'] || headers['Retry-After'];
-    if (raw != null) candidates.push(raw);
+    // Current SDK errors use WHATWG Headers, not just a plain object.
+    const raw = typeof headers.get === 'function'
+      ? headers.get('retry-after')
+      : headers['retry-after'] || headers['Retry-After'];
+    if (raw != null) candidates.unshift(raw);
   }
   for (const candidate of candidates) {
-    if (candidate == null) continue;
+    if (candidate == null || String(candidate).trim() === '') continue;
     const asNumber = Number(candidate);
     if (Number.isFinite(asNumber)) {
       return Math.max(0, asNumber * 1000); // seconds -> ms
@@ -97,7 +107,7 @@ function getRetryAfterMs(error) {
 // explicit Retry-After / retry_after hint (or a 429) when the upstream provides
 // one. Only retries transient failures; re-throws permanent errors immediately
 // and re-throws the last error after exhausting attempts.
-async function withRetry(fn, { attempts = 3, label = 'operation' } = {}) {
+async function withRetry(fn, { attempts = 5, label = 'operation', wait = sleep } = {}) {
   let lastError;
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
@@ -111,7 +121,9 @@ async function withRetry(fn, { attempts = 3, label = 'operation' } = {}) {
       const hintedDelay = getRetryAfterMs(error);
       let delay;
       if (hintedDelay != null) {
-        delay = Math.min(hintedDelay, RETRY_MAX_DELAY_MS);
+        // Retry-After is a minimum. Clamping a 12s hint to 8s simply repeats
+        // the rate-limit failure before the upstream is willing to accept us.
+        delay = hintedDelay;
       } else {
         // Exponential backoff with full jitter.
         const expo = Math.min(RETRY_BASE_DELAY_MS * 2 ** (attempt - 1), RETRY_MAX_DELAY_MS);
@@ -120,7 +132,7 @@ async function withRetry(fn, { attempts = 3, label = 'operation' } = {}) {
       console.warn(
         `⏳ Retry ${attempt}/${attempts - 1} for ${label} after ${delay}ms (${error && error.message ? error.message : error})`
       );
-      await sleep(delay);
+      await wait(delay);
     }
   }
   // Unreachable in practice (loop either returns or throws), but keep the
@@ -859,48 +871,29 @@ function processBlock(block) {
   return processedBlock;
 }
 
-// Rate limiter class to control concurrent requests
+// Shared serial API queue: rate-limit retries pause all Notion workers.
+// https://developers.notion.com/reference/request-limits
 class RateLimiter {
-  constructor(maxConcurrent = 5, delayMs = 200) {
-    this.maxConcurrent = maxConcurrent;
+  constructor(delayMs = 400, wait = sleep) {
     this.delayMs = delayMs;
-    this.running = 0;
-    this.queue = [];
+    this.wait = wait;
+    this.tail = Promise.resolve();
   }
 
-  async execute(task) {
-    return new Promise((resolve, reject) => {
-      this.queue.push({ task, resolve, reject });
-      this.process();
-    });
-  }
-
-  async process() {
-    if (this.running >= this.maxConcurrent || this.queue.length === 0) {
-      return;
-    }
-
-    this.running++;
-    const { task, resolve, reject } = this.queue.shift();
-
-    try {
-      const result = await task();
-      resolve(result);
-    } catch (error) {
-      reject(error);
-    } finally {
-      this.running--;
-
-      // Add smaller delay before processing next task
-      setTimeout(() => {
-        this.process();
-      }, this.delayMs);
-    }
+  execute(task) {
+    const result = this.tail.then(task);
+    // Reserve the cooldown immediately, so new arrivals cannot jump past it.
+    // A failed operation must not poison the queue for subsequent pages.
+    this.tail = result.then(
+      () => this.wait(this.delayMs),
+      () => this.wait(this.delayMs),
+    );
+    return result;
   }
 }
 
-// Global rate limiter instance - more aggressive settings
-const rateLimiter = new RateLimiter(5, 200); // ~5 requests per second across all workers
+// At most 2.5 requests/second, leaving room below Notion's average 3/s limit.
+const rateLimiter = new RateLimiter();
 
 // Function to get page content (blocks) recursively with pagination support
 async function getPageContent(pageId, depth = 0, maxDepth = 3) {
@@ -1253,7 +1246,7 @@ async function generateBlogJsonWithContent() {
     const startTime = Date.now();
     console.log('🚀 Starting Notion blog generation with content...');
     console.log(`📋 Database ID: ${DATABASE_ID}`);
-    console.log('⚡ Rate limit: ~5 requests/second for faster processing');
+    console.log('⚡ Notion requests are queued with a 400ms cooldown and Retry-After support');
 
     // Fetch all pages from the database
     let allPages = [];
@@ -1264,7 +1257,7 @@ async function generateBlogJsonWithContent() {
       // Retry transient Notion failures here too: a dropped query page would
       // otherwise silently shrink the published post set (the drift guard in
       // validate-content.js is the second line of defense against that).
-      const response = await withRetry(
+      const response = await rateLimiter.execute(() => withRetry(
         () =>
           notion.databases.query({
             database_id: DATABASE_ID,
@@ -1272,7 +1265,7 @@ async function generateBlogJsonWithContent() {
             page_size: 100,
           }),
         { label: 'databases.query' }
-      );
+      ));
 
       allPages = allPages.concat(response.results);
       hasMore = response.has_more;
@@ -1366,7 +1359,6 @@ async function generateBlogJsonWithContent() {
     console.log(`⏱️  Actual completion time: ${actualTime} minutes`);
     console.log(`🚀 Average processing rate: ${(blogPostsSummary.length / (actualTime || 1)).toFixed(1)} posts/minute`);
     console.log(`🔥 Performance: ~${Math.round(10 / (actualTime / (blogPostsSummary.length / 10) || 1))}x faster than sequential processing!`);
-    console.log(`⚡ Optimization: ~${Math.round(5 / 3 * 100)}% faster rate limiting + ${Math.round(10 / 6 * 100)}% larger batches = ${Math.round((5 / 3) * (10 / 6) * 100)}% overall speedup!`);
 
   } catch (error) {
     console.error('❌ Error generating blog JSON with content:', error);
@@ -1388,4 +1380,4 @@ if (require.main === module) {
   generateBlogJsonWithContent();
 }
 
-module.exports = { generateBlogJsonWithContent };
+module.exports = { generateBlogJsonWithContent, getRetryAfterMs, withRetry, RateLimiter };
