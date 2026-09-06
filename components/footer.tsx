@@ -1,12 +1,8 @@
+import portfolio from "@/lib/portfolio-data.json";
 import Link from "next/link"
 import { Github, Twitter, Linkedin, Mail } from "lucide-react"
 
-const socials = [
-  { name: "GitHub", href: "https://github.com/dimasma0305", icon: Github },
-  { name: "Twitter", href: "https://twitter.com/dimasma__", icon: Twitter },
-  { name: "LinkedIn", href: "https://www.linkedin.com/in/solderet/", icon: Linkedin },
-  { name: "Email", href: "mailto:dimasmaulana0305@gmail.com", icon: Mail },
-]
+const socials = portfolio.socials.map((item, i) => ({ ...item, icon: [Github, Twitter, Linkedin, Mail][i] }))
 
 export function Footer() {
   // One quiet bar: copyright + socials. Transparent so the homepage ends in

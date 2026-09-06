@@ -1,3 +1,4 @@
+import portfolio from "@/lib/portfolio-data.json";
 import Link from "next/link";
 import {
   Sparkles,
@@ -23,8 +24,8 @@ const SAMPLE_MD = withBasePath(
 );
 
 // Contact endpoints for the "Start a review" CTA.
-const WHATSAPP_URL = "https://wa.me/6285967149226";
-const DISCORD_URL = "https://discord.com/users/663394727688798231";
+const WHATSAPP_URL = portfolio.services.whatsapp;
+const DISCORD_URL = portfolio.services.discord;
 
 // lucide-react has no Discord glyph, so inline the brand mark.
 function DiscordIcon({ className }: { className?: string }) {
@@ -40,47 +41,13 @@ function DiscordIcon({ className }: { className?: string }) {
   );
 }
 
-const features = [
-  "An AI agent reviews your whole codebase, fast",
-  "Potential vulnerabilities surfaced, with the exploitable ones flagged",
-  "Dynamic checks that the program runs and works correctly",
-  "A suggested, ready-to-merge fix for each finding",
-  "Reports written in plain words you can act on",
-];
+const features = portfolio.services.features;
 
-const steps = [
-  {
-    icon: Send,
-    title: "1. Share your code",
-    text: "Send a private GitHub or GitLab invite, or just zip it up and email it over. NDA on request.",
-  },
-  {
-    icon: ScanSearch,
-    title: "2. Review and run",
-    text: "An AI agent reviews your codebase for potential vulnerabilities, and I run the program to check it behaves correctly. I triage the results and flag the ones that are actually exploitable.",
-  },
-  {
-    icon: FileCheck2,
-    title: "3. Report and fixes",
-    text: "You get a plain-English report in PDF and Markdown, with a suggested fix for every finding.",
-  },
-];
+const steps = portfolio.services.steps.map((item, i) => ({ ...item, icon: [Send, ScanSearch, FileCheck2][i] }));
 
-const included = [
-  "Your whole codebase reviewed by an AI agent",
-  "Potential vulnerabilities surfaced, with the genuinely exploitable ones flagged",
-  "Dynamic checks that the program runs and works correctly",
-  "A suggested, ready-to-merge fix for each finding",
-  "One free re-test after you apply the fixes",
-];
+const included = portfolio.services.included;
 
-const limits = [
-  "Static code review plus dynamic checks that the program runs correctly",
-  "No live production or infrastructure penetration testing",
-  "Languages: JavaScript and TypeScript, Python, PHP, Go, and most web backends",
-  "Turnaround is usually 1 to 2 days when I'm not busy",
-  "Patches are provided as-is, so test before you deploy",
-];
+const limits = portfolio.services.limits;
 
 /**
  * Full details for the Source Code Pentest service. Lives on the dedicated
@@ -90,8 +57,8 @@ export function ServicesDetail() {
   return (
     <>
       {/* Pitch + live demo */}
-      <div className="grid items-center gap-10 lg:grid-cols-2">
-        <div>
+      <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
+        <div className="min-w-0">
           <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-primary-bright">
             <Sparkles className="w-3.5 h-3.5" />
             AI-automated review
@@ -124,10 +91,10 @@ export function ServicesDetail() {
           <div className="mt-7">
             <div className="flex flex-wrap items-baseline gap-x-2">
               <span className="text-sm text-muted-foreground">Starting at</span>
-              <span className="text-3xl font-bold tracking-tight">$99</span>
+              <span className="text-3xl font-bold tracking-tight">{portfolio.services.price}</span>
             </div>
             <p className="mt-1 text-muted-foreground">
-              about Rp 1.780.000
+              {portfolio.services.localPrice}
               <span className="ml-2 text-sm">
                 · per project, scoped to your codebase size
               </span>
@@ -179,7 +146,7 @@ export function ServicesDetail() {
           </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="min-w-0 space-y-3">
           <CodeDiffDemo />
           <p className="text-center text-xs text-muted-foreground">
             Real findings from a scan of this very site, already patched.

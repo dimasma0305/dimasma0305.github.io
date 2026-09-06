@@ -1,0 +1,139 @@
+:root {
+  --site-header-height: 73px;
+}
+.site-global-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  background: #111915;
+  border-bottom: 1px solid #344238;
+  color: #eeecdf;
+}
+.site-header-inner {
+  width: min(1440px, calc(100% - 96px));
+  min-height: 72px;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 28px;
+}
+.site-brand,
+.tour-header .tour-brand {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 44px;
+  gap: 10px;
+  color: #eeecdf;
+  text-decoration: none;
+  letter-spacing: -0.7px;
+  font:
+    650 23px/1 var(--font-inter, "DM Sans"),
+    sans-serif;
+}
+.site-brand svg,
+.tour-header .tour-brand svg {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+.site-wordmark,
+.tour-header .tour-wordmark {
+  color: #eeecdf;
+  margin: 0;
+}
+.site-wordmark > span,
+.tour-wordmark > span {
+  color: #e4ac83;
+}
+.site-primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font:
+    500 14px/1.4 var(--font-inter, "DM Sans"),
+    sans-serif;
+}
+.site-primary-nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding-inline: 2px;
+  color: #c8d1c1;
+  text-decoration: none;
+  touch-action: manipulation;
+}
+.site-primary-nav a::after {
+  position: absolute;
+  content: "";
+  height: 2px;
+  bottom: 3px;
+  inset-inline: 2px;
+  background: #e4ac83;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 160ms ease-out;
+}
+.site-primary-nav a:is(:hover, [aria-current="page"]) {
+  color: #eeecdf;
+}
+.site-primary-nav a:is(:hover, [aria-current="page"])::after {
+  transform: scaleX(1);
+}
+.site-search {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #687960;
+  border-radius: 5px;
+  color: #dce4d0;
+}
+.site-search:hover {
+  background: #2c3928;
+}
+.site-global-header a:focus-visible {
+  outline: 2px solid #e4ac83;
+  outline-offset: 4px;
+}
+@media (max-width: 700px) {
+  :root {
+    --site-header-height: 101px;
+  }
+  .site-header-inner {
+    width: calc(100% - 32px);
+    min-height: 100px;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 56px 44px;
+    gap: 0 12px;
+  }
+  .site-header-inner .site-primary-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .site-primary-nav {
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .site-primary-nav a {
+    padding-inline: 4px;
+  }
+  .site-brand,
+  .tour-header .tour-brand {
+    font-size: 22px;
+    gap: 8px;
+  }
+  .site-brand svg,
+  .tour-header .tour-brand svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-primary-nav a::after {
+    transition: none;
+  }
+}

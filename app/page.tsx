@@ -1,14 +1,14 @@
 import { Metadata } from "next"
 import { HomepageStructuredData } from "@/components/seo"
-import HomePageClient from "@/components/home-page-client"
+import { RoomHome } from "@/components/room-home"
 
 // Environment variables with fallbacks
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dimasma0305.github.io"
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf"
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
 const fullUrl = `${baseUrl}${basePath}`
 
 export const metadata: Metadata = {
-  title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
+  title: { absolute: "dimasc.tf — Dimas Maulana" },
   description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
   keywords: ["cybersecurity", "CTF", "capture the flag", "security research", "vulnerability", "bug bounty", "hacking", "Indonesia", "Dimas Maulana"],
   authors: [{ name: "Dimas Maulana", url: fullUrl }],
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: fullUrl,
-    siteName: "Dimas Maulana",
-    title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
+    siteName: "dimasc.tf",
+    title: "dimasc.tf — Dimas Maulana",
     description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
     images: [
       {
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@dimasma__",
     creator: "@dimasma__",
-    title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
+    title: "dimasc.tf — Dimas Maulana",
     description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
     images: [`${fullUrl}/og-image.jpg`],
   },
@@ -59,7 +59,7 @@ export default function HomePage() {
   return (
     <>
       <HomepageStructuredData />
-      <HomePageClient />
+      <RoomHome />
     </>
   )
 }

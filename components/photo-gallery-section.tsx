@@ -1,5 +1,6 @@
 "use client";
 
+import portfolio from "@/lib/portfolio-data.json";
 import { SectionHeader } from "@/components/section-header";
 
 // Photos are hot-linked from Google Drive via the lh3 user-content CDN, which
@@ -11,46 +12,9 @@ const gd = (id: string, w: number) =>
 
 // The headline events get a feature card each; the strip below mixes action
 // shots from across them.
-const FEATURES = [
-  {
-    id: "1hA9LIS5pdZYTgHrbD5OEUs0AP17hr0pS",
-    chip: "SAS CTF 2024",
-    caption: "Security Analyst Summit finals in Bali, a 5,000 USD win with Project Sekai.",
-    alt: "Project Sekai holding the 5,000 USD prize check at the Security Analyst Summit CTF 2024 finals in Bali",
-  },
-  {
-    id: "1OeGxOhCW3sB7tlv73Fdi5d6nYNfeNCSj",
-    chip: "XCTF 2025",
-    caption: "9th XCTF International Invitational in China, representing Project Sekai.",
-    alt: "Project Sekai with their banner at the 9th XCTF International Invitational in China",
-  },
-  {
-    id: "1ILzurxhpI4Q-gkg7z2oLGXt7s6KTJvm3",
-    chip: "ISITDTU CTF 2024",
-    caption:
-      "ISITDTU CTF 2024 finals in Vietnam, second place in Attack & Defense with Project Sekai.",
-    alt: "Project Sekai at the ISITDTU CTF 2024 finals (Attack & Defense) in Vietnam, second place",
-  },
-];
+const FEATURES = portfolio.photos.slice(0, 3);
 
-const STRIP = [
-  {
-    id: "1rCV1eBT0EOF0Nay1BDw4Jo_74JwZ07nu",
-    alt: "Competing at the SAS CTF 2024 finals in Bali",
-  },
-  {
-    id: "1sT4icN3lqZSl0HUHRexTWyBEnovJ4uci",
-    alt: "Heads-down during the XCTF Invitational in China",
-  },
-  {
-    id: "1NX2PnjiLI6_QFU03wr8T5BsOWoYLWN7C",
-    alt: "At the Security Analyst Summit 2024 venue in Bali",
-  },
-  {
-    id: "1GHGgcsIuu7NIsQlDl6N6WF3J5rtXsh48",
-    alt: "With teammates at the XCTF Invitational in China",
-  },
-];
+const STRIP = portfolio.photos.slice(3);
 
 export function PhotoGallerySection() {
   return (

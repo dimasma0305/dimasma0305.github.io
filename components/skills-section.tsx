@@ -1,58 +1,15 @@
 "use client";
 
+import portfolio from "@/lib/portfolio-data.json";
 import { Shield, Code, Bot, Server, BadgeCheck } from "lucide-react";
 import { SectionHeader } from "@/components/section-header";
 import { Badge } from "@/components/ui/badge";
 
-const skills = [
-  {
-    category: "Offensive Security",
-    icon: <Shield className="w-4 h-4" />,
-    items: [
-      "Penetration Testing",
-      "Web Exploitation",
-      "Vulnerability Research",
-      "Exploit Development",
-      "Reverse Engineering",
-      "Binary Exploitation",
-      "CVE Discovery",
-      "Secure Code Review",
-      "SAST & DAST",
-    ],
-  },
-  {
-    category: "Programming",
-    icon: <Code className="w-4 h-4" />,
-    items: ["Python", "Go", "JavaScript", "TypeScript", "PHP", "Solidity", "Bash"],
-  },
-  {
-    category: "Security Automation",
-    icon: <Bot className="w-4 h-4" />,
-    items: [
-      "AI-assisted Vulnerability Triage",
-      "CVE-hunting Tooling",
-      "Custom Exploit Scripts",
-    ],
-  },
-  {
-    category: "Cloud & Infrastructure",
-    icon: <Server className="w-4 h-4" />,
-    items: [
-      "AWS",
-      "Docker",
-      "Kubernetes",
-      "HashiCorp Nomad",
-      "CI/CD",
-      "Linux Administration",
-      "Wazuh (SIEM/IDS)",
-    ],
-  },
-  {
-    category: "Certifications",
-    icon: <BadgeCheck className="w-4 h-4" />,
-    items: ["Certified AppSec Pentester (CAPen) · with Merit", "CompTIA Linux+ ce"],
-  },
-];
+const skillIcons = [Shield, Code, Bot, Server, BadgeCheck];
+const skills = portfolio.skills.map((item, i) => {
+  const Icon = skillIcons[i];
+  return { ...item, icon: <Icon className="w-4 h-4" /> };
+});
 
 export function SkillsSection() {
   return (

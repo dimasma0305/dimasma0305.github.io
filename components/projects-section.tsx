@@ -1,5 +1,6 @@
 "use client";
 
+import portfolio from "@/lib/portfolio-data.json";
 import { useState, useEffect } from "react";
 import {
   Github,
@@ -21,91 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { SectionHeader } from "@/components/section-header";
 
-const projects = [
-  {
-    title: "CTF-XSS-BOT",
-    description:
-      "Craft engaging XSS challenges effortlessly with CTF-XSS-BOT. This template simplifies setting up an environment for Capture The Flag competitions.",
-    tags: ["CTF", "XSS", "Puppeteer", "Containerization"],
-    github: "https://github.com/dimasma0305/CTF-XSS-BOT",
-    demo: null,
-    date: "Aug 2023 - Present",
-  },
-  {
-    title: "VWA-Wazuh (Mini Lab SOC)",
-    description:
-      "An application consisting of several vulnerable web applications that are integrated with Wazuh.",
-    tags: ["Security", "Wazuh", "IDS", "Database Security"],
-    github: "https://github.com/dimasma0305/VWA-Wazuh",
-    demo: null,
-    date: "Mar 2023 - Present",
-  },
-  {
-    title: "Dockerized Wordpress Debug Setup",
-    description:
-      "A Dockerized WordPress development environment with two configurations, one using Nginx and the other using Apache. Includes Xdebug for debugging.",
-    tags: ["Docker", "Containerization", "PHP", "WordPress"],
-    github: "https://github.com/dimasma0305/dockerized-wordpress-debug-setup",
-    demo: null,
-    date: "Dec 2023 - Present",
-  },
-  {
-    title: "CTF Challenge Difficulty Calculator",
-    description:
-      "A Next.js program designed to assess the difficulty of a Capture The Flag (CTF) challenge more efficiently.",
-    tags: ["CTF", "Next.js", "JavaScript"],
-    github:
-      "https://github.com/dimasma0305/ctf-challenge-difficulty-calculator",
-    demo: null,
-    date: "Nov 2023 - Present",
-  },
-  {
-    title: "CTFIFY",
-    description:
-      "A command-line tool designed to simplify the process of downloading and managing Capture The Flag (CTF) challenges.",
-    tags: ["CTF", "Go", "CLI"],
-    github: "https://github.com/dimasma0305/ctfify",
-    demo: null,
-    date: "Jan 2023 - Present",
-  },
-  {
-    title: "CTF Assistant",
-    description:
-      "Discord bot for managing CTF written in Bun programming language.",
-    tags: ["JavaScript", "Discord", "TypeScript", "Databases"],
-    github: "https://github.com/dimasma0305/ctf-assistant",
-    demo: null,
-    date: "Oct 2022 - Present",
-  },
-  {
-    title: "Paradigmctf BlockChain Infra Extended",
-    description:
-      "Setup from Paradigm CTF blockchain challenges with new features, including a web interface and additional challenge setup.",
-    tags: ["Solidity", "Python", "Blockchain"],
-    github: "https://github.com/TCP1P/Paradigmctf-BlockChain-Infra-Extended",
-    demo: null,
-    date: "Nov 2023 - Present",
-    team: "TCP1P",
-  },
-  {
-    title: "TCP1P Theme",
-    description:
-      "The TCP1P Theme is a CTFd theme built based on the CTFd core-beta theme.",
-    tags: ["HTML", "Python", "Jinja", "Bootstrap"],
-    github: "https://github.com/TCP1P/tcp1p-theme",
-    demo: null,
-    date: "Nov 2023 - Present",
-    team: "TCP1P",
-  },
-  {
-    title: "Cyber-Security-Learning-Resources",
-    description: "Material untuk belajar Cyber Security.",
-    tags: ["Learning", "Cybersecurity", "Resources"],
-    github: "https://github.com/dimasma0305/Cyber-Security-Learning-Resources",
-    demo: null,
-    date: "Mar 2022 - Present",
-  },
-];
+const projects = portfolio.projects;
 
 export function ProjectsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);

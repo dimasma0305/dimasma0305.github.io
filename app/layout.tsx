@@ -2,18 +2,13 @@ import type React from "react";
 import "@/app/globals.css";
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { Header } from "@/components/header";
+import { SiteShell } from "@/components/site-shell";
 import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@/components/analytics";
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
 import { BackgroundPreloader } from "@/components/background-preloader";
 import NavigationLoader from "@/components/navigation-loader";
 import { RouteAnnouncer } from "@/components/route-announcer";
-
-// Lazy load Footer for better initial page load
-const Footer = lazy(() =>
-  import("@/components/footer").then((m) => ({ default: m.Footer })),
-);
 
 // Two curated families: Inter for UI/body, JetBrains Mono for code.
 const inter = Inter({
@@ -42,13 +37,13 @@ export const viewport: Viewport = {
 };
 
 const baseUrl =
-  (process.env.NEXT_PUBLIC_BASE_URL || "https://dimasma0305.github.io") +
+  (process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf") +
   (process.env.NEXT_PUBLIC_BASE_PATH || "");
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
-    template: "%s | Dimas Maulana",
+    default: "dimasc.tf — Dimas Maulana",
+    template: "%s | dimasc.tf",
   },
   description:
     "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
@@ -73,7 +68,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: baseUrl,
-    siteName: "Dimas Maulana",
+    siteName: "dimasc.tf",
     title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
     description:
       "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
@@ -137,13 +132,13 @@ export default function RootLayout({
 
         {/* Theme and PWA meta tags */}
         <meta name="theme-color" content="#080d1a" />
-        <meta name="application-name" content="Dimas Maulana" />
+        <meta name="application-name" content="dimasc.tf" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="apple-mobile-web-app-status-bar-style"
           content="black-translucent"
         />
-        <meta name="apple-mobile-web-app-title" content="Dimas Maulana" />
+        <meta name="apple-mobile-web-app-title" content="dimasc.tf" />
       </head>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
@@ -155,21 +150,10 @@ export default function RootLayout({
           Skip to content
         </a>
         <RouteAnnouncer />
-        <div className="flex flex-col min-h-screen">
-          <Suspense fallback={null}>
-            <NavigationLoader />
-          </Suspense>
-          <Header />
-          {/* pt-16 clears the fixed header on every page. The homepage opts out
-              with -mt-16 (see home-page-client) so its hero sits under the
-              transparent header as designed. */}
-          <main id="main-content" tabIndex={-1} className="flex-1 outline-none pt-16">
-            {children}
-          </main>
-          <Suspense fallback={null}>
-            <Footer />
-          </Suspense>
-        </div>
+        <Suspense fallback={null}>
+          <NavigationLoader />
+        </Suspense>
+        <SiteShell>{children}</SiteShell>
         <Toaster />
         <Suspense fallback={null}>
           <Analytics />

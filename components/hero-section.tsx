@@ -1,5 +1,6 @@
 "use client";
 
+import portfolio from "@/lib/portfolio-data.json";
 import { useState } from "react";
 import {
   ArrowRight,
@@ -28,41 +29,7 @@ export function HeroSection() {
     { id: "pentester", label: "Pentester", icon: <ScanSearch className="w-5 h-5" /> },
   ];
 
-  const tabContent = {
-    researcher: {
-      title: "Cybersecurity Researcher",
-      subtitle: "CTF Player & Source Code Pentester",
-      description:
-        "I break things to understand how to secure them. I hunt vulnerabilities in the software everyone uses, then turn what I find into shippable fixes.",
-      stats: [
-        { label: "Validated CVEs", value: "170+" },
-        { label: "1st Place Wins", value: "8" },
-        { label: "Podium Finishes", value: "20+" },
-      ],
-    },
-    builder: {
-      title: "Open Source Builder",
-      subtitle: "Security tooling in Go and Python",
-      description:
-        "I ship command-line tools and scanners the security community actually uses, from CTF tooling to a WordPress taint-analysis engine.",
-      stats: [
-        { label: "Public Repos", value: "35+" },
-        { label: "Stars Earned", value: "220+" },
-        { label: "Followers", value: "320+" },
-      ],
-    },
-    pentester: {
-      title: "Source Code Pentester",
-      subtitle: "AI-assisted source code review",
-      description:
-        "I run AI-assisted reviews over real codebases, triage the bugs that are actually exploitable, and hand back ready-to-merge fixes with a plain-English report.",
-      stats: [
-        { label: "Per Project", value: "$99" },
-        { label: "Turnaround", value: "1-2d" },
-        { label: "Free Re-test", value: "1" },
-      ],
-    },
-  };
+  const tabContent = portfolio.personas;
 
   const active = tabContent[activeTab as keyof typeof tabContent];
 

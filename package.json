@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "generate:brand": "node scripts/generate-brand-assets.mjs",
     "dev": "next dev",
     "build": "next build",
     "analyze": "ANALYZE=true next build",
@@ -11,6 +12,9 @@
     "refresh-content": "node scripts/generate-blog-content.js && node scripts/generate-blog-index.js && node scripts/generate-rss.js",
     "generate-rss": "node scripts/generate-rss.js",
     "typecheck": "tsc --noEmit",
+    "preview:export": "node scripts/serve-export.mjs",
+    "test:room-browser": "node scripts/room-site.browser.mjs",
+    "test:site-navigation": "node scripts/site-navigation.browser.mjs",
     "test": "bun test"
   },
   "dependencies": {
@@ -38,7 +42,8 @@
     "react-dom": "^19",
     "sharp": "^0.35.3",
     "tailwind-merge": "^2.5.5",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "three": "0.185.1"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^15.4.6",

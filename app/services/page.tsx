@@ -12,8 +12,8 @@ const servicesUrl = `${baseUrl}${basePath}/services/`;
 const ogImage = `${baseUrl}${basePath}/og-image.jpg`;
 
 export const metadata: Metadata = {
-  // The layout template appends " | Dimas Maulana", so keep this keyword-first
-  // and single-segment: renders "Source Code Security Review | Dimas Maulana".
+  // The layout template appends " | dimasc.tf", so keep this keyword-first
+  // and single-segment: renders "Source Code Security Review | dimasc.tf".
   title: "Source Code Security Review",
   description:
     "AI-automated source code security review. An AI agent finds potential vulnerabilities, I triage the real ones, run the program to confirm it works, and ship ready-to-merge fixes. From $99.",

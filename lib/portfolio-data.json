@@ -1,0 +1,706 @@
+{
+  "projects": [
+    {
+      "title": "CTF-XSS-BOT",
+      "description": "Craft engaging XSS challenges effortlessly with CTF-XSS-BOT. This template simplifies setting up an environment for Capture The Flag competitions.",
+      "tags": [
+        "CTF",
+        "XSS",
+        "Puppeteer",
+        "Containerization"
+      ],
+      "github": "https://github.com/dimasma0305/CTF-XSS-BOT",
+      "demo": null,
+      "date": "Aug 2023 - Present"
+    },
+    {
+      "title": "VWA-Wazuh (Mini Lab SOC)",
+      "description": "An application consisting of several vulnerable web applications that are integrated with Wazuh.",
+      "tags": [
+        "Security",
+        "Wazuh",
+        "IDS",
+        "Database Security"
+      ],
+      "github": "https://github.com/dimasma0305/VWA-Wazuh",
+      "demo": null,
+      "date": "Mar 2023 - Present"
+    },
+    {
+      "title": "Dockerized Wordpress Debug Setup",
+      "description": "A Dockerized WordPress development environment with two configurations, one using Nginx and the other using Apache. Includes Xdebug for debugging.",
+      "tags": [
+        "Docker",
+        "Containerization",
+        "PHP",
+        "WordPress"
+      ],
+      "github": "https://github.com/dimasma0305/dockerized-wordpress-debug-setup",
+      "demo": null,
+      "date": "Dec 2023 - Present"
+    },
+    {
+      "title": "CTF Challenge Difficulty Calculator",
+      "description": "A Next.js program designed to assess the difficulty of a Capture The Flag (CTF) challenge more efficiently.",
+      "tags": [
+        "CTF",
+        "Next.js",
+        "JavaScript"
+      ],
+      "github": "https://github.com/dimasma0305/ctf-challenge-difficulty-calculator",
+      "demo": null,
+      "date": "Nov 2023 - Present"
+    },
+    {
+      "title": "CTFIFY",
+      "description": "A command-line tool designed to simplify the process of downloading and managing Capture The Flag (CTF) challenges.",
+      "tags": [
+        "CTF",
+        "Go",
+        "CLI"
+      ],
+      "github": "https://github.com/dimasma0305/ctfify",
+      "demo": null,
+      "date": "Jan 2023 - Present"
+    },
+    {
+      "title": "CTF Assistant",
+      "description": "Discord bot for managing CTF written in Bun programming language.",
+      "tags": [
+        "JavaScript",
+        "Discord",
+        "TypeScript",
+        "Databases"
+      ],
+      "github": "https://github.com/dimasma0305/ctf-assistant",
+      "demo": null,
+      "date": "Oct 2022 - Present"
+    },
+    {
+      "title": "Paradigmctf BlockChain Infra Extended",
+      "description": "Setup from Paradigm CTF blockchain challenges with new features, including a web interface and additional challenge setup.",
+      "tags": [
+        "Solidity",
+        "Python",
+        "Blockchain"
+      ],
+      "github": "https://github.com/TCP1P/Paradigmctf-BlockChain-Infra-Extended",
+      "demo": null,
+      "date": "Nov 2023 - Present",
+      "team": "TCP1P"
+    },
+    {
+      "title": "TCP1P Theme",
+      "description": "The TCP1P Theme is a CTFd theme built based on the CTFd core-beta theme.",
+      "tags": [
+        "HTML",
+        "Python",
+        "Jinja",
+        "Bootstrap"
+      ],
+      "github": "https://github.com/TCP1P/tcp1p-theme",
+      "demo": null,
+      "date": "Nov 2023 - Present",
+      "team": "TCP1P"
+    },
+    {
+      "title": "Cyber-Security-Learning-Resources",
+      "description": "Material untuk belajar Cyber Security.",
+      "tags": [
+        "Learning",
+        "Cybersecurity",
+        "Resources"
+      ],
+      "github": "https://github.com/dimasma0305/Cyber-Security-Learning-Resources",
+      "demo": null,
+      "date": "Mar 2022 - Present"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Offensive Security",
+      "items": [
+        "Penetration Testing",
+        "Web Exploitation",
+        "Vulnerability Research",
+        "Exploit Development",
+        "Reverse Engineering",
+        "Binary Exploitation",
+        "CVE Discovery",
+        "Secure Code Review",
+        "SAST & DAST"
+      ]
+    },
+    {
+      "category": "Programming",
+      "items": [
+        "Python",
+        "Go",
+        "JavaScript",
+        "TypeScript",
+        "PHP",
+        "Solidity",
+        "Bash"
+      ]
+    },
+    {
+      "category": "Security Automation",
+      "items": [
+        "AI-assisted Vulnerability Triage",
+        "CVE-hunting Tooling",
+        "Custom Exploit Scripts"
+      ]
+    },
+    {
+      "category": "Cloud & Infrastructure",
+      "items": [
+        "AWS",
+        "Docker",
+        "Kubernetes",
+        "HashiCorp Nomad",
+        "CI/CD",
+        "Linux Administration",
+        "Wazuh (SIEM/IDS)"
+      ]
+    },
+    {
+      "category": "Certifications",
+      "items": [
+        "Certified AppSec Pentester (CAPen) · with Merit",
+        "CompTIA Linux+ ce"
+      ]
+    }
+  ],
+  "achievements": [
+    {
+      "title": "1st Place",
+      "event": "XCTF 2025 Professional Division",
+      "team": "Individual",
+      "date": "November 2025",
+      "issuer": "XCTF",
+      "points": 5000,
+      "difficulty": "Legendary"
+    },
+    {
+      "title": "1st Place",
+      "event": "idekCTF 2024",
+      "team": "P1G SEKAI",
+      "date": "August 2024",
+      "points": 5000,
+      "difficulty": "Legendary"
+    },
+    {
+      "title": "1st Place",
+      "event": "Backdoor CTF 2024",
+      "team": "Ada Indonesia Coy",
+      "date": "December 2024",
+      "points": 4800,
+      "difficulty": "Legendary"
+    },
+    {
+      "title": "1st Place",
+      "event": "Cyber Jawara International 2024",
+      "team": "TCP1P x SNI x MAGER",
+      "date": "October 2024",
+      "points": 4750,
+      "difficulty": "Legendary"
+    },
+    {
+      "title": "1st Place",
+      "event": "Seleknas Cyber Security 2024",
+      "team": "Team",
+      "date": "November 2024",
+      "issuer": "KEMNAKER",
+      "points": 4500,
+      "difficulty": "Epic"
+    },
+    {
+      "title": "1st Place",
+      "event": "Patchstack February 2025 Bug Bounty Program",
+      "team": "Individual",
+      "date": "February 2025",
+      "issuer": "Patchstack",
+      "points": 4200,
+      "difficulty": "Epic"
+    },
+    {
+      "title": "1st Place",
+      "event": "NCW 2023",
+      "team": "TEAM",
+      "date": "December 2023",
+      "issuer": "PETIR Cyber Security",
+      "points": 4000,
+      "difficulty": "Epic"
+    },
+    {
+      "title": "1st Place",
+      "event": "WorldSkills ASEAN Cyber Security 2024 · National & Regional Selection",
+      "team": "Individual",
+      "date": "2024",
+      "issuer": "WorldSkills",
+      "points": 4400,
+      "difficulty": "Epic"
+    },
+    {
+      "title": "2nd Place",
+      "event": "TPCTF 2025",
+      "team": "Project Sekai",
+      "date": "March 2025",
+      "points": 3800,
+      "difficulty": "Rare"
+    },
+    {
+      "title": "2nd Place",
+      "event": "ISITDTU CTF 2024 Finals Attack & Defense",
+      "team": "Project Sekai",
+      "date": "December 2024",
+      "issuer": "ISITDTU",
+      "points": 3700,
+      "difficulty": "Rare"
+    },
+    {
+      "title": "2nd Place",
+      "event": "Patchstack Alliance CTF S02E01 - WordCamp Asia",
+      "team": "Individual",
+      "date": "February 2025",
+      "issuer": "Patchstack",
+      "points": 3600,
+      "difficulty": "Rare"
+    },
+    {
+      "title": "2nd Place",
+      "event": "THE SAS CON CTF 2024",
+      "team": "P1G SEKAI",
+      "date": "October 2024",
+      "issuer": "KASPERSKY",
+      "points": 3500,
+      "difficulty": "Rare"
+    },
+    {
+      "title": "2nd Place",
+      "event": "Patchstack End-of-Year Alliance CTF 2025",
+      "team": "Individual",
+      "date": "December 2025",
+      "issuer": "Patchstack",
+      "points": 3600,
+      "difficulty": "Rare"
+    },
+    {
+      "title": "2nd Place",
+      "event": "Patchstack Alliance CTF S01E01",
+      "team": "Individual",
+      "date": "2024",
+      "issuer": "Patchstack",
+      "points": 3400,
+      "difficulty": "Rare"
+    },
+    {
+      "title": "2nd Place",
+      "event": "WRECKIT 5.0",
+      "team": "Team",
+      "date": "2024",
+      "points": 3300,
+      "difficulty": "Rare"
+    },
+    {
+      "title": "2nd Place",
+      "event": "CTF ARA 5.0 2024",
+      "team": "Team",
+      "date": "2024",
+      "points": 3300,
+      "difficulty": "Rare"
+    },
+    {
+      "title": "2nd Place",
+      "event": "Patchstack January 2024 Bug Bounty",
+      "team": "Individual",
+      "date": "January 2024",
+      "issuer": "Patchstack",
+      "points": 3200,
+      "difficulty": "Rare"
+    },
+    {
+      "title": "3rd Place",
+      "event": "AlpacaHack Round 2 (Web)",
+      "team": "Individual",
+      "date": "2024",
+      "points": 3000,
+      "difficulty": "Uncommon"
+    },
+    {
+      "title": "3rd Place",
+      "event": "Patchstack WCUS CTF 2024",
+      "team": "Individual",
+      "date": "2024",
+      "issuer": "Patchstack",
+      "points": 2900,
+      "difficulty": "Uncommon"
+    },
+    {
+      "title": "3rd Place",
+      "event": "Cyber Jawara International 2023",
+      "team": "Team",
+      "date": "2023",
+      "points": 2900,
+      "difficulty": "Uncommon"
+    },
+    {
+      "title": "3rd Place",
+      "event": "Patchstack February 2024 Bug Bounty",
+      "team": "Individual",
+      "date": "February 2024",
+      "issuer": "Patchstack",
+      "points": 2800,
+      "difficulty": "Uncommon"
+    }
+  ],
+  "teams": [
+    {
+      "name": "P1G SEKAI",
+      "role": "Member",
+      "description": "A merging of Project Sekai and r3kapig",
+      "link": "https://ctftime.org/team/58979/",
+      "level": "80",
+      "specialties": [
+        "Web Security",
+        "Binary Exploitation",
+        "Cryptography",
+        "Forensics",
+        "Reverse Engineering",
+        "Blockchain",
+        "OSINT",
+        "Mobile Security"
+      ]
+    },
+    {
+      "name": "Project Sekai",
+      "role": "Member",
+      "description": "SEKAI{I5_A_CTF_t3Am_w/_38+_mbRs,_p4r71CiP4t1ng_in_164+_c0nt3Stz}",
+      "link": "https://ctftime.org/team/58979/",
+      "level": "75",
+      "specialties": [
+        "Web Security",
+        "Binary Exploitation",
+        "Cryptography",
+        "Forensics",
+        "Reverse Engineering",
+        "Blockchain",
+        "OSINT",
+        "Mobile Security"
+      ]
+    },
+    {
+      "name": "TCP1P",
+      "role": "Founder",
+      "description": "Indonesia's #1 nationally ranked CTF community on CTFtime. We organize internationally rated events (TCP1P CTF 2023 & 2024, sponsored by OffSec, Ottersec, and Google SecLab Indonesia) and maintain open-source CTF infrastructure.",
+      "link": "https://github.com/TCP1P",
+      "level": "25",
+      "specialties": [
+        "Web Security",
+        "Binary Exploitation",
+        "Cryptography",
+        "Forensics",
+        "Reverse Engineering",
+        "Blockchain",
+        "OSINT",
+        "Mobile Security"
+      ]
+    },
+    {
+      "name": "SKSD",
+      "role": "Member",
+      "description": "Indonesian CTF Team that rarely participate in CTF competitions in 2025",
+      "link": "https://ctftime.org/team/211952/",
+      "level": "70",
+      "specialties": [
+        "Web Security",
+        "Binary Exploitation",
+        "Cryptography",
+        "Forensics",
+        "Reverse Engineering",
+        "Blockchain",
+        "OSINT",
+        "Mobile Security"
+      ]
+    },
+    {
+      "name": "HCS",
+      "role": "Member",
+      "description": "CTF Team from ITS, often participate in CTF competitions on CTFTime",
+      "link": "https://ctftime.org/team/70159/",
+      "level": "40",
+      "specialties": [
+        "Web Security",
+        "Binary Exploitation",
+        "Cryptography",
+        "Forensics",
+        "Reverse Engineering",
+        "Blockchain",
+        "OSINT",
+        "Mobile Security"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "title": "Security Researcher · Bug Bounty",
+      "company": "Patchstack Alliance",
+      "location": "Remote",
+      "period": "2024 - Present",
+      "description": "Reported 170+ validated WordPress CVEs across plugins and themes, including CVE-2025-26909 (CVSS 9.6), a critical LFI-to-RCE flaw in WP Ghost affecting 200,000+ sites. Built AI-assisted tooling to accelerate CVE hunting across large plugin codebases.",
+      "skills": [
+        "Vulnerability Research",
+        "WordPress Security",
+        "CVE Discovery",
+        "AI Tooling"
+      ],
+      "type": "Freelance",
+      "highlight": true
+    },
+    {
+      "title": "Content Creator",
+      "company": "HackTheBox",
+      "location": "Remote",
+      "period": "2025 - Present",
+      "description": "Develop original security training content and challenges for the HackTheBox platform.",
+      "skills": [
+        "Challenge Design",
+        "Training Content",
+        "Web Security"
+      ],
+      "type": "Contract"
+    },
+    {
+      "title": "DevSecOps Intern",
+      "company": "ArchonLabs SSD",
+      "location": "Jakarta · Remote",
+      "period": "Aug 2025 - Jan 2026",
+      "description": "Built container automation with HashiCorp Nomad to orchestrate containerized workflows, and helped secure and harden container-based deployments.",
+      "skills": [
+        "HashiCorp Nomad",
+        "Container Security",
+        "DevSecOps"
+      ]
+    },
+    {
+      "title": "Founder & Infrastructure Engineer",
+      "company": "TCP1P",
+      "location": "Indonesia",
+      "period": "Aug 2022 - Present",
+      "description": "Founded and lead TCP1P, Indonesia's #1 nationally ranked CTF team on CTFtime (top 6 every year since 2022). Organized TCP1P CTF 2023 and 2024, internationally rated events sponsored by OffSec, Ottersec, and Google SecLab Indonesia.",
+      "skills": [
+        "Leadership",
+        "CTF Infrastructure",
+        "Community",
+        "Event Organizing"
+      ],
+      "link": "https://github.com/TCP1P"
+    },
+    {
+      "title": "Cloud Engineer & Challenge Author",
+      "company": "C2C & Cyber Jawara",
+      "location": "Indonesia",
+      "period": "Dec 2025 - Feb 2026",
+      "description": "Engineered and operated cloud-based CTF infrastructure and authored challenges for two of Indonesia's national cybersecurity competitions.",
+      "skills": [
+        "Cloud Infrastructure",
+        "Challenge Design",
+        "CTF"
+      ],
+      "type": "Contract"
+    },
+    {
+      "title": "Challenge Author & Infrastructure Engineer",
+      "company": "Project Sekai · IntechFest · TECHCOMFEST · HOLOGY",
+      "location": "Remote",
+      "period": "2022 - 2026",
+      "description": "Authored web exploitation challenges for Project Sekai CTF, an internationally recognized competition, and designed challenges and deployment infrastructure for national events across multiple annual editions.",
+      "skills": [
+        "Web Security",
+        "Challenge Design",
+        "Infrastructure"
+      ],
+      "type": "Freelance"
+    }
+  ],
+  "personas": {
+    "researcher": {
+      "title": "Cybersecurity Researcher",
+      "subtitle": "CTF Player & Source Code Pentester",
+      "description": "I break things to understand how to secure them. I hunt vulnerabilities in the software everyone uses, then turn what I find into shippable fixes.",
+      "stats": [
+        {
+          "label": "Validated CVEs",
+          "value": "170+"
+        },
+        {
+          "label": "1st Place Wins",
+          "value": "8"
+        },
+        {
+          "label": "Podium Finishes",
+          "value": "20+"
+        }
+      ]
+    },
+    "builder": {
+      "title": "Open Source Builder",
+      "subtitle": "Security tooling in Go and Python",
+      "description": "I ship command-line tools and scanners the security community actually uses, from CTF tooling to a WordPress taint-analysis engine.",
+      "stats": [
+        {
+          "label": "Public Repos",
+          "value": "35+"
+        },
+        {
+          "label": "Stars Earned",
+          "value": "220+"
+        },
+        {
+          "label": "Followers",
+          "value": "320+"
+        }
+      ]
+    },
+    "pentester": {
+      "title": "Source Code Pentester",
+      "subtitle": "AI-assisted source code review",
+      "description": "I run AI-assisted reviews over real codebases, triage the bugs that are actually exploitable, and hand back ready-to-merge fixes with a plain-English report.",
+      "stats": [
+        {
+          "label": "Per Project",
+          "value": "$99"
+        },
+        {
+          "label": "Turnaround",
+          "value": "1-2d"
+        },
+        {
+          "label": "Free Re-test",
+          "value": "1"
+        }
+      ]
+    }
+  },
+  "bio": [
+    "I'm a security researcher and award-winning competitive hacker based in Denpasar, Bali, Indonesia. I've discovered 170+ CVEs in widely used software, including CVE-2025-26909, a critical flaw that affected 200,000+ WordPress sites.",
+    "I founded @TCP1P , Indonesia's #1 nationally ranked CTF team on CTFtime, and compete internationally with @project-sekai-ctf as well as the SKSD and HCS teams.",
+    "I enjoy creating CTF challenges, developing security tools, and sharing what I learn through writeups and tutorials on my blog."
+  ],
+  "services": {
+    "highlights": [
+      "AI reviews your code, I triage what's real",
+      "Potential vulnerabilities, exploitable ones flagged",
+      "Dynamic checks that the program still works",
+      "Suggested, ready-to-merge fixes in a plain report"
+    ],
+    "features": [
+      "An AI agent reviews your whole codebase, fast",
+      "Potential vulnerabilities surfaced, with the exploitable ones flagged",
+      "Dynamic checks that the program runs and works correctly",
+      "A suggested, ready-to-merge fix for each finding",
+      "Reports written in plain words you can act on"
+    ],
+    "steps": [
+      {
+        "title": "1. Share your code",
+        "text": "Send a private GitHub or GitLab invite, or just zip it up and email it over. NDA on request."
+      },
+      {
+        "title": "2. Review and run",
+        "text": "An AI agent reviews your codebase for potential vulnerabilities, and I run the program to check it behaves correctly. I triage the results and flag the ones that are actually exploitable."
+      },
+      {
+        "title": "3. Report and fixes",
+        "text": "You get a plain-English report in PDF and Markdown, with a suggested fix for every finding."
+      }
+    ],
+    "included": [
+      "Your whole codebase reviewed by an AI agent",
+      "Potential vulnerabilities surfaced, with the genuinely exploitable ones flagged",
+      "Dynamic checks that the program runs and works correctly",
+      "A suggested, ready-to-merge fix for each finding",
+      "One free re-test after you apply the fixes"
+    ],
+    "limits": [
+      "Static code review plus dynamic checks that the program runs correctly",
+      "No live production or infrastructure penetration testing",
+      "Languages: JavaScript and TypeScript, Python, PHP, Go, and most web backends",
+      "Turnaround is usually 1 to 2 days when I'm not busy",
+      "Patches are provided as-is, so test before you deploy"
+    ],
+    "whatsapp": "https://wa.me/6285967149226",
+    "discord": "https://discord.com/users/663394727688798231",
+    "price": "$99",
+    "localPrice": "about Rp 1.780.000"
+  },
+  "socials": [
+    {
+      "name": "GitHub",
+      "href": "https://github.com/dimasma0305"
+    },
+    {
+      "name": "Twitter",
+      "href": "https://twitter.com/dimasma__"
+    },
+    {
+      "name": "LinkedIn",
+      "href": "https://www.linkedin.com/in/solderet/"
+    },
+    {
+      "name": "Email",
+      "href": "mailto:dimasmaulana0305@gmail.com"
+    }
+  ],
+  "photos": [
+    {
+      "id": "1hA9LIS5pdZYTgHrbD5OEUs0AP17hr0pS",
+      "chip": "SAS CTF 2024",
+      "caption": "Security Analyst Summit finals in Bali, a 5,000 USD win with Project Sekai.",
+      "alt": "Project Sekai holding the 5,000 USD prize check at the Security Analyst Summit CTF 2024 finals in Bali",
+      "src": "./assets/team-bali.jpg",
+      "original": "https://lh3.googleusercontent.com/d/1hA9LIS5pdZYTgHrbD5OEUs0AP17hr0pS=w1200"
+    },
+    {
+      "id": "1OeGxOhCW3sB7tlv73Fdi5d6nYNfeNCSj",
+      "chip": "XCTF 2025",
+      "caption": "9th XCTF International Invitational in China, representing Project Sekai.",
+      "alt": "Project Sekai with their banner at the 9th XCTF International Invitational in China",
+      "src": "./assets/team-china.jpg",
+      "original": "https://lh3.googleusercontent.com/d/1OeGxOhCW3sB7tlv73Fdi5d6nYNfeNCSj=w1200"
+    },
+    {
+      "id": "1ILzurxhpI4Q-gkg7z2oLGXt7s6KTJvm3",
+      "chip": "ISITDTU CTF 2024",
+      "caption": "ISITDTU CTF 2024 finals in Vietnam, second place in Attack & Defense with Project Sekai.",
+      "alt": "Project Sekai at the ISITDTU CTF 2024 finals (Attack & Defense) in Vietnam, second place",
+      "src": "./assets/portfolio/photo-3.jpg",
+      "original": "https://lh3.googleusercontent.com/d/1ILzurxhpI4Q-gkg7z2oLGXt7s6KTJvm3=w1200"
+    },
+    {
+      "id": "1rCV1eBT0EOF0Nay1BDw4Jo_74JwZ07nu",
+      "alt": "Competing at the SAS CTF 2024 finals in Bali",
+      "src": "./assets/portfolio/photo-4.jpg",
+      "original": "https://lh3.googleusercontent.com/d/1rCV1eBT0EOF0Nay1BDw4Jo_74JwZ07nu=w1200"
+    },
+    {
+      "id": "1sT4icN3lqZSl0HUHRexTWyBEnovJ4uci",
+      "alt": "Heads-down during the XCTF Invitational in China",
+      "src": "./assets/portfolio/photo-5.jpg",
+      "original": "https://lh3.googleusercontent.com/d/1sT4icN3lqZSl0HUHRexTWyBEnovJ4uci=w1200"
+    },
+    {
+      "id": "1NX2PnjiLI6_QFU03wr8T5BsOWoYLWN7C",
+      "alt": "At the Security Analyst Summit 2024 venue in Bali",
+      "src": "./assets/portfolio/photo-6.jpg",
+      "original": "https://lh3.googleusercontent.com/d/1NX2PnjiLI6_QFU03wr8T5BsOWoYLWN7C=w1200"
+    },
+    {
+      "id": "1GHGgcsIuu7NIsQlDl6N6WF3J5rtXsh48",
+      "alt": "With teammates at the XCTF Invitational in China",
+      "src": "./assets/portfolio/photo-7.jpg",
+      "original": "https://lh3.googleusercontent.com/d/1GHGgcsIuu7NIsQlDl6N6WF3J5rtXsh48=w1200"
+    }
+  ],
+  "email": "dimasmaulana0305@gmail.com"
+}

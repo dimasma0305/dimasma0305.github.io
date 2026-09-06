@@ -1,11 +1,11 @@
 {
-  "name": "Dimas Maulana | Cybersecurity Researcher & CTF Player",
-  "short_name": "Dimas Maulana",
+  "name": "dimasc.tf — Dimas Maulana",
+  "short_name": "dimasc.tf",
   "description": "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, gamer, and manga enthusiast from Indonesia.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#111915",
+  "theme_color": "#111915",
   "orientation": "portrait-primary",
   "icons": [
     {

@@ -1,17 +1,13 @@
 "use client";
 
+import portfolio from "@/lib/portfolio-data.json";
 import Link from "next/link";
 import { Check, ArrowRight } from "lucide-react";
 import { SectionHeader } from "@/components/section-header";
 import { CodeDiffDemo } from "@/components/code-diff-demo";
 
 // Compact teaser on the (CV-focused) homepage. Full details live on /services.
-const highlights = [
-  "AI reviews your code, I triage what's real",
-  "Potential vulnerabilities, exploitable ones flagged",
-  "Dynamic checks that the program still works",
-  "Suggested, ready-to-merge fixes in a plain report",
-];
+const highlights = portfolio.services.highlights;
 
 export function ServicesSection() {
   return (
@@ -52,7 +48,7 @@ export function ServicesSection() {
 
           <div className="mt-6 flex flex-wrap items-baseline gap-x-2">
             <span className="text-sm text-muted-foreground">Starting at</span>
-            <span className="text-3xl font-bold tracking-tight">$99</span>
+            <span className="text-3xl font-bold tracking-tight">{portfolio.services.price}</span>
             <span className="text-sm text-muted-foreground">
               per project
             </span>
