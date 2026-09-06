@@ -2,6 +2,8 @@ name: Deploy to GitHub Pages
 
 
 on:
+  # Allow an approved release to be retried without manufacturing a code change.
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
