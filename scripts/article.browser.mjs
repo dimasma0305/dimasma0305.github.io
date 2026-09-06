@@ -178,6 +178,15 @@ try {
     await page.keyboard.press("Enter");
     await page.getByRole("dialog").waitFor();
     assert.ok(
+      await page
+        .getByRole("dialog")
+        .locator("img")
+        .evaluate(
+          (img) => img.getBoundingClientRect().width <= img.naturalWidth + 1,
+        ),
+      "image detail never upscales a small source into a blurry full-width picture",
+    );
+    assert.ok(
       await page.getByRole("link", { name: "Open original image" }).isVisible(),
     );
     await audit(page);
@@ -215,6 +224,25 @@ try {
     );
   });
   await direct.close();
+  const stable = await browser.newPage({ reducedMotion: "reduce" });
+  stable.on("pageerror", (error) => errors.push(error.message));
+  await stable.route("**/blog-index.json", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+    await route.continue();
+  });
+  await stable.goto(`${base}${route}`, { waitUntil: "domcontentloaded" });
+  await stable.locator(".article-code-toolbar").first().waitFor();
+  const readingBlock = await stable
+    .locator(".article-code-block")
+    .first()
+    .elementHandle();
+  await stable.waitForLoadState("networkidle");
+  await stable.waitForTimeout(500);
+  assert.ok(
+    await readingBlock.evaluate((el) => el.isConnected),
+    "late related-post metadata must not replace the reading DOM or detach active controls",
+  );
+  await stable.close();
   const staticPage = await browser.newPage({
     javaScriptEnabled: false,
     viewport: { width: 390, height: 1000 },

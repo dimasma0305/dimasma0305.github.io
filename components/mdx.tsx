@@ -1,7 +1,7 @@
 "use client";
 
 import { withBasePath } from "@/lib/utils";
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { initializeLazyLoadingTimer } from "@/lib/scroll-utils";
 import { enhanceArticle } from "@/lib/article-enhancements";
 
@@ -64,7 +64,9 @@ interface MdxProps {
   readingTools?: boolean;
 }
 
-export function Mdx({ content, readingTools = false }: MdxProps) {
+// Ancillary data (for example related posts) must not replace the decorated
+// article DOM, clear a selection, or detach a control while someone is reading.
+export const Mdx = memo(function Mdx({ content, readingTools = false }: MdxProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -544,7 +546,7 @@ export function Mdx({ content, readingTools = false }: MdxProps) {
       dangerouslySetInnerHTML={{ __html: processedContent }}
     />
   );
-}
+});
 
 // Function to render Notion-style tables
 function renderNotionTable(tableBlock: any): string {

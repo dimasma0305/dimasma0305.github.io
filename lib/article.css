@@ -356,7 +356,9 @@
 }
 .article-image-dialog > img {
   display: block;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
   height: auto;
   max-height: 65dvh;
   object-fit: contain;
