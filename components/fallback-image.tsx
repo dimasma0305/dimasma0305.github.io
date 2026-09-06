@@ -1,8 +1,10 @@
 "use client"
 
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useLazyLoading } from "@/hooks/use-lazy-loading"
+import { optimizedContentCover } from "@/lib/optimized-media.mjs"
+import { withBasePath } from "@/lib/utils"
 
 interface FallbackImageProps {
   src: string
@@ -25,32 +27,33 @@ export function FallbackImage({
   priority = false,
   fallbackSrc,
 }: FallbackImageProps) {
-  const [imgSrc, setImgSrc] = useState<string | undefined>(priority ? src : undefined)
-  const [imageLoaded, setImageLoaded] = useState(false)
+  const [failure, setFailure] = useState({ source: src, index: 0 })
+  const [loadedSource, setLoadedSource] = useState<string>()
   
   const { elementRef, shouldLoad } = useLazyLoading({
     threshold: 0.1,
     rootMargin: '200px',
   })
 
-  // For priority images, load immediately. For others, wait for lazy loading trigger
-  useEffect(() => {
-    if (priority) {
-      setImgSrc(src)
-    } else if (shouldLoad && !imgSrc) {
-      setImgSrc(src)
-    }
-  }, [shouldLoad, src, imgSrc, priority])
+  // Retain the full-resolution original as a fallback if a generated companion
+  // is unavailable (for example, content was refreshed during development).
+  const placeholder = fallbackSrc || withBasePath(`/placeholder.svg?height=${height || 400}&width=${width || 600}&text=${encodeURIComponent(alt)}`)
+  const candidates = [...new Set([optimizedContentCover(src), src, placeholder])]
+  const candidateIndex = failure.source === src ? Math.min(failure.index, candidates.length - 1) : 0
+  const imgSrc = priority || shouldLoad ? candidates[candidateIndex] : undefined
+  const imageLoaded = Boolean(imgSrc && loadedSource === imgSrc)
 
   // Handle image load error
   const handleError = () => {
-    // Use provided fallback or generate a placeholder
-    const defaultFallback = `/placeholder.svg?height=${height || 400}&width=${width || 600}&text=${encodeURIComponent(alt)}`
-    setImgSrc(fallbackSrc || defaultFallback)
+    if (candidateIndex < candidates.length - 1) {
+      setFailure({ source: src, index: candidateIndex + 1 })
+    } else {
+      setLoadedSource(imgSrc) // Keep the accessible alt visible; never retry in a loop.
+    }
   }
 
   const handleLoad = () => {
-    setImageLoaded(true)
+    setLoadedSource(imgSrc)
   }
 
   return (

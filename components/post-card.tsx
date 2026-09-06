@@ -1,10 +1,9 @@
 "use client";
 
-import { memo, useCallback, useMemo, useEffect, useRef } from "react";
+import { memo, useMemo } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Calendar } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 import type { Post } from "@/lib/posts-client";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +16,6 @@ import {
 import { FallbackImage } from "@/components/fallback-image";
 import { NotionLinkButton } from "@/components/notion-link-button";
 import { withBasePath } from "@/lib/utils";
-import { fetchPostBySlug } from "@/lib/posts-loader";
 
 interface PostCardProps {
   post: Post;
@@ -120,46 +118,9 @@ PostFooter.displayName = "PostFooter";
 function PostCard({ post, priority }: PostCardProps) {
   // Memoize post URL
   const postUrl = useMemo(() => `/posts/${post.slug}`, [post.slug]);
-  const router = useRouter();
-  const cardRef = useRef<HTMLDivElement | null>(null);
-  const hasPrefetchedRef = useRef(false);
-
-  const prefetch = useCallback(() => {
-    if (hasPrefetchedRef.current) return;
-    hasPrefetchedRef.current = true;
-    try {
-      router.prefetch(postUrl);
-    } catch (_) {}
-    // Warm the post content cache
-    fetchPostBySlug(post.slug).catch(() => {});
-  }, [router, postUrl, post.slug]);
-
-  useEffect(() => {
-    const element = cardRef.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            prefetch();
-            observer.disconnect();
-            break;
-          }
-        }
-      },
-      { rootMargin: "200px" },
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [prefetch]);
 
   return (
-    <div
-      ref={cardRef}
-      className="post-card group relative transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1"
-    >
+    <div className="post-card group relative transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-1">
       <Card className="post-card-surface overflow-hidden h-full transition-shadow duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover:shadow-[var(--elevation-2)]">
         {post.coverImage ? (
           <CoverImage
@@ -211,7 +172,7 @@ function PostCard({ post, priority }: PostCardProps) {
       {/* Stretched primary link — covers the card without nesting other controls */}
       <Link
         href={postUrl}
-        onMouseEnter={prefetch}
+        prefetch={false}
         aria-label={post.title}
         className="absolute inset-0 z-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       />

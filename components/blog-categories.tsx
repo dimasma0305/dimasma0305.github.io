@@ -37,6 +37,7 @@ export function BlogCategories() {
           >
             <Link
               href="/blog"
+              prefetch={false}
               aria-current={currentPath === "/blog" ? "page" : undefined}
             >
               All Categories
@@ -57,7 +58,11 @@ export function BlogCategories() {
                   variant="ghost"
                   className={activeClass(active)}
                 >
-                  <Link href={href} aria-current={active ? "page" : undefined}>
+                  <Link
+                    href={href}
+                    prefetch={false}
+                    aria-current={active ? "page" : undefined}
+                  >
                     {category}
                     <span className="ml-auto text-muted-foreground">
                       {count}

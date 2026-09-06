@@ -60,6 +60,7 @@ export default function CategoriesPage() {
             <Link
               key={category}
               href={`/categories/${encodeURIComponent(category.toLowerCase())}`}
+              prefetch={false}
               className="group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <Card className="h-full transition-[transform,box-shadow,border-color] duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover:-translate-y-1 group-hover:border-primary/40 group-hover:shadow-[var(--elevation-2)]">

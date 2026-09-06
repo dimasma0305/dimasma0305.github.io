@@ -123,6 +123,45 @@ in-flight GPU work, lowers resolution during movement, and draws one sharper
 settled frame. Persistently slow devices switch to stills. There are no continuous
 decorative render loops or wheel/touch scroll interception.
 
+`dev` and `build` run `optimize:media` first. The ten room stills and window
+texture get high-quality WebP companions **without resizing**; older local PNG
+content covers get companions too. Original files stay intact, including the
+photographs that are already smaller as JPEGs. Generated companions are ignored
+by Git and recreated after the content refresh in CI. Cover images fall back to
+their originals if a companion is temporarily missing.
+
+Page/data prefetching follows deliberate hover, keyboard focus or touch intent,
+rather than downloading every visible article and all listing indexes on arrival.
+Data-saving and very slow connections skip speculative work. Notes and their
+statistics share a deduplicated, five-minute index cache; explicit refresh bypasses it.
+
+With the same browser environment variables as the other checks:
+
+```sh
+bun run test:loading
+PERF_REPORT=/tmp/site-performance.json bun run test:performance
+```
+
+The loading check covers crawler metadata, intent-based navigation, data saving
+and missing-image fallbacks. The performance report measures cold-cache resource
+payloads on five page/device profiles. Its software-WebGL timings are diagnostic,
+not a Lighthouse score or a prediction of real-device frame rates. Compare runs
+against the same content snapshot; production content is refreshed independently.
+
+## Link previews
+
+`lib/social-metadata.ts` owns the default share title, description and versioned
+1200 × 630 JPEG URL. Home and generic listing pages use the room card; individual
+articles keep their own covers where available. The metadata is present in static
+HTML, so crawlers do not need JavaScript.
+
+After updating the room still or logo, run `bun run generate:social` with the
+Playwright/Chromium environment variables above (after a build, for the bundled
+fonts). It composes the existing room, logo and site typography and writes
+`public/social/room-v1.jpg` plus the compatibility `public/og-image.jpg`. When
+releasing a new design, advance the filename in the generator and metadata
+together. Commit those JPEGs. External services control their own preview caches.
+
 ## Publishing
 
 The existing GitHub Pages workflow validates, refreshes content, builds, and

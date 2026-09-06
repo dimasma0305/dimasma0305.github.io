@@ -1,77 +1,99 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { warmPostsCache } from "@/hooks/use-posts"
-import { warmNotesCache } from "@/hooks/use-notes"
-import { fetchNotesStats } from "@/lib/notes-client"
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { prefetchDestination, shouldPrefetch } from "@/lib/navigation-prefetch";
 
-/**
- * Warms commonly-visited routes, their client-fetched DATA, and a few heavy
- * lazy chunks during browser IDLE time — one task per idle slice — so
- * subsequent navigations render instantly (no skeleton flash) without competing
- * with initial render/hydration or saturating the network.
- */
+/** Prepare the destination on hover, keyboard focus or touch intent, not every
+ * visible page at startup. Navigation never waits for this best-effort work. */
 export function BackgroundPreloader() {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    const tasks: Array<() => void> = [
-      () =>
-        ["/", "/blog", "/notes", "/tools", "/search"].forEach((r) => {
-          try {
-            router.prefetch(r)
-          } catch {
-            /* prefetch may be unavailable in some environments */
+    const seen = new Set<string>();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const connection = () =>
+      (
+        navigator as Navigator & {
+          connection?: { saveData?: boolean; effectiveType?: string };
+        }
+      ).connection;
+
+    const prepare = (anchor: HTMLAnchorElement) => {
+      if (
+        !anchor.isConnected ||
+        !shouldPrefetch(connection(), document.hidden)
+      ) {
+        return;
+      }
+      const target = prefetchDestination(
+        anchor.href,
+        location.href,
+        process.env.NEXT_PUBLIC_BASE_PATH || "",
+      );
+      if (!target || seen.has(target) || seen.size >= 24) {
+        return;
+      }
+      seen.add(target);
+      try {
+        router.prefetch(target);
+      } catch {
+        /* Navigation can still fetch normally. */
+      }
+      const pathname = target.split("?")[0];
+      // Listings need JSON caches. Article routes are already statically built;
+      // fetching raw Notion data here would download the same content twice.
+      if (
+        /^\/(?:blog|categories)(?:\/|$)/.test(pathname) ||
+        /^\/search\/?$/.test(pathname)
+      ) {
+        void import("@/hooks/use-posts")
+          .then((m) => m.warmPostsCache())
+          .catch(() => {});
+      }
+      if (/^\/(?:notes|search)\/?$/.test(pathname)) {
+        void import("@/hooks/use-notes")
+          .then((m) => m.warmNotesCache())
+          .catch(() => {});
+      }
+    };
+
+    const onIntent = (event: Event) => {
+      const anchor =
+        event.target instanceof Element
+          ? event.target.closest<HTMLAnchorElement>("a[href]")
+          : null;
+      if (
+        !anchor ||
+        anchor.hasAttribute("download") ||
+        (anchor.target && anchor.target !== "_self")
+      ) {
+        return;
+      }
+      clearTimeout(timer);
+      if (event.type === "pointerover") {
+        if ((event as PointerEvent).pointerType === "touch") {
+          return;
+        }
+        timer = setTimeout(() => {
+          if (anchor.matches(":hover")) {
+            prepare(anchor);
           }
-        }),
-      // Warm the client-fetched data caches so /blog and /notes render content
-      // on arrival (no skeleton) — router.prefetch only warms route code, not the
-      // JSON. warmPostsCache also warms the posts index used by post pages.
-      () => void warmPostsCache(),
-      () => void warmNotesCache(),
-      () => void fetchNotesStats().catch(() => {}),
-      () => void import("@/components/footer"),
-      // Home is pre-rendered and the optional scene owns its lazy chunk.
-      () => void import("@/components/mdx"),
-      () => void import("@/components/table-of-contents"),
-      () => void import("@/components/share-buttons"),
-      () => void import("@/components/post-navigation"),
-    ]
+        }, 100);
+      } else {
+        prepare(anchor);
+      }
+    };
 
-    const win = window as typeof window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
-      cancelIdleCallback?: (handle: number) => void
-    }
-    const idle = (cb: () => void): number =>
-      typeof win.requestIdleCallback === "function"
-        ? win.requestIdleCallback(cb, { timeout: 2000 })
-        : window.setTimeout(cb, 1)
-
-    const handles: number[] = []
-    // Drain one task per idle slice so we never block a frame.
-    const schedule = (i: number) => {
-      if (i >= tasks.length) return
-      handles.push(
-        idle(() => {
-          try {
-            tasks[i]()
-          } catch {
-            /* ignore */
-          }
-          schedule(i + 1)
-        }),
-      )
-    }
-    schedule(0)
-
+    const events = ["pointerover", "focusin", "pointerdown"];
+    events.forEach((event) =>
+      document.addEventListener(event, onIntent, { passive: true }),
+    );
     return () => {
-      handles.forEach((h) => {
-        if (typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(h)
-        else window.clearTimeout(h)
-      })
-    }
-  }, [router])
+      clearTimeout(timer);
+      events.forEach((event) => document.removeEventListener(event, onIntent));
+    };
+  }, [router]);
 
-  return null
+  return null;
 }

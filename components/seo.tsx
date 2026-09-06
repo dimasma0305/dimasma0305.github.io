@@ -1,3 +1,4 @@
+import { siteSocial } from "@/lib/social-metadata";
 import { Metadata } from "next"
 import type { Post } from "@/lib/posts-client"
 import { faqs } from "@/lib/services-data"
@@ -7,7 +8,7 @@ interface SEOProps {
   baseUrl?: string
 }
 
-const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://dimasma0305.github.io') + (process.env.NEXT_PUBLIC_BASE_PATH || '')
+const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://dimasc.tf') + (process.env.NEXT_PUBLIC_BASE_PATH || '')
 
 // Serialize JSON-LD safely for embedding inside a <script> element.
 // JSON.stringify does NOT escape "<", ">" or "/", so a value containing
@@ -27,7 +28,7 @@ export function generatePostMetadata({ post }: SEOProps): Metadata {
   const postUrl = `${baseUrl}/posts/${post.slug}/`
   const imageUrl = post.coverImage?.startsWith('http') 
     ? post.coverImage 
-    : `${baseUrl}${post.coverImage || '/og-image.jpg'}`
+    : `${baseUrl}${post.coverImage || siteSocial.image}`
 
   // Create a clean description from excerpt
   const description = post.excerpt
@@ -127,10 +128,11 @@ export function generateBlogMetadata(): Metadata {
       siteName: 'Dimas Maulana',
       images: [
         {
-          url: `${baseUrl}/og-image.jpg`,
+          url: `${baseUrl}${siteSocial.image}`,
           width: 1200,
           height: 630,
-          alt: "Dimas Maulana Blog",
+          alt: siteSocial.imageAlt,
+          type: "image/jpeg",
         },
       ],
     },
@@ -139,7 +141,7 @@ export function generateBlogMetadata(): Metadata {
       title: "Blog | Cybersecurity Research & CTF Writeups",
       description: "Explore cybersecurity research, CTF writeups, vulnerability analysis, and security tutorials.",
       creator: '@dimasma__',
-      images: [`${baseUrl}/og-image.jpg`],
+      images: [`${baseUrl}${siteSocial.image}`],
     },
   }
 }
@@ -169,10 +171,11 @@ export function generateNotesMetadata(): Metadata {
       siteName: 'Dimas Maulana',
       images: [
         {
-          url: `${baseUrl}/og-image.jpg`,
+          url: `${baseUrl}${siteSocial.image}`,
           width: 1200,
           height: 630,
-          alt: "Dimas Maulana Notes",
+          alt: siteSocial.imageAlt,
+          type: "image/jpeg",
         },
       ],
     },
@@ -181,7 +184,7 @@ export function generateNotesMetadata(): Metadata {
       title: "Notes | Technical Notes & Research",
       description: "Browse technical notes, research findings, and documentation on various topics.",
       creator: '@dimasma__',
-      images: [`${baseUrl}/og-image.jpg`],
+      images: [`${baseUrl}${siteSocial.image}`],
     },
     robots: {
       index: true,
@@ -229,7 +232,7 @@ export function PostStructuredData({ post }: SEOProps) {
   const postUrl = `${baseUrl}/posts/${post.slug}/`
   const imageUrl = post.coverImage?.startsWith('http')
     ? post.coverImage
-    : `${baseUrl}${post.coverImage || '/og-image.jpg'}`
+    : `${baseUrl}${post.coverImage || siteSocial.image}`
 
   // reading_time (minutes) sourced from the index, not from the empty content
   // string. timeRequired/wordCount are derived from it; both are omitted when
@@ -880,7 +883,7 @@ export function NoteStructuredData({ slug }: { slug: string }) {
   // (consistent with generateNoteMetadata) so we never emit image: null.
   const imageUrl = note?.featured_image
     ? `${baseUrl}${note.featured_image}`
-    : `${baseUrl}/og-image.jpg`
+    : `${baseUrl}${siteSocial.image}`
 
   // Keywords from the note's categories + tags (deduped), mirroring the post.
   const keywords = note
@@ -1004,7 +1007,7 @@ export async function generateNoteMetadata(slug: string): Promise<Metadata> {
       ? `${baseUrl}${note.og_image}` 
       : note.featured_image 
         ? `${baseUrl}${note.featured_image}` 
-        : `${baseUrl}/og-image.jpg`
+        : `${baseUrl}${siteSocial.image}`
 
     const description = note.excerpt
       ?.replace(/[#*_`]/g, '')

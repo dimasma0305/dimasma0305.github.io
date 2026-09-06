@@ -15,7 +15,7 @@ export function Footer() {
     <footer className="content-footer border-t border-border/60 bg-transparent">
       <div className="container mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row">
         <div>
-          <Link href="/" className="content-footer-home">
+          <Link href="/" prefetch={false} className="content-footer-home">
             <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
             Back to my room
           </Link>

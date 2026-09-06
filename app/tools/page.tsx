@@ -4,6 +4,11 @@ import { Calculator, Shield, Lightbulb, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/section-header";
+import { socialImage } from "@/lib/social-metadata";
+
+const baseUrl =
+  (process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf") +
+  (process.env.NEXT_PUBLIC_BASE_PATH || "");
 
 export const metadata: Metadata = {
   title: "Tools",
@@ -13,6 +18,15 @@ export const metadata: Metadata = {
     title: "Tools | Dimas Maulana",
     description: "Collection of useful cybersecurity and CTF tools",
     type: "website",
+    url: `${baseUrl}/tools/`,
+    images: [socialImage(baseUrl)],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tools | dimasc.tf",
+    description:
+      "Collection of useful cybersecurity and CTF tools built by Dimas Maulana",
+    images: [socialImage(baseUrl)],
   },
 };
 

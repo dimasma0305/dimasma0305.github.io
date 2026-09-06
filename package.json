@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "generate:brand": "node scripts/generate-brand-assets.mjs",
-    "dev": "next dev",
-    "build": "next build",
-    "analyze": "ANALYZE=true next build",
+    "generate:social": "node scripts/generate-social-preview.mjs",
+    "optimize:media": "node scripts/optimize-media.mjs",
+    "dev": "bun run optimize:media && next dev",
+    "build": "bun run optimize:media && next build",
+    "analyze": "ANALYZE=true bun run build",
     "start": "next start",
     "lint": "next lint",
     "refresh-content": "node scripts/generate-blog-content.js && node scripts/generate-blog-index.js && node scripts/generate-rss.js",
@@ -16,6 +18,8 @@
     "test:room-browser": "node scripts/room-site.browser.mjs",
     "test:site-navigation": "node scripts/site-navigation.browser.mjs",
     "test:content-theme": "node scripts/content-theme.browser.mjs",
+    "test:performance": "node scripts/site-performance.browser.mjs",
+    "test:loading": "node scripts/site-loading.browser.mjs",
     "test": "bun test"
   },
   "dependencies": {

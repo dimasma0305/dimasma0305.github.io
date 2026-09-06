@@ -14,7 +14,7 @@ const isNotesCacheValid = () =>
 
 /**
  * Populate the shared notes cache ahead of navigation (BackgroundPreloader,
- * during idle) so useNotes initializes with loading:false.
+ * on navigation intent) so useNotes can adopt it before painting.
  */
 export async function warmNotesCache(): Promise<void> {
   if (isNotesCacheValid()) return
@@ -55,7 +55,7 @@ export function useNotes() {
       }
       setLoading(true)
       setError(null)
-      const data = await fetchNotes()
+      const data = await fetchNotes(force)
       if (!mountedRef.current) return
       sharedNotesCache = data
       notesCacheTimestamp = Date.now()

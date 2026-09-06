@@ -1,6 +1,7 @@
 import { Metadata } from "next"
 import { HomepageStructuredData } from "@/components/seo"
 import { RoomHome } from "@/components/room-home"
+import { siteSocial, socialImage } from "@/lib/social-metadata"
 
 // Environment variables with fallbacks
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf"
@@ -8,8 +9,8 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""
 const fullUrl = `${baseUrl}${basePath}`
 
 export const metadata: Metadata = {
-  title: { absolute: "dimasc.tf — Dimas Maulana" },
-  description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
+  title: { absolute: siteSocial.title },
+  description: siteSocial.description,
   keywords: ["cybersecurity", "CTF", "capture the flag", "security research", "vulnerability", "bug bounty", "hacking", "Indonesia", "Dimas Maulana"],
   authors: [{ name: "Dimas Maulana", url: fullUrl }],
   creator: "Dimas Maulana",
@@ -22,25 +23,17 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: fullUrl,
     siteName: "dimasc.tf",
-    title: "dimasc.tf — Dimas Maulana",
-    description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
-    images: [
-      {
-        url: `${fullUrl}/og-image.jpg`,
-        width: 1200,
-        height: 630,
-        alt: "Dimas Maulana - Cybersecurity Researcher & CTF Player",
-        type: "image/jpeg",
-      },
-    ],
+    title: siteSocial.title,
+    description: siteSocial.description,
+    images: [socialImage(fullUrl)],
   },
   twitter: {
     card: "summary_large_image",
     site: "@dimasma__",
     creator: "@dimasma__",
-    title: "dimasc.tf — Dimas Maulana",
-    description: "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
-    images: [`${fullUrl}/og-image.jpg`],
+    title: siteSocial.title,
+    description: siteSocial.description,
+    images: [socialImage(fullUrl)],
   },
   robots: {
     index: true,

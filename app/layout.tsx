@@ -10,6 +10,7 @@ import { BackgroundPreloader } from "@/components/background-preloader";
 import NavigationLoader from "@/components/navigation-loader";
 import { RouteAnnouncer } from "@/components/route-announcer";
 import { roomSans, roomHeading } from "@/lib/site-fonts";
+import { siteSocial, socialImage } from "@/lib/social-metadata";
 
 // Two curated families: Inter for UI/body, JetBrains Mono for code.
 const inter = Inter({
@@ -43,11 +44,10 @@ const baseUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "dimasc.tf — Dimas Maulana",
+    default: siteSocial.title,
     template: "%s | dimasc.tf",
   },
-  description:
-    "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
+  description: siteSocial.description,
   keywords: [
     "cybersecurity",
     "CTF",
@@ -70,25 +70,16 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: baseUrl,
     siteName: "dimasc.tf",
-    title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
-    description:
-      "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
-    images: [
-      {
-        url: baseUrl + "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Dimas Maulana",
-      },
-    ],
+    title: siteSocial.title,
+    description: siteSocial.description,
+    images: [socialImage(baseUrl)],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dimas Maulana | Cybersecurity Researcher & CTF Player",
-    description:
-      "Personal website of Dimas Maulana, a cybersecurity researcher, CTF player, source code pentester, and open source developer from Indonesia.",
+    title: siteSocial.title,
+    description: siteSocial.description,
     creator: "@dimasma__",
-    images: [baseUrl + "/og-image.jpg"],
+    images: [socialImage(baseUrl)],
   },
   robots: {
     index: true,

@@ -1,3 +1,4 @@
+import { siteSocial } from "@/lib/social-metadata";
 import type { Metadata } from "next"
 import fs from "fs"
 import path from "path"
@@ -13,7 +14,7 @@ import { withBasePath, formatDate } from "@/lib/utils"
 
 // Canonical site origin (mirrors app/sitemap.ts and components/seo.tsx).
 const baseUrl =
-  (process.env.NEXT_PUBLIC_BASE_URL || "https://dimasma0305.github.io") +
+  (process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf") +
   (process.env.NEXT_PUBLIC_BASE_PATH || "")
 
 // Shape of a post entry in public/blog-index.json (snake_case fields).
@@ -140,10 +141,11 @@ export async function generateMetadata({
       siteName: "Dimas Maulana",
       images: [
         {
-          url: `${baseUrl}/og-image.jpg`,
+          url: `${baseUrl}${siteSocial.image}`,
           width: 1200,
           height: 630,
-          alt: title,
+          alt: siteSocial.imageAlt,
+          type: "image/jpeg",
         },
       ],
     },
@@ -152,7 +154,7 @@ export async function generateMetadata({
       title,
       description,
       creator: "@dimasma__",
-      images: [`${baseUrl}/og-image.jpg`],
+      images: [`${baseUrl}${siteSocial.image}`],
     },
     robots: {
       index: true,
@@ -192,6 +194,7 @@ function TagPostCard({ post }: { post: IndexPost }) {
   return (
     <Link
       href={postUrl}
+      prefetch={false}
       className="post-card group block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <Card className="post-card-surface overflow-hidden h-full">

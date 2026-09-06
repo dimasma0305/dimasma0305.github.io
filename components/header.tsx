@@ -14,7 +14,12 @@ export function Header() {
   return (
     <header className="site-global-header">
       <div className="site-header-inner">
-        <Link href="/" className="site-brand" aria-label="dimasc.tf — home">
+        <Link
+          href="/"
+          prefetch={false}
+          className="site-brand"
+          aria-label="dimasc.tf — home"
+        >
           <LogoMark size={36} />
           <span className="site-wordmark">
             dimasc<span>.tf</span>
@@ -25,6 +30,7 @@ export function Header() {
             <Link
               key={item.path}
               href={item.path}
+              prefetch={false}
               aria-current={
                 isSiteSectionActive(pathname, item.path) ? "page" : undefined
               }
@@ -35,6 +41,7 @@ export function Header() {
         </nav>
         <Link
           href="/search/"
+          prefetch={false}
           className="site-search"
           aria-label="Search the site"
         >

@@ -32,5 +32,8 @@ public/notes/
 public/blog-index.json
 public/posts/
 public/rss.xml
+# Full-resolution companions are reproducibly generated before each build.
+public/room/assets/room-stills/*.webp
+public/room/assets/bali-night-window.webp
 
 /reference

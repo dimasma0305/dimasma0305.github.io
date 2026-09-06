@@ -104,13 +104,37 @@ export interface NotesStats {
   notesWithNotionLinks: number
 }
 
-export async function fetchNotes(): Promise<Note[]> {
-  try {
+let cachedIndex: { data: NotesIndex; timestamp: number } | null = null
+let pendingIndex: Promise<NotesIndex> | null = null
+const INDEX_TTL = 5 * 60 * 1000
+
+function fetchNotesIndex(force = false): Promise<NotesIndex> {
+  if (!force && cachedIndex && Date.now() - cachedIndex.timestamp < INDEX_TTL) {
+    return Promise.resolve(cachedIndex.data)
+  }
+  if (!force && pendingIndex) { return pendingIndex }
+  if (force) { cachedIndex = null }
+  const request = (async () => {
     const response = await fetch(withBasePath('/notes-index.json'))
-    if (!response.ok) {
-      throw new Error('Failed to fetch notes')
+    if (!response.ok) { throw new Error('Failed to fetch notes') }
+    return await response.json() as NotesIndex
+  })()
+  pendingIndex = request
+  return request.then(data => {
+    if (pendingIndex === request) {
+      cachedIndex = { data, timestamp: Date.now() }
+      pendingIndex = null
     }
-    const data: NotesIndex = await response.json()
+    return data
+  }, error => {
+    if (pendingIndex === request) { pendingIndex = null }
+    throw error
+  })
+}
+
+export async function fetchNotes(force = false): Promise<Note[]> {
+  try {
+    const data = await fetchNotesIndex(force)
     
     // Handle case where posts might be undefined
     const posts = data.posts?.all || []
@@ -123,11 +147,7 @@ export async function fetchNotes(): Promise<Note[]> {
 
 export async function fetchNotesStats(): Promise<NotesStats> {
   try {
-    const response = await fetch(withBasePath('/notes-index.json'))
-    if (!response.ok) {
-      throw new Error('Failed to fetch notes stats')
-    }
-    const data: NotesIndex = await response.json()
+    const data = await fetchNotesIndex()
     
     // Get unique categories from taxonomy
     const categories = data.taxonomy?.categories?.map(cat => cat.name) || []

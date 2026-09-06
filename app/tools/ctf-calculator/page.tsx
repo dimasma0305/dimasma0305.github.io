@@ -3,6 +3,11 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { SectionHeader } from "@/components/section-header";
 import { CTFCalculator } from "@/components/ui/ctf-calculator";
+import { socialImage } from "@/lib/social-metadata";
+
+const baseUrl =
+  (process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf") +
+  (process.env.NEXT_PUBLIC_BASE_PATH || "");
 
 export const metadata: Metadata = {
   title: "CTF Challenge Difficulty Calculator",
@@ -13,6 +18,15 @@ export const metadata: Metadata = {
     description:
       "Calculate the difficulty rating of CTF challenges based on various factors like solve rate, category, and complexity.",
     type: "website",
+    url: `${baseUrl}/tools/ctf-calculator/`,
+    images: [socialImage(baseUrl)],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CTF Challenge Difficulty Calculator | dimasc.tf",
+    description:
+      "Calculate the difficulty rating of CTF challenges based on solve rate, category, and complexity.",
+    images: [socialImage(baseUrl)],
   },
 };
 

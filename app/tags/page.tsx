@@ -1,3 +1,4 @@
+import { siteSocial } from "@/lib/social-metadata";
 import type { Metadata } from "next"
 import fs from "fs"
 import path from "path"
@@ -9,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 const baseUrl =
-  (process.env.NEXT_PUBLIC_BASE_URL || "https://dimasma0305.github.io") +
+  (process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf") +
   (process.env.NEXT_PUBLIC_BASE_PATH || "")
 
 interface TagSummary {
@@ -77,7 +78,7 @@ export function generateMetadata(): Metadata {
       description,
       siteName: "Dimas Maulana",
       images: [
-        { url: `${baseUrl}/og-image.jpg`, width: 1200, height: 630, alt: title },
+        { url: `${baseUrl}${siteSocial.image}`, width: 1200, height: 630, alt: siteSocial.imageAlt, type: "image/jpeg" },
       ],
     },
     twitter: {
@@ -85,7 +86,7 @@ export function generateMetadata(): Metadata {
       title,
       description,
       creator: "@dimasma__",
-      images: [`${baseUrl}/og-image.jpg`],
+      images: [`${baseUrl}${siteSocial.image}`],
     },
     robots: { index: true, follow: true },
   }
@@ -109,6 +110,7 @@ export default function TagsPage() {
             <Link
               key={name}
               href={`/tags/${tagToSlug(name)}`}
+              prefetch={false}
               className="group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <Card className="h-full transition-[transform,box-shadow,border-color] duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover:-translate-y-1 group-hover:border-primary/40 group-hover:shadow-[var(--elevation-2)]">

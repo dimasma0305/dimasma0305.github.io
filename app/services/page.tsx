@@ -1,3 +1,4 @@
+import { siteSocial } from "@/lib/social-metadata";
 import { Metadata } from "next";
 import { SectionHeader } from "@/components/section-header";
 import { ServicesDetail } from "@/components/services-detail";
@@ -5,12 +6,12 @@ import { ServicesStructuredData } from "@/components/seo";
 import portfolio from "@/lib/portfolio-data.json";
 
 const baseUrl =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://dimasma0305.github.io";
+  process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 // trailingSlash:true — keep the canonical, og:url, and JSON-LD URLs in the
 // /services/ form the page is actually served and indexed at.
 const servicesUrl = `${baseUrl}${basePath}/services/`;
-const ogImage = `${baseUrl}${basePath}/og-image.jpg`;
+const ogImage = `${baseUrl}${basePath}${siteSocial.image}`;
 
 export const metadata: Metadata = {
   // The layout template appends " | dimasc.tf", so keep this keyword-first
@@ -32,7 +33,8 @@ export const metadata: Metadata = {
         url: ogImage,
         width: 1200,
         height: 630,
-        alt: "Source Code Security Review by Dimas Maulana",
+        alt: siteSocial.imageAlt,
+        type: "image/jpeg",
       },
     ],
   },
