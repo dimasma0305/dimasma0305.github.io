@@ -3,14 +3,18 @@
 // Long-form content styles (notion/prose/prism/TOC) live in a separate
 // stylesheet so only post/note routes ship them.
 import "@/app/content.css";
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useMemo, useState, lazy, Suspense } from "react";
 import { formatBlogDate } from "@/lib/blog-archive";
 import { BlogReturnLink } from "@/components/blog-return-link";
 import "@/lib/blog.css";
 import { ArrowLeft, ArrowDown, ArrowUpRight, Clock } from "lucide-react";
 import Link from "next/link";
-import { handleHashOnPageLoad } from "@/lib/scroll-utils";
+import { getHeaderOffset, handleHashOnPageLoad } from "@/lib/scroll-utils";
 import { optimizedContentCover } from "@/lib/optimized-media.mjs";
+import { prepareArticle } from "@/lib/article-outline";
+import { ArticleOutline } from "@/components/article-outline";
+import { ArticleImageViewer } from "@/components/article-image-viewer";
+import "@/lib/article.css";
 
 import { fetchPostBySlug } from "@/lib/posts-loader";
 import { usePosts } from "@/hooks/use-posts";
@@ -26,11 +30,6 @@ const Mdx = dynamic(() => import("@/components/mdx").then((m) => m.Mdx));
 import { PostSkeleton } from "@/components/post-skeleton";
 
 // Lazy load heavy components for better initial page load
-const TableOfContents = lazy(() =>
-  import("@/components/table-of-contents").then((m) => ({
-    default: m.TableOfContents,
-  })),
-);
 const ShareButtons = lazy(() =>
   import("@/components/share-buttons").then((m) => ({
     default: m.ShareButtons,
@@ -61,6 +60,10 @@ export default function PostPageClient({
   const [coverError, setCoverError] = useState(false);
   const [useOriginalCover, setUseOriginalCover] = useState(false);
   const { posts } = usePosts();
+  const article = useMemo(
+    () => prepareArticle(post?.content || ""),
+    [post?.content],
+  );
 
   useEffect(() => {
     // When the post was pre-rendered at build time, its content is already
@@ -108,6 +111,7 @@ export default function PostPageClient({
       handleHashOnPageLoad({
         behavior: "smooth",
         lazyLoadDelay: 250,
+        headerOffset: getHeaderOffset() + (window.innerWidth < 1024 ? 64 : 0),
       });
     }
   }, [loading, post]);
@@ -153,7 +157,7 @@ export default function PostPageClient({
 
   return (
     <div className="reading-page blog-reading">
-      <header className="reading-hero">
+      <header id="article-top" tabIndex={-1} className="reading-hero">
         <div className="container">
           <BlogReturnLink />
           <div
@@ -190,6 +194,9 @@ export default function PostPageClient({
                     {post.readingTime || estimateReadingTime(post.content)} min
                     read
                   </span>
+                )}
+                {article.sections.length > 1 && (
+                  <span>{article.sections.length} sections</span>
                 )}
               </div>
               <div className="blog-reading-actions">
@@ -237,28 +244,21 @@ export default function PostPageClient({
       </header>
       <div className="container blog-reading-content">
         <div className="reading-layout">
+          <ArticleOutline sections={article.sections} />
           <div className="reading-column">
-            {post.content && (
-              <div className="lg:hidden mb-8">
-                <Suspense fallback={null}>
-                  <TableOfContents
-                    content={post.content}
-                    label="On this page"
-                  />
-                </Suspense>
-              </div>
-            )}
             <article
               id="article-body"
               className="reading-body"
               aria-label={post.title}
+              tabIndex={-1}
             >
               {post.content ? (
-                <Mdx content={post.content} />
+                <Mdx content={article.html} readingTools />
               ) : (
                 <p>No content is available for this article yet.</p>
               )}
             </article>
+            <ArticleImageViewer />
             <footer className="blog-article-footer">
               <div className="blog-article-share">
                 <h2>Worth sharing?</h2>
@@ -300,18 +300,6 @@ export default function PostPageClient({
               <BlogReturnLink />
             </footer>
           </div>
-          <aside className="hidden lg:block" aria-label="Article navigation">
-            <div className="reading-sidebar">
-              {post.content && (
-                <Suspense fallback={null}>
-                  <TableOfContents
-                    content={post.content}
-                    label="On this page"
-                  />
-                </Suspense>
-              )}
-            </div>
-          </aside>
         </div>
       </div>
     </div>

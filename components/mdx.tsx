@@ -3,6 +3,7 @@
 import { withBasePath } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 import { initializeLazyLoadingTimer } from "@/lib/scroll-utils";
+import { enhanceArticle } from "@/lib/article-enhancements";
 
 // Prism theme only (CSS is tiny — keep it eager so highlighted code is styled
 // the moment it paints). Prism core + the 20 language grammars are heavy, so we
@@ -60,9 +61,10 @@ function loadPrism(): Promise<any> {
 
 interface MdxProps {
   content: string;
+  readingTools?: boolean;
 }
 
-export function Mdx({ content }: MdxProps) {
+export function Mdx({ content, readingTools = false }: MdxProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -115,6 +117,7 @@ export function Mdx({ content }: MdxProps) {
         placeholder.setAttribute("aria-hidden", "true");
 
         const newImg = document.createElement("img") as HTMLImageElement;
+        newImg.setAttribute("data-lazy-processed", "true");
         newImg.alt = originalAlt;
         newImg.className =
           img.className + " transition-opacity duration-300 opacity-0";
@@ -475,7 +478,9 @@ export function Mdx({ content }: MdxProps) {
           }
         }
       });
-
+      if (readingTools) {
+        enhanceArticle(root);
+      }
     };
 
     decorate();
@@ -500,7 +505,7 @@ export function Mdx({ content }: MdxProps) {
       cancelled = true;
       observer.disconnect();
     };
-  }, [content]);
+  }, [content, readingTools]);
 
   // Modify content to support Notion-style tables
   const processedContent = content.replace(

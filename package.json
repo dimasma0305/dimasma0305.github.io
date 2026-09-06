@@ -19,6 +19,7 @@
     "test:site-navigation": "node scripts/site-navigation.browser.mjs",
     "test:content-theme": "node scripts/content-theme.browser.mjs",
     "test:blog": "node scripts/blog.browser.mjs",
+    "test:article": "node scripts/article.browser.mjs",
     "test:performance": "node scripts/site-performance.browser.mjs",
     "test:loading": "node scripts/site-loading.browser.mjs",
     "test": "bun test"

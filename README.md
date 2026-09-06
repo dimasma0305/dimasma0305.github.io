@@ -164,11 +164,23 @@ or external service. The archive uses the published index's reading-time estimat
 Article pages keep one contents rail, the original Notion reference, sharing,
 related reading and clearly labeled newer/older links. The article component is
 keyed by slug to prevent stale content on client-side adjacent navigation. Original
-article bodies, code examples and heading anchors are not rewritten by the UI.
+article prose, code examples and legacy heading anchors are preserved. The
+post-only reading layer normalizes heading levels beneath the page title and
+numbers the main sections. Its build-rendered outline uses native anchor links
+and disclosures; mobile readers get a sticky section menu. Scroll progress is
+passively observed, without intercepting normal scrolling.
+
+Post code blocks offer keyboard scrolling, line wrapping and copy feedback
+(including text selection when clipboard permission is unavailable). Screenshots
+open in an accessible image viewer with Escape and focus restoration. Notes do
+not opt into this reading layer.
 
 `bun run test:blog` uses the browser environment variables above to verify search,
 combined filters, ordering, persistent results, keyboard operation, reading anchors,
 adjacent navigation, no-JavaScript content, mobile layouts and optional axe checks.
+`bun run test:article` additionally checks the long PatchStack article at four
+viewport widths, section navigation, code controls, denied clipboard behavior,
+image-viewer keyboard operation and no-JavaScript heading anchors.
 
 ## Link previews
 
