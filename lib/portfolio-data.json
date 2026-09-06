@@ -458,17 +458,17 @@
       "highlight": true
     },
     {
-      "title": "Content Creator",
+      "title": "Content Creator (Outsourced)",
       "company": "HackTheBox",
       "location": "Remote",
       "period": "2025 - Present",
-      "description": "Develop original security training content and challenges for the HackTheBox platform.",
+      "description": "Develop original security training content and challenges for the HackTheBox platform as an outsourced contributor.",
       "skills": [
         "Challenge Design",
         "Training Content",
         "Web Security"
       ],
-      "type": "Contract"
+      "type": "Outsourced"
     },
     {
       "title": "DevSecOps Intern",

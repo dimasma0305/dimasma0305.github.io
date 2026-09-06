@@ -109,6 +109,26 @@ test("portfolio strings are escaped before entering server-rendered markup", () 
   expect(html).not.toContain("<b>quoted");
 });
 
+test("HackTheBox is clearly identified as outsourced work in the room and experience entry", () => {
+  const p = assembleRoomPortfolio([], [], "/room/");
+  const role = p.experience.find((item) => item.company === "HackTheBox");
+  expect(role?.title).toBe("Content Creator (Outsourced)");
+  expect(role?.type).toBe("Outsourced");
+  expect(role?.description).toContain("as an outsourced contributor");
+  const sceneRole = createSceneSummary(p).experience.find(
+    (item) => item.company === "HackTheBox",
+  );
+  expect(sceneRole?.title).toBe(role?.title);
+  const html = cornerTour({
+    portfolio: p,
+    email: p.email,
+    site: "",
+    assetBase: "/room/",
+    production: true,
+  });
+  expect(html).toContain("2025 - Present · Content Creator (Outsourced)");
+});
+
 test("room asset joins retain an optional Pages prefix", () => {
   expect(roomAsset("/portfolio/room/", "./assets/test.jpg")).toBe(
     "/portfolio/room/assets/test.jpg",
