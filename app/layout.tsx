@@ -123,11 +123,32 @@ export default function RootLayout({
         {/* Favicon and icons — relative so they resolve against the current
             origin (localhost in dev, the site domain in prod), not a hardcoded
             absolute URL. */}
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-        <link rel="icon" href="/favicon.ico" sizes="48x48" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
+        {/* Version the approved artwork so returning visitors refresh cached icons. */}
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=dm2" />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="96x96"
+          href="/favicon-96.png?v=dm2"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32.png?v=dm2"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16.png?v=dm2"
+        />
+        <link rel="icon" href="/favicon.ico?v=dm2" sizes="16x16 32x32 48x48" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-icon.png?v=dm2"
+        />
         <link rel="manifest" href="/manifest.webmanifest" />
 
         {/* Theme and PWA meta tags */}

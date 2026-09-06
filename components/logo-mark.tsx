@@ -23,14 +23,7 @@ export function LogoMark({
       aria-hidden="true"
       focusable="false"
     >
-      <path d={siteBrand.mark} fill={colors.ink} fillRule="evenodd" />
-      <path
-        d={siteBrand.prompt}
-        stroke={colors.accent}
-        strokeWidth="2.8"
-        strokeLinecap="square"
-        strokeLinejoin="miter"
-      />
+      <path d={siteBrand.mark} fill={colors.accent} fillRule="evenodd" />
     </svg>
   );
 }

@@ -24,12 +24,12 @@
   align-items: center;
   width: fit-content;
   min-height: 44px;
-  gap: 10px;
+  gap: 9px;
   color: #eeecdf;
   text-decoration: none;
-  letter-spacing: -0.7px;
+  letter-spacing: -0.8px;
   font:
-    650 23px/1 var(--font-inter, "DM Sans"),
+    600 24px/1 var(--font-inter, "DM Sans"),
     sans-serif;
 }
 .site-brand svg,
@@ -46,6 +46,8 @@
 .site-wordmark > span,
 .tour-wordmark > span {
   color: #e4ac83;
+  font-weight: 450;
+  letter-spacing: -0.6px;
 }
 .site-primary-nav {
   display: flex;
