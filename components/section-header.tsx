@@ -32,17 +32,14 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        "mb-10 flex flex-col gap-4 sm:mb-12 sm:flex-row sm:items-end sm:justify-between",
+        "section-header mb-10 flex flex-col gap-4 sm:mb-12 sm:flex-row sm:items-end sm:justify-between",
         className,
       )}
+      data-heading-level={TitleTag}
     >
       <div className="space-y-2">
         {eyebrow && (
-          /* Brighter step of the single blue accent: --primary (60% lightness)
-             is 3.8:1 on the midday sky top — below AA for 14px text. 72%
-             clears every sky phase and card surface; same hue/chroma, so it
-             reads as a lightness ramp, not a second accent. */
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary-bright">
+          <p className="section-eyebrow text-sm font-semibold uppercase tracking-widest text-primary-bright">
             {/* Full accent brightness: at reduced opacity this small text
                 fails WCAG contrast against the lighter sky phases. */}
             {index && (
@@ -58,10 +55,12 @@ export function SectionHeader({
         )}
         <TitleTag className="section-heading">{title}</TitleTag>
         {subtitle && (
-          <p className="max-w-2xl text-lg text-muted-foreground">{subtitle}</p>
+          <p className="section-subtitle max-w-2xl text-lg text-muted-foreground">
+            {subtitle}
+          </p>
         )}
       </div>
-      {action && <div className="shrink-0">{action}</div>}
+      {action && <div className="section-action shrink-0">{action}</div>}
     </div>
   );
 }

@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Smooth in-page anchor scrolling, offset for the fixed 4rem header */
+/* Native scrolling, with the shared responsive header accounted for. */
 html {
-  scroll-padding-top: 5rem;
+  scroll-padding-top: calc(var(--site-header-height, 73px) + 24px);
   scroll-behavior: smooth;
 }
 
@@ -52,30 +52,28 @@ html {
   /* Single, dark-only palette. The site is locked to dark (html.dark), so the
      tokens live in :root and `dark:` utilities still resolve via the html class. */
   :root {
-    --background: 222 47% 5%;
-    --foreground: 210 40% 98%;
-    --card: 222 30% 11%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 32% 10%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 7%;
-    /* Brighter step of the single accent for small/low-contrast text (eyebrows,
-       chips): clears AA on every sky phase and card surface. Same hue/chroma as
-       --primary, so it reads as a lightness ramp, not a second color. */
-    --primary-bright: 217 91% 72%;
-    --secondary: 217 33% 15%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 15%;
-    --muted-foreground: 215 18% 70%;
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 30% 17%;
-    --input: 217 30% 17%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
+    /* Forest, copper and warm ivory — the same palette as the room. */
+    --background: 150 19.05% 8.24%;
+    --foreground: 52 30.61% 90.39%;
+    --card: 141.82 18.03% 11.96%;
+    --card-foreground: 52 30.61% 90.39%;
+    --popover: 141.82 18.03% 11.96%;
+    --popover-foreground: 52 30.61% 90.39%;
+    --primary: 25.36 64.24% 70.39%;
+    --primary-foreground: 150 19.05% 8.24%;
+    --primary-bright: 26.3 73.74% 80.59%;
+    --secondary: 133.85 14.61% 17.45%;
+    --secondary-foreground: 52 30.61% 90.39%;
+    --muted: 133.85 14.61% 17.45%;
+    --muted-foreground: 110 9.23% 74.51%;
+    --accent: 133.85 14.61% 17.45%;
+    --accent-foreground: 52 30.61% 90.39%;
+    --destructive: 8.32 66.01% 70%;
+    --destructive-foreground: 150 19.05% 8.24%;
+    --border: 132 11.28% 26.08%;
+    --input: 106.36 9.02% 47.84%;
+    --ring: 25.36 64.24% 70.39%;
+    --chart-1: 25.36 64.24% 70.39%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
@@ -91,19 +89,18 @@ html {
     --dur-slow: 400ms;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     /* Shared inset top-highlight for glass surfaces (one source of truth) */
-    --glass-inset: 210 40% 98%;
-    /* Hacker-persona retro terminal — deliberate specialized hues kept out of
-       the general palette so the single blue accent stays the only brand color */
-    --terminal-surface: 222 49% 8%;
+    --glass-inset: 52 30.61% 90.39%;
+    /* Semantic terminal/diff colors stay distinct from the copper brand. */
+    --terminal-surface: 150 19.05% 8.24%;
     --terminal-accent: 142 69% 58%;
-    --sidebar-background: 222 38% 7%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 33% 15%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 217 30% 17%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-background: 141.82 18.03% 11.96%;
+    --sidebar-foreground: 52 30.61% 90.39%;
+    --sidebar-primary: 25.36 64.24% 70.39%;
+    --sidebar-primary-foreground: 150 19.05% 8.24%;
+    --sidebar-accent: 133.85 14.61% 17.45%;
+    --sidebar-accent-foreground: 52 30.61% 90.39%;
+    --sidebar-border: 132 11.28% 26.08%;
+    --sidebar-ring: 25.36 64.24% 70.39%;
   }
 }
 
@@ -296,17 +293,16 @@ html {
   pointer-events: none;
 }
 
-
 /* Token colors */
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  @apply text-zinc-500;
+  color: #a2b19f;
 }
 
 .token.punctuation {
-  @apply text-zinc-400;
+  color: #c7cfc1;
 }
 
 .token.property,
@@ -339,12 +335,12 @@ html {
 .token.atrule,
 .token.attr-value,
 .token.keyword {
-  @apply text-blue-400;
+  color: #efc29f;
 }
 
 .token.function,
 .token.class-name {
-  @apply text-purple-400;
+  color: #d1bee7;
 }
 
 .token.regex,
@@ -418,20 +414,36 @@ html {
    faint glows, so clouds carry the daytime story; at lg+ they return to the
    original whisper. Same hue family as the sky, reads as haze. */
 .sky-cloud-a {
-  background: radial-gradient(closest-side, hsl(214 45% 38% / 0.45), transparent);
+  background: radial-gradient(
+    closest-side,
+    hsl(214 45% 38% / 0.45),
+    transparent
+  );
 }
 
 .sky-cloud-b {
-  background: radial-gradient(closest-side, hsl(214 45% 42% / 0.34), transparent);
+  background: radial-gradient(
+    closest-side,
+    hsl(214 45% 42% / 0.34),
+    transparent
+  );
 }
 
 @media (min-width: 1024px) {
   .sky-cloud-a {
-    background: radial-gradient(closest-side, hsl(214 45% 38% / 0.30), transparent);
+    background: radial-gradient(
+      closest-side,
+      hsl(214 45% 38% / 0.3),
+      transparent
+    );
   }
 
   .sky-cloud-b {
-    background: radial-gradient(closest-side, hsl(214 45% 42% / 0.22), transparent);
+    background: radial-gradient(
+      closest-side,
+      hsl(214 45% 42% / 0.22),
+      transparent
+    );
   }
 }
 /* Uneven multi-stop curve so the star field doesn't visibly "breathe" in

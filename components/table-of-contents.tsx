@@ -121,7 +121,9 @@ export function TableOfContents({ content }: TableOfContentsProps) {
           // Smooth scroll to the target position
           container.scrollTo({
             top: Math.max(0, targetScrollTop),
-            behavior: "smooth",
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "instant"
+              : "smooth",
           });
         }
       };

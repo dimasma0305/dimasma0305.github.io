@@ -1,19 +1,28 @@
 import portfolio from "@/lib/portfolio-data.json";
-import Link from "next/link"
-import { Github, Twitter, Linkedin, Mail } from "lucide-react"
+import Link from "next/link";
+import { Github, Twitter, Linkedin, Mail, ArrowUpLeft } from "lucide-react";
 
-const socials = portfolio.socials.map((item, i) => ({ ...item, icon: [Github, Twitter, Linkedin, Mail][i] }))
+const socials = portfolio.socials.map((item, i) => ({
+  ...item,
+  icon: [Github, Twitter, Linkedin, Mail][i],
+}));
 
 export function Footer() {
   // One quiet bar: copyright + socials. Transparent so the homepage ends in
   // the night landscape (hills, fireflies, stars); on other routes the body
   // background shows through identically.
   return (
-    <footer className="border-t border-border/60 bg-transparent">
+    <footer className="content-footer border-t border-border/60 bg-transparent">
       <div className="container mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row">
-        <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Dimas Maulana
-        </p>
+        <div>
+          <Link href="/" className="content-footer-home">
+            <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
+            Back to my room
+          </Link>
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Dimas Maulana
+          </p>
+        </div>
 
         <div className="flex items-center gap-1">
           {socials.map(({ name, href, icon: Icon }) => (
@@ -32,5 +41,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

@@ -192,11 +192,11 @@ function TagPostCard({ post }: { post: IndexPost }) {
   return (
     <Link
       href={postUrl}
-      className="group block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="post-card group block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      <Card className="overflow-hidden h-full transition-[transform,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover:-translate-y-1 group-hover:shadow-[var(--elevation-2)]">
+      <Card className="post-card-surface overflow-hidden h-full">
         {imageSrc ? (
-          <div className="relative w-full h-48 overflow-hidden bg-muted">
+          <div className="post-cover relative w-full h-48 overflow-hidden bg-muted">
             <div
               aria-hidden="true"
               className="absolute inset-0 bg-gradient-to-br from-muted via-card to-muted"
@@ -210,26 +210,26 @@ function TagPostCard({ post }: { post: IndexPost }) {
             />
           </div>
         ) : (
-          <div className="relative flex h-48 items-center justify-center overflow-hidden bg-gradient-to-br from-primary/15 via-card to-background">
+          <div className="post-cover relative flex h-48 items-center justify-center overflow-hidden bg-gradient-to-br from-primary/15 via-card to-background">
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary/70">
               {categories[0] ?? "Writeup"}
             </span>
           </div>
         )}
 
-        <CardHeader className="pb-2">
-          <h2 className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
+        <CardHeader className="post-card-header pb-2">
+          <h2 className="post-card-title text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
             {post.title}
           </h2>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="post-card-content">
           <p className="text-muted-foreground line-clamp-3 leading-relaxed">
             {post.excerpt}
           </p>
         </CardContent>
 
-        <CardFooter className="flex flex-wrap items-center justify-between">
+        <CardFooter className="post-card-footer flex flex-wrap items-center justify-between">
           {post.created_time && (
             <div className="flex items-center text-sm text-muted-foreground">
               <Calendar className="w-4 h-4 mr-1" />

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { SectionHeader } from "@/components/section-header";
 import { ServicesDetail } from "@/components/services-detail";
 import { ServicesStructuredData } from "@/components/seo";
+import portfolio from "@/lib/portfolio-data.json";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_BASE_URL || "https://dimasma0305.github.io";
@@ -47,13 +48,31 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <div className="container mx-auto px-4 py-12 max-w-7xl">
+    <div className="services-page container mx-auto px-4 py-12 max-w-7xl">
       <ServicesStructuredData />
       <SectionHeader
         titleAs="h1"
-        eyebrow="Services"
+        index="04"
+        eyebrow="The review desk"
         title="Source Code Security Review"
         subtitle="An AI agent reviews your code for potential vulnerabilities. I triage what's actually exploitable, run the program to check it works correctly, and hand you back suggested fixes."
+        action={
+          <div className="flex flex-col gap-3 sm:items-end">
+            <p className="text-sm text-muted-foreground">
+              From{" "}
+              <span className="text-foreground">
+                {portfolio.services.price}
+              </span>{" "}
+              per project
+            </p>
+            <a
+              href="#start-a-review"
+              className="inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Let’s discuss your project ↗
+            </a>
+          </div>
+        }
       />
       <ServicesDetail />
     </div>

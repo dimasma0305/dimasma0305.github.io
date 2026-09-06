@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import { BackgroundPreloader } from "@/components/background-preloader";
 import NavigationLoader from "@/components/navigation-loader";
 import { RouteAnnouncer } from "@/components/route-announcer";
+import { roomSans, roomHeading } from "@/lib/site-fonts";
 
 // Two curated families: Inter for UI/body, JetBrains Mono for code.
 const inter = Inter({
@@ -33,7 +34,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#080d1a",
+  themeColor: "#111915",
 };
 
 const baseUrl =
@@ -152,7 +153,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.webmanifest" />
 
         {/* Theme and PWA meta tags */}
-        <meta name="theme-color" content="#080d1a" />
+        <meta name="theme-color" content="#111915" />
         <meta name="application-name" content="dimasc.tf" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
@@ -162,7 +163,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="dimasc.tf" />
       </head>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${roomSans.variable} ${roomHeading.variable} font-sans antialiased`}
       >
         <a
           href="#main-content"

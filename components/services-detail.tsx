@@ -43,7 +43,10 @@ function DiscordIcon({ className }: { className?: string }) {
 
 const features = portfolio.services.features;
 
-const steps = portfolio.services.steps.map((item, i) => ({ ...item, icon: [Send, ScanSearch, FileCheck2][i] }));
+const steps = portfolio.services.steps.map((item, i) => ({
+  ...item,
+  icon: [Send, ScanSearch, FileCheck2][i],
+}));
 
 const included = portfolio.services.included;
 
@@ -55,9 +58,9 @@ const limits = portfolio.services.limits;
  */
 export function ServicesDetail() {
   return (
-    <>
+    <div className="services-content">
       {/* Pitch + live demo */}
-      <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
         <div className="min-w-0">
           <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-primary-bright">
             <Sparkles className="w-3.5 h-3.5" />
@@ -73,8 +76,8 @@ export function ServicesDetail() {
             vulnerabilities. I triage what it finds, flag the ones that are
             actually exploitable, and send back suggested fixes. I also run the
             program to confirm it works correctly and that the fixes don&apos;t
-            break anything, so you don&apos;t just get a list, you get patches you
-            can merge with confidence.
+            break anything, so you don&apos;t just get a list, you get patches
+            you can merge with confidence.
           </p>
 
           <ul className="mt-6 space-y-3">
@@ -91,7 +94,9 @@ export function ServicesDetail() {
           <div className="mt-7">
             <div className="flex flex-wrap items-baseline gap-x-2">
               <span className="text-sm text-muted-foreground">Starting at</span>
-              <span className="text-3xl font-bold tracking-tight">{portfolio.services.price}</span>
+              <span className="service-price text-3xl font-bold tracking-tight">
+                {portfolio.services.price}
+              </span>
             </div>
             <p className="mt-1 text-muted-foreground">
               {portfolio.services.localPrice}
@@ -276,6 +281,6 @@ export function ServicesDetail() {
           </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 }

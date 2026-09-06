@@ -2,7 +2,7 @@
 
 import { withBasePath } from "@/lib/utils";
 import { useEffect, useRef } from "react";
-import { initializeLazyLoadingTimer, HEADER_OFFSET } from "@/lib/scroll-utils";
+import { initializeLazyLoadingTimer } from "@/lib/scroll-utils";
 
 // Prism theme only (CSS is tiny — keep it eager so highlighted code is styled
 // the moment it paints). Prism core + the 20 language grammars are heavy, so we
@@ -232,9 +232,9 @@ export function Mdx({ content }: MdxProps) {
           heading.id = `${index}-${slug}`;
         }
 
-        // Enhanced heading styling. scroll-margin-top matches HEADER_OFFSET so
-        // native anchor jumps land at the same spot as our JS scroll.
-        heading.style.scrollMarginTop = `${HEADER_OFFSET}px`;
+        // The viewport's responsive scroll-padding already clears the header.
+        // Avoid counting that offset twice for native fragment navigation.
+        heading.style.scrollMarginTop = "0px";
         heading.classList.add("group", "relative");
 
         // Add anchor link

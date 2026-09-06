@@ -172,11 +172,11 @@ function RangeInput({
 
   return (
     <div className="space-y-3 p-4 border rounded-lg">
-      <div className="flex items-center justify-between">
-        <span className="font-medium">{label}</span>
+      <div className="flex items-center justify-between gap-2">
+        <span className="min-w-0 font-medium [overflow-wrap:anywhere]">{label}</span>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-6 w-6" aria-label={`Scoring guide for ${label}`}>
+            <Button variant="ghost" size="icon" className="h-11 w-11 shrink-0" aria-label={`Scoring guide for ${label}`}>
               <HelpCircle className="h-4 w-4" aria-hidden="true" />
             </Button>
           </DialogTrigger>
@@ -254,7 +254,7 @@ function ProgressCircle({ value }: { value: number }) {
           stroke="currentColor"
           strokeWidth="2"
           fill="none"
-          className="text-gray-200 dark:text-gray-700"
+          className="text-border"
         />
         {/* Progress circle */}
         <circle
@@ -428,9 +428,9 @@ Calculated using: https://dimasma0305.github.io/tools/ctf-calculator?vector=${en
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Calculator Form */}
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column - Criteria */}
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -460,7 +460,7 @@ Calculated using: https://dimasma0305.github.io/tools/ctf-calculator?vector=${en
         </div>
 
         {/* Right Column - Results */}
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Difficulty Rating</CardTitle>
@@ -534,7 +534,7 @@ Calculated using: https://dimasma0305.github.io/tools/ctf-calculator?vector=${en
                 </div>
 
                 {/* CVSS-like score */}
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="text-sm font-medium">CVSS-like Score:</div>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-sm">{cvssScore.toFixed(1)}/10</span>
@@ -610,4 +610,4 @@ Calculated using: https://dimasma0305.github.io/tools/ctf-calculator?vector=${en
 
     </div>
   )
-} 
+}

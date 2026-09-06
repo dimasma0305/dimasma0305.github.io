@@ -1,23 +1,11 @@
-import { DM_Sans, DM_Serif_Display, IBM_Plex_Mono } from "next/font/google";
+import { IBM_Plex_Mono } from "next/font/google";
+import { roomSans as sans, roomHeading as serif } from "@/lib/site-fonts";
 import { RoomEnhancer } from "@/components/room-enhancer";
 import { cornerTour } from "@/lib/room/tour.js";
 import { createSceneSummary } from "@/lib/room/content.js";
 import { getRoomPortfolio } from "@/lib/room/portfolio";
 import "@/lib/room/room.css";
 
-const sans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  variable: "--font-room-sans",
-});
-const serif = DM_Serif_Display({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  display: "swap",
-  variable: "--font-room-heading",
-});
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "600"],

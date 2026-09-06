@@ -1,0 +1,438 @@
+/* Reading rooms: the homepage identity, without a second 3D scene or scroll loop. */
+.content-shell {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+.content-shell .container {
+  width: min(1280px, calc(100% - 96px));
+  padding-inline: 0;
+}
+.content-shell main > .container,
+.content-shell main > :not(.reading-page) > .container {
+  padding-block: 56px 80px;
+}
+.content-shell .section-header {
+  gap: 32px;
+}
+.content-shell .section-header > div:first-child {
+  min-width: 0;
+}
+.content-shell .section-header[data-heading-level="h1"] {
+  border-bottom: 1px solid hsl(var(--border));
+  padding-bottom: 34px;
+  margin-bottom: 36px;
+}
+.content-shell .section-eyebrow {
+  font:
+    400 11px/1.8 var(--font-jetbrains-mono),
+    monospace;
+  letter-spacing: 0.14em;
+  color: hsl(var(--primary));
+  margin-bottom: 12px;
+}
+.content-shell .section-heading,
+.content-shell .reading-hero h1 {
+  font-family: var(--font-room-heading), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.content-shell h1.section-heading {
+  font-size: clamp(48px, 6vw, 80px);
+  line-height: 1.06;
+  max-width: 19ch;
+}
+.content-shell .section-subtitle {
+  font-size: 17px;
+  line-height: 1.75;
+  max-width: 60ch;
+  margin-top: 18px;
+}
+.content-shell .section-subtitle a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.content-shell .section-action {
+  min-width: 0;
+}
+.content-shell a:focus-visible,
+.content-shell button:focus-visible,
+.content-shell summary:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 4px;
+}
+.content-shell input:not([type="checkbox"]):not([type="radio"]),
+.content-shell [role="combobox"] {
+  min-height: 46px;
+}
+.content-shell .glass-card,
+.content-shell .glass-panel,
+.content-shell .glass {
+  background: hsl(var(--card));
+  box-shadow: none;
+}
+.content-shell .glass-card:hover,
+.content-shell .glass-hover:hover {
+  transform: none;
+}
+
+/* Enough width for full article titles; the directory stays secondary. */
+.writing-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 256px;
+  align-items: start;
+  gap: 36px;
+}
+.writing-layout > * {
+  min-width: 0;
+}
+.writing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+.writing-sidebar {
+  position: sticky;
+  top: calc(var(--site-header-height) + 24px);
+}
+.writing-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+.writing-summary strong {
+  font-weight: 500;
+  color: hsl(var(--foreground));
+}
+.writing-summary a {
+  margin-left: auto;
+}
+.content-shell .post-card {
+  height: 100%;
+  transition: none;
+  transform: none;
+}
+.content-shell .post-card-surface {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 12px;
+  box-shadow: none;
+  transition: border-color 180ms ease;
+}
+.content-shell .post-card:hover .post-card-surface {
+  border-color: hsl(var(--primary) / 0.65);
+}
+.content-shell .post-cover {
+  height: auto;
+  aspect-ratio: 16 / 8.5;
+  border-bottom: 1px solid hsl(var(--border));
+  flex-shrink: 0;
+}
+.content-shell .post-cover img {
+  transform: none;
+}
+.content-shell .post-card-title {
+  font-family: var(--font-room-heading), Georgia, serif;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.23;
+  display: block;
+  -webkit-line-clamp: unset;
+  text-wrap: pretty;
+}
+.content-shell .post-card-header {
+  padding: 24px 24px 12px;
+}
+.content-shell .post-card-content {
+  padding: 0 24px 24px;
+}
+.content-shell .post-card-footer {
+  padding: 0 24px 24px;
+  margin-top: auto;
+  gap: 12px;
+  font-size: 12px;
+}
+.content-shell .post-card-footer > div {
+  font-size: 12px;
+}
+.content-shell .note-card {
+  height: 100%;
+  box-shadow: none;
+  border-radius: 10px;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease;
+  transform: none;
+}
+.content-shell .note-card:hover {
+  border-color: hsl(var(--primary) / 0.65);
+}
+.content-shell .note-card:focus-within {
+  /* Keep the focus cue outside the card's clipped stretched link. */
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 4px;
+}
+.content-shell .note-card > div {
+  padding: 24px;
+  height: 100%;
+}
+.content-shell .note-card-footer {
+  margin-top: auto;
+  padding-top: 20px;
+}
+.content-shell .note-card-title {
+  font-family: var(--font-room-heading), Georgia, serif;
+  font-size: 27px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+.notes-toolbar {
+  padding: 20px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 10px;
+  background: hsl(var(--card));
+}
+.notes-result-count {
+  min-height: 24px;
+  margin-bottom: 20px;
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+}
+.notes-collection-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 28px;
+  margin: -12px 0 28px;
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+}
+.notes-collection-summary strong {
+  color: hsl(var(--primary));
+  font-weight: 500;
+}
+
+/* Article and note pages share one quiet reading layout. */
+.content-shell .reading-hero {
+  background: hsl(var(--background));
+  padding-top: 40px;
+}
+.content-shell .reading-hero > .container {
+  padding-bottom: 36px;
+}
+.content-shell .reading-hero h1 {
+  font-size: clamp(34px, 4.5vw, 64px);
+  line-height: 1.13;
+  max-width: 25ch;
+}
+.content-shell .reading-hero .reading-categories {
+  margin-bottom: 20px;
+}
+.content-shell .reading-category-label {
+  display: none;
+}
+.content-shell .reading-body {
+  background: transparent;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+.content-shell .reading-layout {
+  gap: 56px;
+}
+.content-shell .reading-column {
+  max-width: 850px;
+}
+.content-shell .reading-sidebar {
+  top: calc(var(--site-header-height) + 24px);
+  max-height: calc(100dvh - var(--site-header-height) - 48px);
+}
+.content-shell .prose {
+  --tw-prose-body: hsl(var(--foreground));
+  --tw-prose-invert-body: hsl(var(--foreground));
+  --tw-prose-invert-headings: hsl(var(--foreground));
+  --tw-prose-invert-links: hsl(var(--primary));
+  --tw-prose-invert-bullets: hsl(var(--muted-foreground));
+  --tw-prose-invert-counters: hsl(var(--muted-foreground));
+  font-size: 17px;
+  line-height: 1.8;
+}
+.content-shell .prose :is(h1, h2) {
+  font-family: var(--font-room-heading), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.content-shell .prose h2 {
+  font-size: 32px;
+}
+.content-shell .prose :is(h1, h2, h3, h4, h5, h6) {
+  /* html scroll-padding supplies the responsive header clearance once. */
+  scroll-margin-top: 0;
+}
+.content-shell .prose a {
+  text-underline-offset: 4px;
+}
+.content-shell .prose pre,
+.content-shell .notion-code-block {
+  background: #0c130f;
+  border-color: hsl(var(--border));
+}
+.content-shell .prose :not(pre) > code {
+  background: hsl(var(--muted));
+  color: hsl(var(--primary-bright));
+}
+.content-shell .tool-card h2 {
+  font-family: var(--font-room-heading), Georgia, serif;
+  font-size: 28px;
+  line-height: 1.18;
+  font-weight: 400;
+}
+.content-shell .tool-card {
+  padding: 32px;
+  box-shadow: none;
+}
+.content-shell .services-content > div > h2,
+.content-shell .services-content > div > div > h2 {
+  font-family: var(--font-room-heading), Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+}
+.content-shell .service-price {
+  font-family: var(--font-room-heading), Georgia, serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: hsl(var(--primary));
+}
+.content-footer {
+  border-top: 1px solid hsl(var(--border));
+}
+.content-footer .container {
+  padding-block: 32px;
+}
+.content-footer-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 14px;
+  color: hsl(var(--primary));
+}
+
+@media (max-width: 1100px) {
+  .writing-layout {
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 24px;
+  }
+  .content-shell .post-card-title {
+    font-size: 23px;
+  }
+  .content-shell .reading-layout {
+    gap: 32px;
+  }
+}
+@media (max-width: 900px) {
+  .writing-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .writing-sidebar {
+    position: static;
+  }
+}
+@media (max-width: 700px) {
+  .content-shell .container {
+    width: calc(100% - 40px);
+  }
+  .content-shell main > .container,
+  .content-shell main > :not(.reading-page) > .container {
+    padding-block: 32px 48px;
+  }
+  .content-shell .section-header {
+    gap: 24px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .content-shell .section-header[data-heading-level="h1"] {
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+  }
+  .content-shell h1.section-heading {
+    font-size: 48px;
+  }
+  .content-shell .section-subtitle {
+    font-size: 16px;
+  }
+  .content-shell .section-action {
+    width: 100%;
+  }
+  .content-shell .section-action > * {
+    width: 100%;
+  }
+  .writing-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .content-shell .post-card-title {
+    font-size: 27px;
+  }
+  .content-shell .post-card-surface > :not(.post-cover) {
+    padding-inline: 22px;
+  }
+  .content-shell .post-card-surface > .post-card-header {
+    padding-top: 22px;
+  }
+  .content-shell .post-card-footer {
+    padding-bottom: 22px;
+  }
+  .content-shell .reading-hero {
+    padding-top: 12px;
+  }
+  .content-shell .reading-hero h1 {
+    font-size: 38px;
+  }
+  .content-shell .reading-excerpt {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    font-size: 16px;
+  }
+  .content-shell .reading-body {
+    padding: 0;
+  }
+  .content-shell .reading-sidebar {
+    position: static;
+    max-height: none;
+  }
+  .content-shell .tool-card {
+    padding: 24px;
+  }
+  .notes-toolbar {
+    padding: 16px;
+  }
+  .content-shell .note-card > div {
+    padding: 22px;
+  }
+  .writing-summary a {
+    margin-left: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .content-shell .diff-status-before,
+  .content-shell .diff-scan {
+    display: none;
+  }
+  .content-shell *,
+  .content-shell *::before,
+  .content-shell *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}

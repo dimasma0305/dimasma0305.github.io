@@ -52,7 +52,10 @@ interface PostPageClientProps {
   initialPost?: Post;
 }
 
-export default function PostPageClient({ slug, initialPost }: PostPageClientProps) {
+export default function PostPageClient({
+  slug,
+  initialPost,
+}: PostPageClientProps) {
   const [post, setPost] = useState<Post | null>(initialPost ?? null);
   const [loading, setLoading] = useState(!initialPost);
   const [error, setError] = useState<string | null>(null);
@@ -105,7 +108,6 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
   useEffect(() => {
     if (!loading && post) {
       handleHashOnPageLoad({
-        headerOffset: 80,
         behavior: "smooth",
         lazyLoadDelay: 250,
       });
@@ -153,9 +155,9 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
 
   return (
     <>
-      <div className="min-h-screen">
+      <div className="reading-page min-h-screen">
         {/* Hero Section */}
-        <div className="bg-gradient-to-b from-muted/30 to-background border-b overflow-x-hidden pt-20 lg:pt-24">
+        <div className="reading-hero bg-gradient-to-b from-muted/30 to-background border-b overflow-x-hidden pt-20 lg:pt-24">
           <div className="container max-w-7xl mx-auto px-4 pb-6 lg:pb-8">
             <div className="max-w-4xl">
               {/* Back Button */}
@@ -169,8 +171,8 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
 
               {/* Categories - Primary Display */}
               {post.categories && post.categories.length > 0 && (
-                <div className="mb-4 lg:mb-6">
-                  <div className="flex items-center gap-2 mb-3">
+                <div className="reading-categories mb-4 lg:mb-6">
+                  <div className="reading-category-label flex items-center gap-2 mb-3">
                     <Folder className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm font-medium text-muted-foreground">
                       Categories
@@ -228,7 +230,9 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
                       <p className="font-medium truncate max-w-[150px]">
                         {post.owner.name}
                       </p>
-                      <p className="hidden sm:block text-muted-foreground text-xs">Author</p>
+                      <p className="hidden sm:block text-muted-foreground text-xs">
+                        Author
+                      </p>
                     </div>
                   </div>
                 )}
@@ -251,7 +255,9 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
                         ? format(new Date(post.createdAt), "MMMM d, yyyy")
                         : "Invalid Date"}
                     </time>
-                    <p className="hidden sm:block text-muted-foreground text-xs">Published</p>
+                    <p className="hidden sm:block text-muted-foreground text-xs">
+                      Published
+                    </p>
                   </div>
                 </div>
 
@@ -319,14 +325,14 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
         {/* Cover Image — hidden entirely if it fails to load */}
         {post.coverImage && !coverError && (
           <div className="container max-w-7xl mx-auto px-4 py-6 lg:py-8 overflow-x-hidden">
-            <div className="relative w-full h-[220px] sm:h-[300px] md:h-[360px] lg:h-[420px] overflow-hidden rounded-2xl border border-border/70 shadow-xl bg-muted/30">
+            <div className="relative w-full h-[180px] sm:h-[260px] lg:h-[320px] overflow-hidden rounded-xl border border-border bg-card">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={post.coverImage}
                 alt={post.title}
                 loading="eager"
                 onError={() => setCoverError(true)}
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-contain"
               />
             </div>
           </div>
@@ -334,9 +340,9 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
 
         {/* Main Content */}
         <div className="container max-w-7xl mx-auto px-4 py-6 lg:py-8">
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 relative">
+          <div className="reading-layout flex flex-col lg:flex-row gap-6 lg:gap-12 relative">
             {/* Article Content */}
-            <div className="lg:w-[70%] min-w-0 overflow-x-hidden">
+            <div className="reading-column lg:w-[70%] min-w-0 overflow-x-hidden">
               {/* Table of Contents - Mobile */}
               {post.content && (
                 <div className="lg:hidden mb-8">
@@ -348,7 +354,7 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
 
               {/* Article Body */}
               <article className="max-w-none break-words">
-                <div className="bg-card/60 rounded-2xl p-5 md:p-9 lg:p-10 shadow-sm border border-border/70 overflow-hidden">
+                <div className="reading-body bg-card/60 rounded-2xl p-5 md:p-9 lg:p-10 shadow-sm border border-border/70 overflow-hidden">
                   {post.content ? (
                     <Mdx content={post.content} />
                   ) : (
@@ -443,7 +449,7 @@ export default function PostPageClient({ slug, initialPost }: PostPageClientProp
 
             {/* Sidebar */}
             <div className="lg:w-[30%]">
-              <div className="sticky top-20 space-y-4 lg:space-y-6 max-h-[calc(100vh-6rem)] overflow-y-auto sidebar-scroll-area">
+              <div className="reading-sidebar sticky top-20 space-y-4 lg:space-y-6 max-h-[calc(100vh-6rem)] overflow-y-auto sidebar-scroll-area">
                 {/* Table of Contents - Desktop */}
                 {post.content && (
                   <div className="hidden lg:block">

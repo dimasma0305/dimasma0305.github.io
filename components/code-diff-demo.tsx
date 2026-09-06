@@ -39,8 +39,14 @@ const examples: Example[] = [
       "A blog title from Notion could break out of the JSON-LD script tag and run code. Now the output is escaped.",
     lines: [
       { sign: " ", text: '<script type="application/ld+json"' },
-      { sign: "-", text: "  dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}" },
-      { sign: "+", text: "  dangerouslySetInnerHTML={{ __html: safeJsonLd(data) }}" },
+      {
+        sign: "-",
+        text: "  dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}",
+      },
+      {
+        sign: "+",
+        text: "  dangerouslySetInnerHTML={{ __html: safeJsonLd(data) }}",
+      },
       { sign: " ", text: "/>" },
       { sign: " ", text: "// safeJsonLd escapes < > & so a title can't" },
       { sign: " ", text: "// close the tag and inject its own <script>" },
@@ -53,8 +59,14 @@ const examples: Example[] = [
     caption:
       "The saved image name came from a response header an attacker sets, so it could write files outside the posts folder. Locked to an allowlist.",
     lines: [
-      { sign: " ", text: "let ext = contentType.split('/')[1]  // attacker-set header" },
-      { sign: "-", text: "save(`${slug}.${ext}`)   // ext = '../../etc/passwd'" },
+      {
+        sign: " ",
+        text: "let ext = contentType.split('/')[1]  // attacker-set header",
+      },
+      {
+        sign: "-",
+        text: "save(`${slug}.${ext}`)   // ext = '../../etc/passwd'",
+      },
       { sign: "+", text: "const ok = ['jpg','png','gif','webp','svg']" },
       { sign: "+", text: "if (!ok.includes(ext)) ext = ''" },
       { sign: "+", text: "save(`${slug}.${ext}`)" },
@@ -67,9 +79,15 @@ const examples: Example[] = [
     caption:
       "sanitizeUrl handed back the raw URL, so a crafted link could break out of an HTML attribute. Now it returns the encoded href.",
     lines: [
-      { sign: " ", text: "if (['http:','https:'].includes(parsedUrl.protocol)) {" },
-      { sign: "-", text: "  return url          // raw, breaks out of src=\"...\"" },
-      { sign: "+", text: "  return parsedUrl.href // percent-encodes \" < >" },
+      {
+        sign: " ",
+        text: "if (['http:','https:'].includes(parsedUrl.protocol)) {",
+      },
+      {
+        sign: "-",
+        text: '  return url          // raw, breaks out of src="..."',
+      },
+      { sign: "+", text: '  return parsedUrl.href // percent-encodes " < >' },
       { sign: " ", text: "}" },
     ],
   },
@@ -81,8 +99,14 @@ const examples: Example[] = [
       "Build-time image fetches followed any URL, even internal ones. Added an https-only host allowlist and blocked private IPs.",
     lines: [
       { sign: " ", text: "const url = new URL(urlString)" },
-      { sign: "-", text: "const client = url.protocol === 'https:' ? https : http" },
-      { sign: "+", text: "assertAllowedDownloadUrl(url)  // https + host allowlist" },
+      {
+        sign: "-",
+        text: "const client = url.protocol === 'https:' ? https : http",
+      },
+      {
+        sign: "+",
+        text: "assertAllowedDownloadUrl(url)  // https + host allowlist",
+      },
       { sign: "+", text: "const client = https           // no private IPs" },
       { sign: " ", text: "client.get(url, handleResponse)" },
     ],
@@ -151,7 +175,7 @@ export function CodeDiffDemo() {
         {/* Status pill: cross-fades problem → fixed, settling on "fixed" */}
         <span className="relative ml-auto grid h-6 shrink-0 place-items-center">
           <span
-            className={`col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold [animation:diff-status-vuln_5.5s_ease-in-out_infinite_both] ${badPillClass(
+            className={`diff-status-before col-start-1 row-start-1 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold [animation:diff-status-vuln_5.5s_ease-in-out_infinite_both] ${badPillClass(
               example.bad.tone,
             )}`}
           >
@@ -168,7 +192,7 @@ export function CodeDiffDemo() {
       {/* Code body, keyed so the fade + diff animations restart on each swap */}
       <div className="relative">
         {/* AI scan sweep */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-10 bg-gradient-to-b from-primary/25 to-transparent [animation:diff-scan_5.5s_ease-in-out_infinite_both]" />
+        <div className="diff-scan pointer-events-none absolute inset-x-0 top-0 z-10 h-10 bg-gradient-to-b from-primary/25 to-transparent [animation:diff-scan_5.5s_ease-in-out_infinite_both]" />
 
         <pre
           key={index}

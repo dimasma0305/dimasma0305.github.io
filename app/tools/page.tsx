@@ -1,38 +1,41 @@
-import Link from 'next/link'
-import { Metadata } from 'next'
-import { Calculator, Shield, Lightbulb, ArrowRight } from 'lucide-react'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { SectionHeader } from '@/components/section-header'
+import Link from "next/link";
+import { Metadata } from "next";
+import { Calculator, Shield, Lightbulb, ArrowRight } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { SectionHeader } from "@/components/section-header";
 
 export const metadata: Metadata = {
-  title: 'Tools',
-  description: 'Collection of useful cybersecurity and CTF tools built by Dimas Maulana',
+  title: "Tools",
+  description:
+    "Collection of useful cybersecurity and CTF tools built by Dimas Maulana",
   openGraph: {
-    title: 'Tools | Dimas Maulana',
-    description: 'Collection of useful cybersecurity and CTF tools',
-    type: 'website',
+    title: "Tools | Dimas Maulana",
+    description: "Collection of useful cybersecurity and CTF tools",
+    type: "website",
   },
-}
+};
 
 const tools = [
   {
-    title: 'CTF Challenge Difficulty Calculator',
-    description: 'Calculate the difficulty rating of CTF challenges based on various factors like solvers, category, and complexity.',
+    title: "CTF Challenge Difficulty Calculator",
+    description:
+      "Calculate the difficulty rating of CTF challenges based on various factors like solvers, category, and complexity.",
     icon: Calculator,
-    href: '/tools/ctf-calculator',
-    category: 'CTF',
-    status: 'Live',
+    href: "/tools/ctf-calculator",
+    category: "CTF",
+    status: "Live",
   },
   // Add more tools here as you create them
-]
+];
 
 export default function ToolsPage() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-7xl">
       <SectionHeader
         titleAs="h1"
-        eyebrow="Toolbox"
+        index="03"
+        eyebrow="The workbench"
         title="Tools"
         subtitle="A collection of useful cybersecurity and CTF tools I've built to help the community."
       />
@@ -41,18 +44,24 @@ export default function ToolsPage() {
           row always reads as intentional instead of stranding empty tracks. */}
       <div
         className={`grid gap-6 ${
-          tools.length + 1 >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2"
+          tools.length + 1 >= 3
+            ? "sm:grid-cols-2 lg:grid-cols-3"
+            : "sm:grid-cols-2"
         }`}
       >
         {tools.map((tool) => (
-          <Link key={tool.href} href={tool.href} className="group block">
-            <Card className="h-full p-6 transition-colors hover:border-primary/40 group-hover:shadow-[var(--elevation-2)]">
+          <Link
+            key={tool.href}
+            href={tool.href}
+            className="group block rounded-lg focus-ring"
+          >
+            <Card className="tool-card h-full p-6 transition-colors hover:border-primary/40 group-hover:shadow-[var(--elevation-2)]">
               <div className="flex items-start gap-4">
                 <div className="p-2 rounded-lg bg-primary/10 text-primary">
                   <tool.icon className="w-6 h-6" />
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
                     <h2 className="text-xl font-semibold transition-colors group-hover:text-primary">
                       {tool.title}
                     </h2>
@@ -61,12 +70,16 @@ export default function ToolsPage() {
                   <p className="text-muted-foreground mb-2">
                     {tool.description}
                   </p>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mb-7">
                     <Shield className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm text-muted-foreground">
                       {tool.category}
                     </span>
                   </div>
+                  <span className="inline-flex items-center gap-2 text-sm text-primary">
+                    Open calculator{" "}
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </span>
                 </div>
               </div>
             </Card>
@@ -78,14 +91,16 @@ export default function ToolsPage() {
           href="mailto:dimasmaulana0305@gmail.com?subject=Tool%20idea"
           className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg"
         >
-          <Card className="flex h-full flex-col justify-center border-dashed bg-muted/30 p-6 transition-colors hover:border-primary/40 hover:bg-muted/50">
+          <Card className="tool-card flex h-full flex-col justify-center border-dashed bg-muted/30 p-6 transition-colors hover:border-primary/40 hover:bg-muted/50">
             <div className="mb-3 grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary">
               <Lightbulb className="h-5 w-5" />
             </div>
-            <h2 className="mb-1 text-xl font-semibold">More tools coming soon</h2>
+            <h2 className="mb-1 text-xl font-semibold">
+              More tools coming soon
+            </h2>
             <p className="mb-4 text-muted-foreground">
-              I&apos;m actively building more cybersecurity and CTF tools. Have an
-              idea you&apos;d find useful?
+              I&apos;m actively building more cybersecurity and CTF tools. Have
+              an idea you&apos;d find useful?
             </p>
             <span className="inline-flex items-center gap-2 text-sm font-medium text-primary">
               Suggest a tool
@@ -95,5 +110,5 @@ export default function ToolsPage() {
         </a>
       </div>
     </div>
-  )
+  );
 }
