@@ -40,14 +40,8 @@ export function BackgroundPreloader() {
       } catch {
         /* Navigation can still fetch normally. */
       }
-      const pathname = target.split("?")[0];
-      // Only search needs a JSON cache. Blog, Notes, categories and article
-      // bodies now arrive in the built route payload; don't fetch them twice.
-      if (/^\/search\/?$/.test(pathname)) {
-        void import("@/hooks/use-posts")
-          .then((m) => m.warmPostsCache())
-          .catch(() => {});
-      }
+      // Search and content directories carry public summaries in the built
+      // route payload. Do not download a second JSON index on hover.
     };
 
     const onIntent = (event: Event) => {

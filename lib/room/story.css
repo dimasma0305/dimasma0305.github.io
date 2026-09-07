@@ -1,0 +1,227 @@
+/* More signal per chapter; the room's scroll/camera geometry is unchanged. */
+.tour-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tour-search-link {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  color: #e4ac83;
+  border: 1px solid #43523d;
+  border-radius: 5px;
+}
+.tour-search-link:focus-visible {
+  outline: 2px solid #e4ac83;
+  outline-offset: 3px;
+}
+.tour-page .tour-project-index {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.tour-page .tour-project-case > summary {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) 16px;
+  gap: 14px;
+  padding: 16px;
+  min-height: 112px;
+}
+.tour-page .tour-project-case > summary > img {
+  width: 76px;
+  height: 62px;
+  object-fit: contain;
+  background: #f7f8f9;
+  border-radius: 4px;
+}
+.tour-page .tour-project-case > summary > span:nth-child(2) {
+  min-width: 0;
+  transform: none;
+}
+.tour-page .tour-project-case summary strong {
+  display: block;
+  font-size: 17px;
+  margin: 4px 0;
+}
+.tour-page .tour-project-case summary small {
+  margin: 0;
+  font-size: 10px;
+}
+.tour-case-takeaway {
+  display: block;
+  font:
+    13px/1.6 var(--font-room-sans, "DM Sans"),
+    sans-serif;
+  color: #c6d1bc;
+}
+.tour-case-facts {
+  margin: 12px 0 20px;
+}
+.tour-case-facts dt {
+  font: 11px/1.6 var(--mono);
+  color: #e4ac83;
+  margin-top: 16px;
+}
+.tour-case-facts dd {
+  font-size: 14px;
+  color: #d5dfc9;
+  line-height: 1.8;
+  margin: 4px 0 0;
+}
+.tour-case-image {
+  margin: 20px 0;
+}
+.tour-case-image a {
+  display: block;
+}
+.tour-case-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+.tour-case-image figcaption {
+  margin-top: 8px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #c6d1bc;
+}
+.tour-page .tour-other-projects .tour-entry summary {
+  padding: 12px 14px;
+  min-height: 64px;
+}
+.tour-page .tour-other-projects summary strong {
+  font-size: 14px;
+}
+.tour-page .tour-other-projects summary small {
+  font-size: 11px;
+  margin-top: 2px;
+}
+.tour-page .tour-other-projects {
+  gap: 6px;
+}
+.tour-page .tour-role-entry summary {
+  padding-block: 12px;
+  min-height: 66px;
+}
+.tour-evidence {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #e4ac83;
+}
+.tour-desk-board {
+  border: 1px solid #526348;
+  border-left: 3px solid #e4ac83;
+  padding: 18px;
+  margin-block: 16px 24px;
+  border-radius: 5px;
+  background: #1b281f;
+}
+.tour-card .tour-desk-board h3 {
+  font: 24px/1.3 var(--heading);
+  margin: 0 0 8px;
+}
+.tour-desk-board .tour-link {
+  display: flex;
+  min-height: 44px;
+  font-size: 13px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.tour-desk-board dl {
+  margin: 12px 0 0;
+}
+.tour-desk-board dt {
+  color: #e4ac83;
+  font: 11px var(--mono);
+  margin-top: 12px;
+}
+.tour-desk-board dd {
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 5px 0;
+}
+.tour-page .tour-skill-index > article {
+  padding-block: 12px;
+}
+.tour-page .tour-skill-index .tour-chips {
+  margin-top: 8px;
+}
+.tour-page .tour-skill-index > article > p {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #c6d1bc;
+}
+.tour-page .tour-room-reveal {
+  padding-top: clamp(96px, 14svh, 140px);
+}
+.tour-page :is(#about, #contact) {
+  padding-top: clamp(80px, 12svh, 120px);
+}
+.tour-project-entry {
+  scroll-margin-top: calc(var(--tour-header) + 80px);
+}
+@media (max-width: 700px) {
+  .tour-header-actions {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 4px;
+  }
+  .tour-page .tour-header-inner {
+    column-gap: 6px;
+  }
+  .tour-page .tour-motion {
+    min-width: 92px;
+    padding-inline: 6px;
+  }
+  .tour-page .tour-search-link {
+    width: 44px;
+    flex-basis: 44px;
+  }
+}
+@media (max-width: 900px) {
+  .tour-page .tour-room-reveal {
+    padding-top: 4px;
+  }
+  .tour-page :is(#about, #contact) {
+    padding-top: 28px;
+  }
+  .tour-page .tour-project-case > summary {
+    grid-template-columns: 64px minmax(0, 1fr) 12px;
+    gap: 10px;
+    padding: 14px 12px;
+  }
+  .tour-page .tour-project-case > summary > img {
+    width: 64px;
+    height: 56px;
+  }
+  .tour-page .tour-project-case summary small {
+    font-size: 10px;
+  }
+  .tour-page .tour-project-case summary strong {
+    font-size: 16px;
+  }
+  .tour-page .tour-room-caption h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+  .tour-page .tour-room-index {
+    margin-top: 14px;
+    gap: 8px;
+  }
+  .tour-page .tour-room-index a {
+    min-height: 48px;
+    padding-block: 8px;
+  }
+}
+@media (min-width: 600px) and (max-width: 900px) and (max-height: 500px) {
+  .tour-header-actions {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}

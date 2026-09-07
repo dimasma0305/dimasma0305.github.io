@@ -25,6 +25,8 @@ import { formatBlogDate } from "@/lib/blog-archive";
 import { prepareArticle } from "@/lib/article-outline";
 import { ArticleOutline } from "@/components/article-outline";
 import { ArticleImageViewer } from "@/components/article-image-viewer";
+import { ReadingTools } from "@/components/reading-tools";
+import { NoteReview } from "@/components/note-review";
 import { LoadingSpinner } from "@/components/loading-spinner";
 
 const Mdx = dynamic(() => import("@/components/mdx").then((m) => m.Mdx));
@@ -174,6 +176,13 @@ export default function NotePageClient({
                 From the notebook
               </p>
               <h1>{note.title}</h1>
+              <ReadingTools
+                kind="note"
+                slug={note.slug}
+                title={note.title}
+                revision={note.last_edited_time}
+              />
+              <NoteReview slug={note.slug} />
               <div className="blog-reading-meta">
                 <span>
                   <Clock size={14} aria-hidden="true" />

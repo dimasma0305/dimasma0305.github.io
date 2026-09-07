@@ -14,6 +14,7 @@ import { optimizedContentCover } from "@/lib/optimized-media.mjs";
 import { prepareArticle } from "@/lib/article-outline";
 import { ArticleOutline } from "@/components/article-outline";
 import { ArticleImageViewer } from "@/components/article-image-viewer";
+import { ReadingTools } from "@/components/reading-tools";
 import "@/lib/article.css";
 
 import { fetchPostBySlug } from "@/lib/posts-loader";
@@ -180,6 +181,12 @@ export default function PostPageClient({
                 ))}
               </div>
               <h1>{post.title}</h1>
+              <ReadingTools
+                kind="post"
+                slug={post.slug}
+                title={post.title}
+                revision={post.updatedAt}
+              />
               {post.excerpt && (
                 <p className="blog-reading-excerpt">{post.excerpt}</p>
               )}

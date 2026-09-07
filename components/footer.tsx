@@ -22,6 +22,22 @@ export function Footer() {
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Dimas Maulana
           </p>
+          <div className="flex flex-wrap gap-x-5 text-xs text-muted-foreground">
+            <Link
+              href="/reading-list/"
+              prefetch={false}
+              className="inline-flex min-h-11 items-center hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
+            >
+              Saved reading
+            </Link>
+            <Link
+              href="/privacy/"
+              prefetch={false}
+              className="inline-flex min-h-11 items-center hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
+            >
+              Privacy & performance
+            </Link>
+          </div>
         </div>
 
         <div className="flex items-center gap-1">

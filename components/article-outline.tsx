@@ -39,10 +39,21 @@ export function ArticleOutline({ sections }: { sections: ArticleSection[] }) {
       setActive(current);
       const bounds = article.getBoundingClientRect();
       const distance = Math.max(1, bounds.height - innerHeight + offset);
-      setProgress(
-        Math.round(
-          Math.max(0, Math.min(1, (offset - bounds.top) / distance)) * 100,
-        ),
+      const percent = Math.round(
+        Math.max(0, Math.min(1, (offset - bounds.top) / distance)) * 100,
+      );
+      setProgress(percent);
+      document.dispatchEvent(
+        new CustomEvent("dimasc:reading-progress", {
+          detail: {
+            progress: percent,
+            section: current,
+            sectionTitle:
+              headings
+                .find((heading) => heading.id === current)
+                ?.textContent?.trim() || "",
+          },
+        }),
       );
     };
     const schedule = () => {

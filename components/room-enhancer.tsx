@@ -52,7 +52,7 @@ export function RoomEnhancer({
           ? destination.pathname.slice(basePath.length)
           : destination.pathname;
       if (
-        !/^\/(blog|notes|posts|categories|tags|services|tools|search)(\/|$)/.test(
+        !/^\/(blog|notes|posts|categories|tags|services|tools|search|reading-list|privacy)(\/|$)/.test(
           pathname,
         )
       )

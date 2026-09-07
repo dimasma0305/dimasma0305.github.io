@@ -3,6 +3,12 @@ import path from "node:path";
 import records from "@/lib/portfolio-data.json";
 import { faqs } from "@/lib/services-data";
 import { roomAsset } from "./assets.js";
+import {
+  projectStories,
+  researchEvidence,
+  resultEvidence,
+} from "../portfolio-stories";
+import deskUpdate from "../desk-update.json";
 
 export interface WritingEntry {
   title: string;
@@ -56,6 +62,10 @@ export function assembleRoomPortfolio(
 ) {
   return {
     ...records,
+    projectStories,
+    researchEvidence,
+    resultEvidence,
+    deskUpdate,
     photos: records.photos.map((photo) => ({
       ...photo,
       src: roomAsset(assetBase, photo.src),

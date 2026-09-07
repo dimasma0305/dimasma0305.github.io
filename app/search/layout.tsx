@@ -8,7 +8,7 @@ export const metadata = pageMetadata({
   path: "/search/",
   noIndex: true,
   description:
-    "Search Dimas Maulana’s cybersecurity articles and CTF writeups on dimasc.tf.",
+    "Search Dimas Maulana’s projects, research writeups, and field notes on dimasc.tf.",
 });
 
 export default function SearchLayout({ children }: { children: ReactNode }) {

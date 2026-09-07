@@ -17,6 +17,7 @@
     "preview:export": "node scripts/serve-export.mjs",
     "test:room-browser": "node scripts/room-site.browser.mjs",
     "test:mobile": "node scripts/mobile-home.browser.mjs",
+    "test:usefulness": "node scripts/portfolio-usefulness.browser.mjs",
     "test:site-navigation": "node scripts/site-navigation.browser.mjs",
     "test:content-theme": "node scripts/content-theme.browser.mjs",
     "test:blog": "node scripts/blog.browser.mjs",
@@ -53,7 +54,8 @@
     "sharp": "^0.35.3",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "three": "0.185.1"
+    "three": "0.185.1",
+    "web-vitals": "^6.2.1"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^15.4.6",
