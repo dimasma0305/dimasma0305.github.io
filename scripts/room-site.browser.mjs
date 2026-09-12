@@ -99,6 +99,14 @@ try {
     await page.locator("#tour-scene").getAttribute("data-award-count"),
     "21",
   );
+  assert.equal(
+    await page.locator("#tour-scene").getAttribute("data-light-sources"),
+    "window,lamp,monitor,string",
+  );
+  assert.ok(
+    Number(await page.locator("#tour-scene").getAttribute("data-lamp")) >= 30,
+    "The evening scene should use the bulb-aligned desk light",
+  );
   assert.ok(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
