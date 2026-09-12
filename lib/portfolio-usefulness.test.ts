@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { findEntries, searchFilter, type SearchEntry } from "./site-search";
-import { getSearchDirectory } from "./site-search.server";
+import { buildSearchDirectory } from "./site-search.server";
 import { parseReadingList, validReadingPath } from "./reading-list";
 import { metricsEndpoint, pageBucket, parseMetrics } from "./site-metrics";
 import { projectStories, resultEvidence } from "./portfolio-stories";
@@ -48,7 +48,28 @@ test("unified search filters types and matches words across public metadata", ()
 });
 
 test("public search directory is unique, has all projects and has no article bodies", () => {
-  const entries = getSearchDirectory();
+  const entries = buildSearchDirectory({
+    blog: [
+      {
+        slug: "example-post",
+        title: "Example post",
+        created_time: "2026-01-02T00:00:00.000Z",
+        excerpt: "A public post summary",
+        categories: ["Research"],
+        tags: ["Web"],
+      },
+    ],
+    notes: [
+      {
+        slug: "example-note",
+        title: "Example note",
+        created_time: "2026-01-01T00:00:00.000Z",
+        excerpt: "A public note summary",
+        categories: ["Notes"],
+        tags: ["Security"],
+      },
+    ],
+  });
   expect(new Set(entries.map((item) => item.id)).size).toBe(entries.length);
   expect(entries.filter((item) => item.kind === "project")).toHaveLength(9);
   expect(entries.some((item) => item.kind === "post")).toBe(true);

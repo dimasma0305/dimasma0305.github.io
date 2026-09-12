@@ -1,8 +1,18 @@
 import { readPublicIndex } from "./content-index.server";
+import type { PublicEntry } from "./content-index.server";
 import { searchDescription } from "./site-seo";
 import portfolio from "./portfolio-data.json";
 import type { SearchEntry } from "./site-search";
-export function getSearchDirectory(): SearchEntry[] {
+
+type SearchIndexes = Record<
+  "blog" | "notes",
+  Pick<
+    PublicEntry,
+    "slug" | "title" | "created_time" | "excerpt" | "categories" | "tags"
+  >[]
+>;
+
+export function buildSearchDirectory(indexes: SearchIndexes): SearchEntry[] {
   const projects: SearchEntry[] = portfolio.projects.map((project, index) => ({
     id: `project:${index}`,
     kind: "project",
@@ -12,7 +22,7 @@ export function getSearchDirectory(): SearchEntry[] {
     topics: project.tags,
   }));
   const writing = (["blog", "notes"] as const).flatMap((kind) =>
-    readPublicIndex(kind)
+    indexes[kind]
       .sort((a, b) => Date.parse(b.created_time) - Date.parse(a.created_time))
       .map((entry) => ({
         id: `${kind}:${entry.slug}`,
@@ -31,4 +41,11 @@ export function getSearchDirectory(): SearchEntry[] {
       [...projects, ...writing].map((entry) => [entry.id, entry]),
     ).values(),
   ];
+}
+
+export function getSearchDirectory(): SearchEntry[] {
+  return buildSearchDirectory({
+    blog: readPublicIndex("blog"),
+    notes: readPublicIndex("notes"),
+  });
 }
