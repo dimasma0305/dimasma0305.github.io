@@ -8,6 +8,9 @@ import {
   roomStillWidths,
   roomPhotoThumb,
   roomPhotoThumbWidth,
+  roomPhotoMedium,
+  roomPhotoMediumWidth,
+  optimizedStoryImage,
 } from "../lib/optimized-media.mjs";
 
 const publicDir = new URL("../public/", import.meta.url);
@@ -35,6 +38,17 @@ for (const dir of photoDirs) {
     jobs.push([input, target, 82]);
     const thumb = roomPhotoThumb(input);
     if (thumb !== input) jobs.push([input, thumb, 80, roomPhotoThumbWidth]);
+    const medium = roomPhotoMedium(input);
+    if (medium !== input) jobs.push([input, medium, 82, roomPhotoMediumWidth]);
+  }
+}
+// Project screenshots: pixel-identical lossless WebP at about half the bytes.
+for (const dir of ["portfolio/", "room/assets/portfolio/"]) {
+  for (const file of await readdir(new URL(dir, publicDir))) {
+    const input = `${dir}${file}`;
+    const target = optimizedStoryImage(`/${input}`).slice(1);
+    if (file.endsWith(".png") && target !== input)
+      jobs.push([input, target, "lossless"]);
   }
 }
 jobs.push([
@@ -87,7 +101,11 @@ for (const [source, target, quality, width] of jobs) {
     const image = sharp(input.pathname);
     if (width) image.resize({ width, withoutEnlargement: true });
     await image
-      .webp({ quality, effort: 6 })
+      .webp(
+        quality === "lossless"
+          ? { lossless: true, effort: 6 }
+          : { quality, effort: 6 },
+      )
       .toFile(output.pathname);
     generated++;
   }

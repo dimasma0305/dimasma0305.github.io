@@ -3,7 +3,7 @@ import path from "node:path";
 import records from "@/lib/portfolio-data.json";
 import { faqs } from "@/lib/services-data";
 import { roomAsset } from "./assets.js";
-import { roomPhotoThumb } from "../optimized-media.mjs";
+import { roomPhotoMedium, roomPhotoThumb } from "../optimized-media.mjs";
 import {
   projectStories,
   researchEvidence,
@@ -72,6 +72,7 @@ export function assembleRoomPortfolio(
       src: roomAsset(assetBase, photo.src),
       // Small companion for the album buttons and the room's contact strip.
       thumb: roomAsset(assetBase, roomPhotoThumb(photo.src)),
+      medium: roomAsset(assetBase, roomPhotoMedium(photo.src)),
     })),
     services: { ...records.services, faqs },
     posts,

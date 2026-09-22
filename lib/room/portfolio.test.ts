@@ -5,6 +5,7 @@ import { createSceneSummary } from "./content.js";
 import { cornerTour } from "./tour.js";
 import { roomAsset } from "./assets.js";
 import { faqs } from "../services-data";
+import { projectStories } from "../portfolio-stories";
 
 test("room writing uses the build's published metadata and same-origin subpath links", () => {
   const posts = writingFromIndex(
@@ -80,6 +81,14 @@ test("static homepage has all collections, landmarks, local routes and original 
   const thumbs = html.match(/data-tour-photo="\d+"[^>]*><img src="([^"]+)"/g) || [];
   expect(thumbs.length).toBe(records.photos.length);
   for (const thumb of thumbs) expect(thumb).toMatch(/\.thumb\.webp"$/);
+  const figures = html.match(/<figure data-portfolio-photo [^>]*>[\s\S]*?<\/figure>/g) || [];
+  expect(figures.length).toBe(records.photos.length);
+  for (const figure of figures)
+    expect(figure).toMatch(/srcset="[^"]*-800\.webp 800w, [^"]*\.webp 1200w" sizes="/);
+  // Every project screenshot is served as its lossless WebP companion.
+  const shots = html.match(/data-portfolio-project><summary><img src="([^"]+)"/g) || [];
+  expect(shots.length).toBe(Object.keys(projectStories).length);
+  for (const shot of shots) expect(shot).toMatch(/\.webp"$/);
   expect(html).toMatch(
     /class="tour-still-image"[^>]* srcset="[^"]*welcome-1024\.webp 1024w,[^"]*welcome\.webp 2048w" sizes="[^"]+"/,
   );

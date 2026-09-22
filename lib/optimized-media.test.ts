@@ -3,6 +3,9 @@ import {
   optimizedRoomPath,
   optimizedContentCover,
   roomPhotoThumb,
+  roomPhotoMedium,
+  roomPhotoSrcset,
+  optimizedStoryImage,
   roomStillSrcset,
   roomStillVariant,
 } from "./optimized-media.mjs";
@@ -80,5 +83,41 @@ test("keeps originals for remote, JPEG and unrelated images", () => {
     "/posts/a/cover.png?version=1",
   ]) {
     expect(optimizedContentCover(src)).toBe(src);
+  }
+});
+
+test("album figures offer a medium render for 1x and small screens", () => {
+  expect(roomPhotoMedium("./assets/team-bali.jpg")).toBe(
+    "./assets/team-bali-800.webp",
+  );
+  expect(roomPhotoMedium("./assets/dimas.jpg")).toBe("./assets/dimas.jpg");
+  expect(
+    roomPhotoSrcset({ src: "/room/assets/portfolio/photo-3.jpg" }),
+  ).toBe(
+    "/room/assets/portfolio/photo-3-800.webp 800w, /room/assets/portfolio/photo-3.jpg 1200w",
+  );
+  expect(
+    roomPhotoSrcset({ src: "/room/assets/photo.webp", medium: "/room/m.webp" }),
+  ).toBe("/room/m.webp 800w, /room/assets/photo.webp 1200w");
+  expect(roomPhotoSrcset({ src: "https://cdn.example/a.jpg" })).toBe("");
+});
+
+test("project screenshots swap to lossless WebP companions", () => {
+  expect(optimizedStoryImage("/portfolio/ctfify-readme.png")).toBe(
+    "/portfolio/ctfify-readme.webp",
+  );
+  expect(optimizedStoryImage("/room/assets/portfolio/tcp1p-theme.png")).toBe(
+    "/room/assets/portfolio/tcp1p-theme.webp",
+  );
+  expect(optimizedStoryImage("/site/portfolio/a.png")).toBe(
+    "/site/portfolio/a.webp",
+  );
+  for (const src of [
+    "/portfolio/a.jpg",
+    "/posts/a/cover.png",
+    "https://cdn.example/portfolio/a.png",
+    "/portfolio/a.png?v=1",
+  ]) {
+    expect(optimizedStoryImage(src)).toBe(src);
   }
 });
