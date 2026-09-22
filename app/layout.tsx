@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@/components/analytics";
 import { Suspense } from "react";
 import { BackgroundPreloader } from "@/components/background-preloader";
+import { ServiceWorker } from "@/components/service-worker";
 import NavigationLoader from "@/components/navigation-loader";
 import { RouteAnnouncer } from "@/components/route-announcer";
 import { roomSans, roomHeading } from "@/lib/site-fonts";
@@ -169,6 +170,7 @@ export default function RootLayout({
           <Analytics />
         </Suspense>
         <BackgroundPreloader />
+        <ServiceWorker />
       </body>
     </html>
   );

@@ -276,7 +276,7 @@ try {
           // `srcset` may pick a narrower render, never one with fewer source
           // pixels than the still occupies on this screen.
           const pixels = Number(
-            /-(\d+)\.webp$/.exec(img.currentSrc)?.[1] || 2048,
+            /-(\d+)\.(?:avif|webp)$/.exec(img.currentSrc)?.[1] || 2048,
           );
           return (
             img.complete &&

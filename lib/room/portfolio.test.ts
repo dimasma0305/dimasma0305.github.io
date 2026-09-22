@@ -78,13 +78,17 @@ test("static homepage has all collections, landmarks, local routes and original 
     expect(html).toContain(`href="/portfolio/${route}/"`);
   expect(html).toContain("/portfolio/room/assets/dimas.webp");
   // Album buttons use thumbnails; only the open figure loads a full photo.
-  const thumbs = html.match(/data-tour-photo="\d+"[^>]*><img src="([^"]+)"/g) || [];
+  const thumbs =
+    html.match(/data-tour-photo="\d+"[^>]*><picture><source type="image\/avif" srcset="([^"]+)" \/><img src="([^"]+)"/g) || [];
   expect(thumbs.length).toBe(records.photos.length);
-  for (const thumb of thumbs) expect(thumb).toMatch(/\.thumb\.webp"$/);
+  for (const thumb of thumbs)
+    expect(thumb).toMatch(/\.thumb\.avif" \/><img src="[^"]*\.thumb\.webp"$/);
   const figures = html.match(/<figure data-portfolio-photo [^>]*>[\s\S]*?<\/figure>/g) || [];
   expect(figures.length).toBe(records.photos.length);
-  for (const figure of figures)
+  for (const figure of figures) {
     expect(figure).toMatch(/srcset="[^"]*-800\.webp 800w, [^"]*\.webp 1200w" sizes="/);
+    expect(figure).toMatch(/<source type="image\/avif" srcset="[^"]*-800\.avif 800w, [^"]*\.avif 1200w" sizes="/);
+  }
   // Every project screenshot is served as its lossless WebP companion.
   const shots = html.match(/data-portfolio-project><summary><img src="([^"]+)"/g) || [];
   expect(shots.length).toBe(Object.keys(projectStories).length);
@@ -92,6 +96,11 @@ test("static homepage has all collections, landmarks, local routes and original 
   expect(html).toMatch(
     /class="tour-still-image"[^>]* srcset="[^"]*welcome-1024\.webp 1024w,[^"]*welcome\.webp 2048w" sizes="[^"]+"/,
   );
+  // AVIF is offered first, with the same candidates and sizes as the WebP.
+  expect(html).toMatch(
+    /<picture><source type="image\/avif" srcset="[^"]*welcome-1024\.avif 1024w,[^"]*welcome\.avif 2048w" sizes="min\(100vw, 100vh\)" \/><img class="tour-still-image"/,
+  );
+  expect(html).toMatch(/<source type="image\/avif" srcset="[^"]*dimas\.avif" \/><img src="[^"]*dimas\.webp"/);
   expect(html).not.toMatch(
     /<iframe|1pc\.tf|\?concept=|Original room|All concepts/,
   );

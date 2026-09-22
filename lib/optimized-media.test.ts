@@ -8,6 +8,8 @@ import {
   optimizedStoryImage,
   roomStillSrcset,
   roomStillVariant,
+  roomAvif,
+  avifSrcset,
 } from "./optimized-media.mjs";
 import { roomAsset } from "./room/assets.js";
 
@@ -120,4 +122,30 @@ test("project screenshots swap to lossless WebP companions", () => {
   ]) {
     expect(optimizedStoryImage(src)).toBe(src);
   }
+});
+
+test("every generated room WebP has an AVIF twin, screenshots do not", () => {
+  for (const [webp, avif] of [
+    ["/room/assets/room-stills/welcome.webp", "/room/assets/room-stills/welcome.avif"],
+    ["/room/assets/room-stills/work-1024.webp", "/room/assets/room-stills/work-1024.avif"],
+    ["/room/assets/team-bali-800.webp", "/room/assets/team-bali-800.avif"],
+    ["/room/assets/portfolio/photo-7.thumb.webp", "/room/assets/portfolio/photo-7.thumb.avif"],
+    ["/room/assets/dimas.webp", "/room/assets/dimas.avif"],
+    ["/room/assets/bali-night-window.webp", "/room/assets/bali-night-window.avif"],
+  ]) {
+    expect(roomAvif(webp)).toBe(avif);
+  }
+  for (const src of [
+    "/room/assets/portfolio/tcp1p-theme.webp",
+    "/portfolio/ctfify-readme.webp",
+    "/posts/a/cover.png.preview.webp",
+    "/room/assets/team-bali.jpg",
+  ]) {
+    expect(roomAvif(src)).toBe(src);
+  }
+  expect(
+    avifSrcset("/room/assets/team-bali-800.webp 800w, /room/assets/team-bali.webp 1200w"),
+  ).toBe("/room/assets/team-bali-800.avif 800w, /room/assets/team-bali.avif 1200w");
+  expect(avifSrcset("/portfolio/a.webp 800w")).toBe("");
+  expect(avifSrcset("")).toBe("");
 });

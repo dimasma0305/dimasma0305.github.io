@@ -83,11 +83,12 @@ try {
           // `srcset` may choose a narrower render, never one with fewer source
           // pixels than the still occupies on this screen.
           const pixels = Number(
-            /-(\d+)\.webp$/.exec(img.currentSrc)?.[1] || 2048,
+            /-(\d+)\.(?:avif|webp)$/.exec(img.currentSrc)?.[1] || 2048,
           );
           return (
             img.complete &&
-            img.currentSrc.endsWith(".webp") &&
+            // Chrome decodes AVIF, so the <picture> serves the smaller twin.
+            img.currentSrc.endsWith(".avif") &&
             pixels >=
               Math.min(
                 2048,
@@ -186,7 +187,12 @@ try {
   );
 
   // A temporarily missing generated cover falls back to the original, not a loop.
-  const fallback = await browser.newPage({ reducedMotion: "reduce" });
+  // This exercises the page's own cover fallback. The service worker would
+  // answer the aborted request from its cache, so keep it out of this page.
+  const fallback = await browser.newPage({
+    reducedMotion: "reduce",
+    serviceWorkers: "block",
+  });
   await fallback.route(new URL(coverSource, base).href, (route) =>
     route.fulfill({ status: 404, body: "" }),
   );

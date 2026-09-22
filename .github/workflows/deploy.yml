@@ -112,6 +112,23 @@ jobs:
     - name: Validate content
       run: node scripts/validate-content.js
 
+    # Generated WebP/AVIF companions are keyed on the source images and the
+    # encoder scripts; `optimize-media` verifies each entry against a content
+    # manifest, so a restored cache is trusted only where it still matches.
+    - name: Restore generated media companions
+      uses: actions/cache@v4
+      with:
+        path: |
+          .cache/media-manifest.json
+          public/room/assets/room-stills/*.webp
+          public/room/assets/room-stills/*.avif
+          public/room/assets/*.webp
+          public/room/assets/*.avif
+          public/room/assets/portfolio/*.webp
+          public/room/assets/portfolio/*.avif
+          public/portfolio/*.webp
+        key: media-${{ hashFiles('scripts/optimize-media.mjs', 'lib/optimized-media.mjs', 'public/room/assets/**/*.jpg', 'public/room/assets/**/*.png', 'public/portfolio/*.png') }}
+
     - name: Build application
       run: bun run build
       env:

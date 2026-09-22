@@ -1,4 +1,5 @@
-import { readdir, readFile, stat } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import sharp from "sharp";
 import {
@@ -11,7 +12,15 @@ import {
   roomPhotoMedium,
   roomPhotoMediumWidth,
   optimizedStoryImage,
+  roomAvif,
 } from "../lib/optimized-media.mjs";
+
+// Bump when encoder settings change so every companion is regenerated.
+const ENCODER_VERSION = 2;
+// AVIF twins: effort 3 keeps a full rebuild near a minute; quality is set per
+// source kind below (rendered stills tolerate less than photographs).
+const avifQuality = (source) =>
+  source.includes("room-stills/") ? 72 : source.endsWith(".png") ? 80 : 62;
 
 const publicDir = new URL("../public/", import.meta.url);
 const jobs = [];
@@ -80,41 +89,94 @@ for (const name of ["blog", "notes"]) {
     jobs.push([source.slice(1), target.slice(1), 92]);
   }
 }
+// Every room WebP (not the lossless screenshots) gets an AVIF twin.
+for (const job of [...jobs]) {
+  const [source, target, quality, width] = job;
+  const avif = roomAvif(target);
+  if (avif !== target && quality !== "lossless")
+    jobs.push([source, avif, avifQuality(source), width, "avif"]);
+}
+
+// Freshness is decided by a manifest of source hashes and encoder settings,
+// not file times: a fresh checkout or a restored CI cache must not re-encode
+// unchanged images, and a changed setting must.
+// Outside `public/`, which is copied into the export wholesale.
+const manifestPath = new URL("../.cache/media-manifest.json", import.meta.url);
+await mkdir(new URL("./", manifestPath), { recursive: true });
+let manifest = {};
+try {
+  manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+} catch {}
+const nextManifest = {};
+const sourceHashes = new Map();
+async function sourceHash(source) {
+  if (!sourceHashes.has(source))
+    sourceHashes.set(
+      source,
+      createHash("sha1")
+        .update(await readFile(new URL(source, publicDir)))
+        .digest("hex"),
+    );
+  return sourceHashes.get(source);
+}
+
 let originalBytes = 0,
   optimizedBytes = 0,
   generated = 0;
 const seen = new Set();
-for (const [source, target, quality, width] of jobs) {
+const work = [];
+for (const [source, target, quality, width, format = "webp"] of jobs) {
   if (seen.has(target) || source === target) continue;
   seen.add(target);
-  const input = new URL(source, publicDir),
-    output = new URL(target, publicDir);
-  let sourceInfo;
-  try {
-    sourceInfo = await stat(input);
-  } catch (error) {
-    if (error.code === "ENOENT") continue;
-    throw error;
-  }
-  const cached = await stat(output).catch(() => null);
-  if (!cached || cached.mtimeMs < sourceInfo.mtimeMs) {
-    const image = sharp(input.pathname);
-    if (width) image.resize({ width, withoutEnlargement: true });
-    await image
-      .webp(
-        quality === "lossless"
-          ? { lossless: true, effort: 6 }
-          : { quality, effort: 6 },
-      )
-      .toFile(output.pathname);
-    generated++;
-  }
-  // Resized variants are extra candidates, not replacements for an original.
-  if (!width) {
-    originalBytes += sourceInfo.size;
-    optimizedBytes += (await stat(output)).size;
-  }
+  work.push(async () => {
+    const input = new URL(source, publicDir),
+      output = new URL(target, publicDir);
+    let sourceInfo;
+    try {
+      sourceInfo = await stat(input);
+    } catch (error) {
+      if (error.code === "ENOENT") return;
+      throw error;
+    }
+    const recipe = `${await sourceHash(source)}:${format}:${quality}:${width || "full"}:${ENCODER_VERSION}`;
+    nextManifest[target] = recipe;
+    const cached = await stat(output).catch(() => null);
+    if (!cached || manifest[target] !== recipe) {
+      const image = sharp(input.pathname);
+      if (width) image.resize({ width, withoutEnlargement: true });
+      await mkdir(new URL("./", output), { recursive: true });
+      if (format === "avif") {
+        await image.avif({ quality, effort: 3 }).toFile(output.pathname);
+      } else {
+        await image
+          .webp(
+            quality === "lossless"
+              ? { lossless: true, effort: 6 }
+              : { quality, effort: 6 },
+          )
+          .toFile(output.pathname);
+      }
+      generated++;
+    }
+    // Resized variants and AVIF twins are extra candidates, not replacements.
+    if (!width && format === "webp") {
+      // Read the size before adding: `a += await b` reads `a` first and would
+      // drop updates made by the other workers during the wait.
+      const size = (await stat(output)).size;
+      originalBytes += sourceInfo.size;
+      optimizedBytes += size;
+    }
+  });
 }
+// A few encodes at a time: AVIF is CPU-bound and CI runners have few cores.
+const concurrency = 4;
+let cursor = 0;
+await Promise.all(
+  Array.from({ length: concurrency }, async () => {
+    while (cursor < work.length) await work[cursor++]();
+  }),
+);
+await writeFile(manifestPath, JSON.stringify(nextManifest, null, 1));
 console.log(
   `Media: ${seen.size} companions, ${generated} generated; full-size ${(originalBytes / 1048576).toFixed(2)} → ${(optimizedBytes / 1048576).toFixed(2)} MiB.`,
 );

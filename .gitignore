@@ -43,3 +43,7 @@ public/room/assets/bali-night-window.webp
 public/room/assets/*.webp
 public/room/assets/portfolio/*.webp
 public/portfolio/*.webp
+public/room/assets/room-stills/*.avif
+public/room/assets/*.avif
+public/room/assets/portfolio/*.avif
+/.cache/
