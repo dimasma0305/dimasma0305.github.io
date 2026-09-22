@@ -79,11 +79,24 @@ try {
       .locator(".tour-still-image")
       .first()
       .evaluate(
-        (img) =>
-          img.complete &&
-          img.naturalWidth === 2048 &&
-          img.currentSrc.endsWith(".webp"),
+        (img) => {
+          // `srcset` may choose a narrower render, never one with fewer source
+          // pixels than the still occupies on this screen.
+          const pixels = Number(
+            /-(\d+)\.webp$/.exec(img.currentSrc)?.[1] || 2048,
+          );
+          return (
+            img.complete &&
+            img.currentSrc.endsWith(".webp") &&
+            pixels >=
+              Math.min(
+                2048,
+                img.getBoundingClientRect().width * devicePixelRatio,
+              )
+          );
+        },
       ),
+    "the room still is sharp at its displayed size",
   );
   const blog = page.locator('a[href="/blog/"]').first();
   await blog.focus();

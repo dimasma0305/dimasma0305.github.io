@@ -18,6 +18,7 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
+  // The site header is set in Inter on every page, so it stays preloaded.
   preload: true,
   fallback: ["system-ui", "arial"],
 });
@@ -103,14 +104,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        {/* next/font self-hosts Inter & JetBrains Mono at build time, so there
-            are no runtime requests to Google Fonts — no preconnect needed. Warm
-            the origins we actually hit at runtime instead: the photo-gallery CDN
-            and GitHub avatars. */}
-        <link rel="preconnect" href="https://lh3.googleusercontent.com" />
-        <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
-        <link rel="preconnect" href="https://avatars.githubusercontent.com" />
-        <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
+        {/* next/font self-hosts every typeface at build time, and no page loads
+            an image or script from another origin (photo links and the GitHub
+            avatar are hrefs and structured data only), so there is nothing to
+            preconnect to. */}
 
         {/* Favicon and icons — relative so they resolve against the current
             origin (localhost in dev, the site domain in prod), not a hardcoded

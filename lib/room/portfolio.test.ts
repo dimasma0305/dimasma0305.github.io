@@ -75,7 +75,14 @@ test("static homepage has all collections, landmarks, local routes and original 
     expect(html).toContain(`id="${id}"`);
   for (const route of ["blog", "notes", "tools", "search", "services"])
     expect(html).toContain(`href="/portfolio/${route}/"`);
-  expect(html).toContain("/portfolio/room/assets/dimas.jpg");
+  expect(html).toContain("/portfolio/room/assets/dimas.webp");
+  // Album buttons use thumbnails; only the open figure loads a full photo.
+  const thumbs = html.match(/data-tour-photo="\d+"[^>]*><img src="([^"]+)"/g) || [];
+  expect(thumbs.length).toBe(records.photos.length);
+  for (const thumb of thumbs) expect(thumb).toMatch(/\.thumb\.webp"$/);
+  expect(html).toMatch(
+    /class="tour-still-image"[^>]* srcset="[^"]*welcome-1024\.webp 1024w,[^"]*welcome\.webp 2048w" sizes="[^"]+"/,
+  );
   expect(html).not.toMatch(
     /<iframe|1pc\.tf|\?concept=|Original room|All concepts/,
   );

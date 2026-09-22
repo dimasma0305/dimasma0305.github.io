@@ -93,6 +93,8 @@ describe("convertNotionContentToHtml - happy path renders block markup", () => {
     // localized same-origin image url survives verbatim
     expect(html).toContain('src="/posts/x/media.png"')
     expect(html).toContain("a caption")
+    // below-the-fold images neither block discovery nor the main thread
+    expect(html).toMatch(/<img [^>]*loading="lazy" decoding="async"/)
   })
 })
 

@@ -40,3 +40,5 @@ public/room/assets/bali-night-window.webp
 
 # local design sandbox (in development)
 /design-preview/
+public/room/assets/*.webp
+public/room/assets/portfolio/*.webp

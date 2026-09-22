@@ -245,7 +245,7 @@ export async function convertNotionBlockToHtml(block: NotionBlock, folder: strin
             .join("")
             .trim() || "Image"
         return `<figure class="notion-image">
-          <img src="${safeUrl}" alt="${escapeHtml(altText)}" class="notion-image-content" loading="lazy"
+          <img src="${safeUrl}" alt="${escapeHtml(altText)}" class="notion-image-content" loading="lazy" decoding="async"
                onerror="this.onerror=null;this.src='${withBasePath('/placeholder.svg?height=400&width=600&text=Image%20Not%20Found')}'">
           ${caption ? `<figcaption class="notion-image-caption">${caption}</figcaption>` : ""}
         </figure>`

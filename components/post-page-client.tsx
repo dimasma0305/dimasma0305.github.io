@@ -224,6 +224,18 @@ export default function PostPageClient({
             </div>
             {post.coverImage && !coverError && (
               <div className="blog-reading-cover">
+                {/* The cover is hidden below 1024px, so it stays lazy and a phone
+                    never downloads it. Where it is shown it sits beside the
+                    title, so let the preload scanner find it there. */}
+                {!useOriginalCover && (
+                  <link
+                    rel="preload"
+                    as="image"
+                    href={optimizedContentCover(post.coverImage)}
+                    media="(min-width: 1024px)"
+                    fetchPriority="high"
+                  />
+                )}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={
@@ -233,6 +245,7 @@ export default function PostPageClient({
                   }
                   alt=""
                   loading="lazy"
+                  decoding="async"
                   onError={() => {
                     if (
                       !useOriginalCover &&
