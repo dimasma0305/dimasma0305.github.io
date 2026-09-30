@@ -3,7 +3,7 @@ import { pageMetadata } from "@/lib/site-seo";
 export const metadata = pageMetadata({
   title: "Saved reading",
   description:
-    "Your locally saved posts, field notes, and reading positions. Private to this browser, with no account required.",
+    "Your locally saved posts and reading positions. Private to this browser, with no account required.",
   path: "/reading-list/",
   noIndex: true,
 });

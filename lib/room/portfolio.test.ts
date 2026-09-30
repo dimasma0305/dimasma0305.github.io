@@ -74,8 +74,9 @@ test("static homepage has all collections, landmarks, local routes and original 
     "contact",
   ])
     expect(html).toContain(`id="${id}"`);
-  for (const route of ["blog", "notes", "tools", "search", "services"])
+  for (const route of ["blog", "tools", "search", "services"])
     expect(html).toContain(`href="/portfolio/${route}/"`);
+  expect(html).not.toContain('href="/portfolio/notes/"');
   expect(html).toContain("/portfolio/room/assets/dimas.webp");
   // Album buttons use thumbnails; only the open figure loads a full photo.
   const thumbs =
@@ -111,8 +112,9 @@ test("static homepage has all collections, landmarks, local routes and original 
   expect(header).toContain('aria-label="dimasc.tf — home"');
   expect(header).not.toContain("dimas’ corner");
   expect(header).toContain('aria-label="Room chapters"');
-  for (const route of ["blog", "notes", "tools", "services"])
+  for (const route of ["blog", "tools", "services"])
     expect(primary).toContain(`href="/portfolio/${route}/"`);
+  expect(primary).not.toContain('href="/portfolio/notes/"');
   expect(primary).not.toContain('href="#');
   expect(header).toContain('href="#services">Review desk</a>');
   expect(html).toContain(

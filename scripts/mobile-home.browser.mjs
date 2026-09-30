@@ -82,7 +82,6 @@ try {
       assert.ok(header.height <= 58, "One-row landscape header");
     assert.deepEqual(await page.locator(".tour-site-nav a").allTextContents(), [
       "Blog",
-      "Notes",
       "Tools",
       "Services",
     ]);

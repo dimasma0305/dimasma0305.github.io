@@ -7,7 +7,7 @@ import { LogoMark } from "@/components/logo-mark";
 import { siteNavigation, isSiteSectionActive } from "@/lib/site-brand.mjs";
 import "@/lib/site-header.css";
 
-// The room owns its in-page navigation. Content pages share four clear site
+// The room owns its in-page navigation. Content pages share three clear site
 // destinations, visible at every screen size without opening a menu.
 export function Header() {
   const pathname = usePathname() || "/";

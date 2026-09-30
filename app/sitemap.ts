@@ -6,11 +6,9 @@ export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = readPublicIndex("blog");
-  const notes = readPublicIndex("notes");
   const staticPaths = [
     "/",
     "/blog/",
-    "/notes/",
     "/services/",
     "/categories/",
     "/tags/",
@@ -20,18 +18,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
     url: siteUrls.page(path),
   }));
-  for (const [kind, items] of [
-    ["posts", posts],
-    ["notes", notes],
-  ] as const) {
-    entries.push(
-      ...items.map((item) => ({
-        url: siteUrls.page(`/${kind}/${item.slug}/`),
-        lastModified:
-          contentDate(item.last_edited_time) || contentDate(item.created_time),
-      })),
-    );
-  }
+  entries.push(
+    ...posts.map((item) => ({
+      url: siteUrls.page(`/posts/${item.slug}/`),
+      lastModified:
+        contentDate(item.last_edited_time) || contentDate(item.created_time),
+    })),
+  );
   for (const [kind, names] of [
     ["categories", posts.flatMap((post) => post.categories || [])],
     ["tags", posts.flatMap((post) => post.tags || [])],

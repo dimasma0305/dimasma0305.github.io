@@ -130,9 +130,6 @@ export default function BlogPageClient({ entries }: { entries: BlogEntry[] }) {
           </p>
         </div>
         <div className="blog-heading-links">
-          <Link href="/notes/" prefetch={false}>
-            Quick notes <ArrowUpRight size={15} aria-hidden="true" />
-          </Link>
           <a href={withBasePath("/rss.xml")}>
             <Rss size={14} aria-hidden="true" /> RSS feed
           </a>
@@ -339,18 +336,6 @@ export default function BlogPageClient({ entries }: { entries: BlogEntry[] }) {
         )}
       </section>
 
-      <div className="blog-endnote">
-        <BookOpen size={22} strokeWidth={1.4} aria-hidden="true" />
-        <div>
-          <h2>Looking for something shorter?</h2>
-          <p>
-            My notebook is where quick references and works in progress live.
-          </p>
-        </div>
-        <Link href="/notes/" prefetch={false}>
-          Open the notebook <ArrowUpRight size={16} aria-hidden="true" />
-        </Link>
-      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 export const siteSocial = {
   title: "dimasc.tf — Dimas Maulana",
   description:
-    "Dimas Maulana’s digital room: security research, CTF writeups, open-source projects, technical notes, and source code security reviews.",
+    "Dimas Maulana’s digital room: security research, CTF writeups, open-source projects, and source code security reviews.",
   image: "/social/room-v1.jpg",
   imageAlt:
     "dimasc.tf — Dimas Maulana’s warmly lit 3D room, DM monogram, and the words ‘A room for curiosity.’",

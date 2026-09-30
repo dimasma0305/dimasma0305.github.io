@@ -24,7 +24,6 @@ try {
     });
     for (const [label, path] of [
       ["Blog", "blog"],
-      ["Notes", "notes"],
       ["Tools", "tools"],
       ["Services", "services"],
     ]) {
@@ -49,7 +48,6 @@ try {
       );
       assert.deepEqual(await nav.locator("a").allTextContents(), [
         "Blog",
-        "Notes",
         "Tools",
         "Services",
       ]);
@@ -115,7 +113,7 @@ try {
     assert.match(await page.title(), /dimasc\.tf/);
     assert.equal(await page.locator("canvas").count(), 0);
     console.log(
-      `PASS ${width}px: all four navbar routes, active states, keyboard navigation, brand home link, readable content clearance`,
+      `PASS ${width}px: all three navbar routes, active states, keyboard navigation, brand home link, readable content clearance`,
     );
     await page.close();
   }

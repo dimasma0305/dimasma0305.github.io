@@ -48,32 +48,20 @@ test("unified search filters types and matches words across public metadata", ()
 });
 
 test("public search directory is unique, has all projects and has no article bodies", () => {
-  const entries = buildSearchDirectory({
-    blog: [
-      {
-        slug: "example-post",
-        title: "Example post",
-        created_time: "2026-01-02T00:00:00.000Z",
-        excerpt: "A public post summary",
-        categories: ["Research"],
-        tags: ["Web"],
-      },
-    ],
-    notes: [
-      {
-        slug: "example-note",
-        title: "Example note",
-        created_time: "2026-01-01T00:00:00.000Z",
-        excerpt: "A public note summary",
-        categories: ["Notes"],
-        tags: ["Security"],
-      },
-    ],
-  });
+  const entries = buildSearchDirectory([
+    {
+      slug: "example-post",
+      title: "Example post",
+      created_time: "2026-01-02T00:00:00.000Z",
+      excerpt: "A public post summary",
+      categories: ["Research"],
+      tags: ["Web"],
+    },
+  ]);
   expect(new Set(entries.map((item) => item.id)).size).toBe(entries.length);
   expect(entries.filter((item) => item.kind === "project")).toHaveLength(9);
   expect(entries.some((item) => item.kind === "post")).toBe(true);
-  expect(entries.some((item) => item.kind === "note")).toBe(true);
+  expect(entries.some((item) => item.href.startsWith("/notes/"))).toBe(false);
   expect(entries.every((item) => !("content" in item))).toBe(true);
 });
 

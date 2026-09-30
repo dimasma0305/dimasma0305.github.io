@@ -96,19 +96,6 @@ jobs:
         bun run refresh-content
         echo "✅ Content refresh completed"
 
-    - name: Refresh notes content and check for updates
-      if: github.event_name != 'pull_request'
-      env:
-        NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        NOTION_DATABASE_ID: "19448583e65d80f7b5a1e7218bf4e049"
-        INDEX_OUTPUT: "public/notes/index.json"
-        FULL_INDEX_OUTPUT: "public/notes-index.json"
-        POSTS_DIR: "public/notes"
-      run: |
-        echo "🔄 Refreshing content..."
-        bun run refresh-content
-        echo "✅ Content refresh completed"
-
     - name: Validate content
       run: node scripts/validate-content.js
 

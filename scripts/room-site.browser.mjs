@@ -55,7 +55,6 @@ async function navigation(page) {
     .locator("a");
   assert.deepEqual(await links.allTextContents(), [
     "Blog",
-    "Notes",
     "Tools",
     "Services",
   ]);
@@ -72,7 +71,7 @@ async function navigation(page) {
         );
       }),
     ),
-    "All four main links must be visible and touch-sized without opening a menu",
+    "All three main links must be visible and touch-sized without opening a menu",
   );
 }
 try {
@@ -345,7 +344,6 @@ try {
   await legacy.close();
   for (const route of [
     "/blog/",
-    "/notes/",
     "/tools/ctf-calculator/",
     "/services/",
     "/sample-report/source-code-pentest-sample-report.pdf",
@@ -353,6 +351,8 @@ try {
     const response = await fetch(`${base}${route}`);
     assert.equal(response.status, 200, route);
   }
+  assert.equal((await fetch(`${base}/notes/`)).status, 404);
+  assert.equal((await fetch(`${base}/notes-index.json`)).status, 404);
   assert.deepEqual(errors, []);
   console.log("PASS old anchors, preserved pages/downloads, zero page errors");
 } finally {

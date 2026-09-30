@@ -13,7 +13,7 @@ export interface ReadingEntry {
 export function validReadingPath(path: unknown): path is string {
   return (
     typeof path === "string" &&
-    /^\/(posts|notes)\/[^/?#\\\s]+\/$/.test(path) &&
+    /^\/posts\/[^/?#\\\s]+\/$/.test(path) &&
     !/%2f|%5c|%2e|\.\./i.test(path)
   );
 }
@@ -30,10 +30,8 @@ export function parseReadingList(raw: string | null): ReadingEntry[] {
           !!item &&
           validReadingPath(item.path) &&
           typeof item.title === "string" &&
-          (item.kind === "post" || item.kind === "note") &&
-          item.path.startsWith(
-            `/${item.kind === "post" ? "posts" : "notes"}/`,
-          ) &&
+          item.kind === "post" &&
+          item.path.startsWith("/posts/") &&
           Number.isFinite(item.updated),
       )
       .map((item) => ({

@@ -89,8 +89,8 @@ try {
     () => document.querySelector("#site-query")?.value === "ctfify",
   );
   await page.getByRole("button", { name: "Clear search", exact: true }).click();
-  await page.getByRole("button", { name: /^Notes \d/ }).click();
-  await page.getByRole("searchbox").fill("path traversal");
+  await page.getByRole("button", { name: /^Blog posts \d/ }).click();
+  await page.getByRole("searchbox").fill("patchstack");
   assert.ok((await page.locator(".library-results li").count()) > 0);
   await page.screenshot({ path: `${output}/search-phone.png` });
   await page.getByRole("searchbox").fill("no-match-zzzz");
@@ -172,25 +172,8 @@ try {
     "[]",
   );
 
-  await page.goto(`${base}/notes/path-traversal/`, {
-    waitUntil: "networkidle",
-  });
-  await page.locator(".note-review summary").click();
-  assert.ok(
-    (await page.locator(".note-review").textContent()).includes(
-      "not a verification date",
-    ),
-  );
-  await page
-    .getByRole("button", { name: "Save for later", exact: true })
-    .click();
-  assert.equal(
-    await page.evaluate(
-      (key) => JSON.parse(localStorage.getItem(key))[0].kind,
-      READING_KEY,
-    ),
-    "note",
-  );
+  assert.equal((await page.request.get(`${base}/notes/`)).status(), 404);
+  assert.equal((await page.request.get(`${base}/notes-index.json`)).status(), 404);
 
   await page.goto(`${base}/privacy/`, { waitUntil: "networkidle" });
   await check(page);

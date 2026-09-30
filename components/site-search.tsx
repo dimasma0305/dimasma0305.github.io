@@ -13,7 +13,6 @@ const labels = {
   all: "Everything",
   project: "Projects",
   post: "Blog posts",
-  note: "Notes",
 };
 export function SiteSearch({ entries }: { entries: SearchEntry[] }) {
   const [query, setQuery] = useState("");
@@ -53,8 +52,7 @@ export function SiteSearch({ entries }: { entries: SearchEntry[] }) {
         <p className="library-eyebrow">ONE LIBRARY / MANY THREADS</p>
         <h1>Find your next rabbit hole.</h1>
         <p>
-          Projects, research writeups, and field notes. Search titles,
-          summaries, and topics.
+          Projects and research writeups. Search titles, summaries, and topics.
         </p>
         <Link href="/reading-list/" prefetch={false}>
           Your saved reading ↗
@@ -115,8 +113,8 @@ export function SiteSearch({ entries }: { entries: SearchEntry[] }) {
       <noscript>
         <p>
           Filtering needs JavaScript. You can still browse these links or visit
-          the <Link href="/blog/">Blog</Link>, <Link href="/notes/">Notes</Link>
-          , and <Link href="/#work">Projects</Link> directories.
+          the <Link href="/blog/">Blog</Link> and{" "}
+          <Link href="/#work">Projects</Link> directories.
         </p>
       </noscript>
       <p id="site-search-count" className="library-count" role="status">

@@ -7,7 +7,7 @@
     "generate:social": "node scripts/generate-social-preview.mjs",
     "optimize:media": "node scripts/optimize-media.mjs",
     "dev": "bun run optimize:media && next dev",
-    "build": "bun run optimize:media && next build",
+    "build": "bun run optimize:media && bun run generate-rss && next build && node scripts/prune-disabled-content.mjs",
     "analyze": "ANALYZE=true bun run build",
     "start": "next start",
     "lint": "next lint",

@@ -81,28 +81,26 @@ export function assembleRoomPortfolio(
 }
 
 export async function getRoomPortfolio(basePath: string, assetBase: string) {
-  const indexes = await Promise.all(
-    ["blog", "notes"].map(async (name) => {
-      try {
-        return JSON.parse(
-          await readFile(
-            path.join(process.cwd(), "public", `${name}-index.json`),
-            "utf8",
-          ),
-        );
-      } catch (error) {
-        // A local clean checkout can still render the portfolio before content is
-        // refreshed. CI validates its indexes before the production build.
-        if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-          return { posts: { all: [] } };
-        }
-        throw error;
-      }
-    }),
-  );
+  let blogIndex;
+  try {
+    blogIndex = JSON.parse(
+      await readFile(
+        path.join(process.cwd(), "public", "blog-index.json"),
+        "utf8",
+      ),
+    );
+  } catch (error) {
+    // A local clean checkout can still render the portfolio before content is
+    // refreshed. CI validates its blog index before the production build.
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      blogIndex = { posts: { all: [] } };
+    } else {
+      throw error;
+    }
+  }
   return assembleRoomPortfolio(
-    writingFromIndex(indexes[0], "posts", basePath),
-    writingFromIndex(indexes[1], "notes", basePath),
+    writingFromIndex(blogIndex, "posts", basePath),
+    [],
     assetBase,
   );
 }

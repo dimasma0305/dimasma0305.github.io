@@ -8,22 +8,20 @@ import {
   isSiteSectionActive,
 } from "./site-brand.mjs";
 
-test("primary navigation has four distinct site destinations in the requested order", () => {
+test("primary navigation has three distinct site destinations in the requested order", () => {
   expect(siteNavigation.map((item) => item.name)).toEqual([
     "Blog",
-    "Notes",
     "Tools",
     "Services",
   ]);
   expect(siteNavigation.map((item) => item.path)).toEqual([
     "/blog/",
-    "/notes/",
     "/tools/",
     "/services/",
   ]);
 });
 
-test("nested articles, notes, tools and service routes retain the right active link", () => {
+test("nested articles, tools and service routes retain the right active link", () => {
   for (const pathname of [
     "/blog",
     "/blog/",
@@ -33,7 +31,6 @@ test("nested articles, notes, tools and service routes retain the right active l
   ]) {
     expect(isSiteSectionActive(pathname, "/blog/")).toBe(true);
   }
-  expect(isSiteSectionActive("/notes/example/", "/notes/")).toBe(true);
   expect(isSiteSectionActive("/tools/ctf-calculator/", "/tools/")).toBe(true);
   expect(isSiteSectionActive("/services/", "/services/")).toBe(true);
   expect(isSiteSectionActive("/notes/example/", "/blog/")).toBe(false);

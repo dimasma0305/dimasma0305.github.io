@@ -1,4 +1,4 @@
-export type SearchKind = "project" | "post" | "note";
+export type SearchKind = "project" | "post";
 export interface SearchEntry {
   id: string;
   kind: SearchKind;
@@ -7,7 +7,7 @@ export interface SearchEntry {
   href: string;
   topics: string[];
 }
-export const searchKinds = ["all", "project", "post", "note"] as const;
+export const searchKinds = ["all", "project", "post"] as const;
 export type SearchFilter = (typeof searchKinds)[number];
 export function searchFilter(value: string | null): SearchFilter {
   return searchKinds.includes(value as SearchFilter)

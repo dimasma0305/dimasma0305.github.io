@@ -6,9 +6,9 @@ const path = require("path");
 // default here (env is honored if present). Pointing the feed at github.io sent
 // all syndication/link equity to the redirect host.
 const siteConfig = {
-  name: "dimasc.tf — Blog & Notes",
+  name: "dimasc.tf — Blog",
   description:
-    "Security research, CTF writeups, and technical notes by Dimas Maulana.",
+    "Security research and CTF writeups by Dimas Maulana.",
   url: process.env.NEXT_PUBLIC_BASE_URL || "https://dimasc.tf",
   author: {
     name: "Dimas Maulana",
@@ -35,10 +35,8 @@ function escapeXml(unsafe) {
   });
 }
 
-// Read one content index (blog-index.json / notes-index.json shape) and turn
-// its published entries into RSS items. `urlPrefix` is the served route base
-// ("/posts" for the blog, "/notes" for notes). Missing/unreadable index files
-// are skipped gracefully so the feed still builds from whatever exists.
+// Read a generated content index and turn its published entries into RSS
+// items. Missing or unreadable indexes are skipped gracefully.
 function collectItemsFromIndex(indexPath, urlPrefix, baseUrl) {
   if (!fs.existsSync(indexPath)) {
     return [];
@@ -97,17 +95,7 @@ function generateRssFeed() {
       ),
     );
 
-    // Notes (served at /notes/<slug>/). Same index shape; skipped gracefully if
-    // notes-index.json doesn't exist (e.g. a blog-only build).
-    allItems = allItems.concat(
-      collectItemsFromIndex(
-        path.join(process.cwd(), "public", "notes-index.json"),
-        "/notes",
-        baseUrl,
-      ),
-    );
-
-    // Sort all items (blog + notes merged) by publication date (newest first)
+    // Sort all blog items by publication date (newest first).
     allItems = [...new Map(allItems.map((item) => [item.url, item])).values()];
     allItems.sort(
       (a, b) => (Date.parse(b.pubDate) || 0) - (Date.parse(a.pubDate) || 0),
@@ -156,7 +144,7 @@ function generateRssFeed() {
     fs.writeFileSync(rssPath, rssXml, "utf8");
 
     console.log(
-      `✅ RSS feed generated successfully with ${allItems.length} items (blog + notes)`,
+      `✅ RSS feed generated successfully with ${allItems.length} blog items`,
     );
     console.log(`📄 RSS file saved to: ${rssPath}`);
   } catch (error) {

@@ -4,15 +4,12 @@ import { searchDescription } from "./site-seo";
 import portfolio from "./portfolio-data.json";
 import type { SearchEntry } from "./site-search";
 
-type SearchIndexes = Record<
-  "blog" | "notes",
-  Pick<
-    PublicEntry,
-    "slug" | "title" | "created_time" | "excerpt" | "categories" | "tags"
-  >[]
->;
+type SearchIndex = Pick<
+  PublicEntry,
+  "slug" | "title" | "created_time" | "excerpt" | "categories" | "tags"
+>[];
 
-export function buildSearchDirectory(indexes: SearchIndexes): SearchEntry[] {
+export function buildSearchDirectory(posts: SearchIndex): SearchEntry[] {
   const projects: SearchEntry[] = portfolio.projects.map((project, index) => ({
     id: `project:${index}`,
     kind: "project",
@@ -21,21 +18,19 @@ export function buildSearchDirectory(indexes: SearchIndexes): SearchEntry[] {
     href: `/#project-${index}`,
     topics: project.tags,
   }));
-  const writing = (["blog", "notes"] as const).flatMap((kind) =>
-    indexes[kind]
-      .sort((a, b) => Date.parse(b.created_time) - Date.parse(a.created_time))
-      .map((entry) => ({
-        id: `${kind}:${entry.slug}`,
-        kind: kind === "blog" ? ("post" as const) : ("note" as const),
-        title: entry.title,
-        description: searchDescription(
-          entry.excerpt,
-          `${kind === "blog" ? "A research writeup" : "A field note"} by Dimas Maulana. ${[...(entry.categories || []), ...(entry.tags || [])].slice(0, 4).join(" · ")}`,
-        ),
-        href: `/${kind === "blog" ? "posts" : "notes"}/${encodeURIComponent(entry.slug)}/`,
-        topics: [...(entry.categories || []), ...(entry.tags || [])],
-      })),
-  );
+  const writing: SearchEntry[] = [...posts]
+    .sort((a, b) => Date.parse(b.created_time) - Date.parse(a.created_time))
+    .map((entry) => ({
+      id: `blog:${entry.slug}`,
+      kind: "post",
+      title: entry.title,
+      description: searchDescription(
+        entry.excerpt,
+        `A research writeup by Dimas Maulana. ${[...(entry.categories || []), ...(entry.tags || [])].slice(0, 4).join(" · ")}`,
+      ),
+      href: `/posts/${encodeURIComponent(entry.slug)}/`,
+      topics: [...(entry.categories || []), ...(entry.tags || [])],
+    }));
   return [
     ...new Map(
       [...projects, ...writing].map((entry) => [entry.id, entry]),
@@ -44,8 +39,5 @@ export function buildSearchDirectory(indexes: SearchIndexes): SearchEntry[] {
 }
 
 export function getSearchDirectory(): SearchEntry[] {
-  return buildSearchDirectory({
-    blog: readPublicIndex("blog"),
-    notes: readPublicIndex("notes"),
-  });
+  return buildSearchDirectory(readPublicIndex("blog"));
 }
