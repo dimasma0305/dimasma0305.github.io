@@ -5,6 +5,7 @@ import { getBlogStats } from "@/lib/posts-loader"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookOpen, Calendar, Folder, ExternalLink } from "lucide-react"
+import { categoryLabel } from "@/lib/category-label"
 
 interface BlogStats {
   totalPosts: number
@@ -97,7 +98,7 @@ export function BlogStats() {
           <div className="flex flex-wrap gap-1">
             {stats.categories.map((category) => (
               <Badge key={category} variant="secondary" className="text-xs">
-                {category}
+                {categoryLabel(category)}
               </Badge>
             ))}
           </div>

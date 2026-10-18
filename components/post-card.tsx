@@ -16,6 +16,7 @@ import {
 import { FallbackImage } from "@/components/fallback-image";
 import { NotionLinkButton } from "@/components/notion-link-button";
 import { withBasePath } from "@/lib/utils";
+import { categoryLabel } from "@/lib/category-label";
 
 interface PostCardProps {
   post: Post;
@@ -98,7 +99,7 @@ const PostFooter = memo(
         </div>
         {categories.length > 0 && (
           <div className="flex gap-2 mt-2">
-            <Badge variant="secondary">{categories[0]}</Badge>
+            <Badge variant="secondary">{categoryLabel(categories[0])}</Badge>
             {categories.length > 1 && (
               <Badge variant="outline" className="text-xs">
                 +{categories.length - 1}
@@ -134,7 +135,7 @@ function PostCard({ post, priority }: PostCardProps) {
           /* Branded header keeps the grid rhythm when a post has no cover. */
           <div className="post-cover relative flex h-48 items-center justify-center overflow-hidden bg-gradient-to-br from-primary/15 via-card to-background">
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary/70">
-              {post.categories?.[0] ?? "Writeup"}
+              {post.categories?.[0] ? categoryLabel(post.categories[0]) : "Writeup"}
             </span>
             {post.iconEmoji && (
               <div className="absolute flex items-center justify-center w-10 h-10 text-xl rounded-full bg-background/90 border border-border top-4 right-4 shadow-sm">

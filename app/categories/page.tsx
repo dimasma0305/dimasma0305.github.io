@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/section-header";
 import { getPublishedPostSummaries } from "@/lib/content-index.server";
+import { categoryLabel } from "@/lib/category-label";
 import { pageMetadata } from "@/lib/site-seo";
 import { BreadcrumbStructuredData } from "@/components/seo";
 
@@ -60,7 +61,7 @@ export default function CategoriesPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-3">
                       <h2 className="truncate text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
-                        {category}
+                        {categoryLabel(category)}
                       </h2>
                       <Badge variant="secondary" className="shrink-0">
                         {count} post{count !== 1 ? "s" : ""}

@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import type { Post } from "@/lib/posts-client";
 import { getAllCategories, getPostsByCategory } from "@/lib/posts-client";
+import { categoryLabel } from "@/lib/category-label";
 import PostCard from "@/components/post-card";
 import { SearchBar } from "@/components/search-bar";
 import { SectionHeader } from "@/components/section-header";
@@ -70,13 +71,13 @@ export default function CategoryPageClient({
       <SectionHeader
         titleAs="h1"
         eyebrow="Category"
-        title={actualCategoryName}
+        title={categoryLabel(actualCategoryName)}
         subtitle={`${categoryPosts.length} post${categoryPosts.length !== 1 ? "s" : ""}`}
         action={
           <SearchBar
             value={searchQuery}
             onChange={handleSearch}
-            placeholder={`Search in ${actualCategoryName}...`}
+            placeholder={`Search in ${categoryLabel(actualCategoryName)}...`}
             className="w-full sm:w-64"
           />
         }
@@ -86,7 +87,7 @@ export default function CategoryPageClient({
         <div className="mb-6 flex items-center gap-2">
           <p className="text-sm text-muted-foreground">
             {filteredPosts.length} result{filteredPosts.length !== 1 ? "s" : ""}{" "}
-            for "{searchQuery}" in {actualCategoryName}
+            for "{searchQuery}" in {categoryLabel(actualCategoryName)}
           </p>
           <button
             onClick={handleClearSearch}

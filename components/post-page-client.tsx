@@ -5,6 +5,7 @@
 import "@/app/content.css";
 import { useEffect, useMemo, useState, lazy, Suspense } from "react";
 import { formatBlogDate } from "@/lib/blog-archive";
+import { categoryLabel } from "@/lib/category-label";
 import { BlogReturnLink } from "@/components/blog-return-link";
 import "@/lib/blog.css";
 import { ArrowLeft, ArrowDown, ArrowUpRight, Clock } from "lucide-react";
@@ -176,7 +177,7 @@ export default function PostPageClient({
                     href={`/blog/?topic=${encodeURIComponent(category)}`}
                     prefetch={false}
                   >
-                    {category}
+                    {categoryLabel(category)}
                   </Link>
                 ))}
               </div>

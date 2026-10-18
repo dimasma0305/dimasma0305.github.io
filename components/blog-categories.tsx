@@ -4,6 +4,7 @@ import { usePosts } from "@/hooks/use-posts";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { categoryLabel } from "@/lib/category-label";
 
 export function BlogCategories() {
   const { posts } = usePosts();
@@ -63,7 +64,7 @@ export function BlogCategories() {
                     prefetch={false}
                     aria-current={active ? "page" : undefined}
                   >
-                    {category}
+                    {categoryLabel(category)}
                     <span className="ml-auto text-muted-foreground">
                       {count}
                     </span>

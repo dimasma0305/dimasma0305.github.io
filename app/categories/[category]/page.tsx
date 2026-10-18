@@ -1,6 +1,7 @@
 import CategoryPageClient from "@/components/category-page-client";
 import { getPublishedPostSummaries } from "@/lib/content-index.server";
 import { pageMetadata } from "@/lib/site-seo";
+import { categoryLabel } from "@/lib/category-label";
 import {
   BreadcrumbStructuredData,
   CollectionStructuredData,
@@ -143,9 +144,9 @@ export async function generateMetadata({ params }: CategoryPageProps) {
     notFound();
   }
   return pageMetadata({
-    title: `${name} Research & Writeups`,
+    title: `${categoryLabel(name)} Research & Writeups`,
     path: `/categories/${encodeURIComponent(name.toLowerCase())}/`,
-    description: `Explore ${name} articles, cybersecurity research, and CTF writeups by Dimas Maulana. Read the published work collected under this topic.`,
+    description: `Explore ${categoryLabel(name)} articles, cybersecurity research, and CTF writeups by Dimas Maulana. Read the published work collected under this topic.`,
   });
 }
 
@@ -161,11 +162,11 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       <BreadcrumbStructuredData
         items={[
           { name: "Categories", path: "/categories/" },
-          { name, path: canonicalPath },
+          { name: categoryLabel(name), path: canonicalPath },
         ]}
       />
       <CollectionStructuredData
-        title={`${name} Research & Writeups`}
+        title={`${categoryLabel(name)} Research & Writeups`}
         path={canonicalPath}
         items={posts.map((post) => ({
           title: post.title,

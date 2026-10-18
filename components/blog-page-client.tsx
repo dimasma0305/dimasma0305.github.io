@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { FallbackImage } from "@/components/fallback-image";
 import { withBasePath } from "@/lib/utils";
+import { categoryLabel } from "@/lib/category-label";
 import {
   blogFilterQuery,
   blogTopics,
@@ -187,11 +188,11 @@ export default function BlogPageClient({ entries }: { entries: BlogEntry[] }) {
               <option value="">All topics</option>
               {filters.topic &&
                 !topics.some((topic) => topic.name === filters.topic) && (
-                  <option value={filters.topic}>{filters.topic}</option>
+                  <option value={filters.topic}>{categoryLabel(filters.topic)}</option>
                 )}
               {topics.map((topic) => (
                 <option key={topic.name} value={topic.name}>
-                  {topic.name} ({topic.count})
+                  {categoryLabel(topic.name)} ({topic.count})
                 </option>
               ))}
             </select>
@@ -220,7 +221,7 @@ export default function BlogPageClient({ entries }: { entries: BlogEntry[] }) {
             <strong>{results.length}</strong>{" "}
             {filtering ? "matching" : "published"}{" "}
             {results.length === 1 ? "article" : "articles"}
-            {filters.topic ? ` in ${filters.topic}` : ""}
+            {filters.topic ? ` in ${categoryLabel(filters.topic)}` : ""}
             {filters.query.trim() ? ` for “${filters.query.trim()}”` : ""}
           </p>
           {filtering ? (
@@ -309,7 +310,7 @@ export default function BlogPageClient({ entries }: { entries: BlogEntry[] }) {
                           }
                         }}
                       >
-                        {topic}
+                        {categoryLabel(topic)}
                       </Link>
                     ))}
                   </div>

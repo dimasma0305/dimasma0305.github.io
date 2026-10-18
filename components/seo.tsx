@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import type { Post } from "@/lib/posts-client";
+import { getArticleSearchCopy } from "@/lib/article-search-copy";
+import { categoryLabel } from "@/lib/category-label";
 import { faqs } from "@/lib/services-data";
 import { siteSocial } from "@/lib/social-metadata";
 import { readPublicIndex } from "@/lib/content-index.server";
@@ -70,6 +72,8 @@ export function BreadcrumbStructuredData({
 }
 
 function postDescription(post: Post) {
+  const curated = getArticleSearchCopy(post.slug);
+  if (curated) return curated.description;
   return searchDescription(
     post.excerpt,
     `${post.title}: a cybersecurity write-up by ${authorName}. Read the research, analysis, and lessons learned on ${siteName}.`,
@@ -84,14 +88,14 @@ function noteDescription(note: { title: string; excerpt?: string }) {
 
 export function generatePostMetadata({ post }: { post: Post }): Metadata {
   return pageMetadata({
-    title: post.title,
+    title: getArticleSearchCopy(post.slug)?.title || post.title,
     description: postDescription(post),
     path: `/posts/${post.slug}/`,
     image: post.coverImage,
     article: {
       published: post.createdAt,
       modified: post.updatedAt,
-      tags: post.categories,
+      tags: post.categories.map(categoryLabel),
     },
   });
 }
@@ -278,8 +282,8 @@ function ArticleStructuredData({
           publisher: person,
           mainEntityOfPage: { "@type": "WebPage", "@id": url },
           isPartOf: { "@id": `${siteUrls.page(collection)}#collection` },
-          articleSection: categories[0],
-          keywords: categories.join(", "),
+          articleSection: categories[0] ? categoryLabel(categories[0]) : undefined,
+          keywords: categories.map(categoryLabel).join(", "),
           isAccessibleForFree: true,
           // No invented word counts, mixed-language claims, or truncated articleBody.
         }}
@@ -297,7 +301,7 @@ function ArticleStructuredData({
 export function PostStructuredData({ post }: { post: Post }) {
   return (
     <ArticleStructuredData
-      title={post.title}
+      title={getArticleSearchCopy(post.slug)?.title || post.title}
       description={postDescription(post)}
       path={`/posts/${post.slug}/`}
       image={post.coverImage}
