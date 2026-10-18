@@ -2,6 +2,7 @@ import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import sharp from "sharp";
+import { mediaFilePath } from "./media-paths.mjs";
 import {
   optimizedRoomPath,
   optimizedContentCover,
@@ -80,9 +81,10 @@ for (const name of ["blog", "notes"]) {
     if (typeof source !== "string") continue;
     const target = optimizedContentCover(source);
     if (target === source) continue;
-    const input = path.resolve(publicDir.pathname, `.${source}`);
+    const publicPath = mediaFilePath(publicDir);
+    const input = path.resolve(publicPath, `.${source}`);
     if (
-      !input.startsWith(publicDir.pathname) ||
+      !input.startsWith(`${publicPath}${path.sep}`) ||
       source.split("/").includes("..")
     )
       throw new Error("Invalid local cover path");
@@ -142,11 +144,11 @@ for (const [source, target, quality, width, format = "webp"] of jobs) {
     nextManifest[target] = recipe;
     const cached = await stat(output).catch(() => null);
     if (!cached || manifest[target] !== recipe) {
-      const image = sharp(input.pathname);
+      const image = sharp(mediaFilePath(input));
       if (width) image.resize({ width, withoutEnlargement: true });
       await mkdir(new URL("./", output), { recursive: true });
       if (format === "avif") {
-        await image.avif({ quality, effort: 3 }).toFile(output.pathname);
+        await image.avif({ quality, effort: 3 }).toFile(mediaFilePath(output));
       } else {
         await image
           .webp(
@@ -154,7 +156,7 @@ for (const [source, target, quality, width, format = "webp"] of jobs) {
               ? { lossless: true, effort: 6 }
               : { quality, effort: 6 },
           )
-          .toFile(output.pathname);
+          .toFile(mediaFilePath(output));
       }
       generated++;
     }
